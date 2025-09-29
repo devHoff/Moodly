@@ -12,8 +12,44 @@ Num segundo cenário, o utilizador abre a aba de "Conexões", escolhe um dos mat
 Num terceiro cenario acontece a criação de um Hangout. O utilizador define o evento, com data e local, e convida pessoas das suas conexões. Cada convidado recebe um pedido de participação e, ao aceitar, aparece automaticamente como confirmado no evento, e logo a seguir e colocado num groupchat para o mesmo
 
 ## Plano de Trabalhos  
+Fase 1 – Planeamento e Pesquisa
+Objetivos:
+Refinar a ideia da aplicação.
+Fazer pesquisa de mercado: analisar apps como Tinder, Bumble, Meetup, Discord.
+Levantar requisitos funcionais e não funcionais com mais detalhe.
 
-...
+Fase 2 – Design e Modelagem 
+Objetivos:
+Criar mockups da interface (Figma)
+Definir o modelo do domínio (entidades: User, Connection, Chat, Hangout).
+Criar diagrama de casos de uso.
+
+Fase 3 – Desenvolvimento Backend
+Objetivos:
+Criar o projeto Spring Boot.
+Implementar API REST (endpoints: autenticação, perfis, conexões, chat, hangouts).
+Configurar base de dados relacional (PostgreSQL ou MySQL).
+
+Fase 4 – Desenvolvimento Frontend 
+Objetivos:
+Criar app Android em Kotlin + Jetpack Compose.
+Implementar:
+Tela de login/registro.
+Tela de swipe (“Conectar”).
+Tela de conexões e chat.
+Tela de criação/gestão de Hangouts.
+
+Fase 5 – Testes e Validação 
+Objetivos:
+Aplicar os guiões de teste definidos (swipe, conexões, mensagens, hangouts).
+Testes unitários (JUnit no backend, Espresso no Android).
+Testes de usabilidade com colegas (feedback da interface).
+
+Fase 6 – Entrega e Apresentação
+Objetivos:
+Preparar a apresentação final do projeto.
+Redigir relatório/documentação formal (incluindo todos os artefatos).
+
 
 
 ## Project Charter e WBS  
