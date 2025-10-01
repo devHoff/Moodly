@@ -68,7 +68,7 @@ Do lado dos requisitos não funcionais, criar e participar em hangouts e editar 
 
 ## Modelo do Domínio (temporario)  
 
-O modelo do domínio inclui entidades como **User**, responsável por armazenar os dados do utilizador; **Connection**, que regista as ligações estabelecidas; **Chat**, que organiza as conversas; e **Hangout**, que representa os encontros criados e os participantes confirmados. Estas entidades e as suas relações serão detalhadas em versões posteriores, incluindo diagramas mais completos.  
+(O modelo do domínio inclui entidades como **User**, responsável por armazenar os dados do utilizador; **Connection**, que regista as ligações estabelecidas; **Chat**, que organiza as conversas; e **Hangout**, que representa os encontros criados e os participantes confirmados. Estas entidades e as suas relações serão detalhadas em versões posteriores, incluindo diagramas mais completos)  
 
 ---
 
@@ -76,8 +76,8 @@ O modelo do domínio inclui entidades como **User**, responsável por armazenar 
 
 ...
 
-## 11. Planificação
+## 11. Planificação (temporario)
 
-A planificação pode ser representada através de um gráfico de Gantt construído em ferramentas como o ClickUp ou o TeamGantt. Nele devem estar assinaladas as principais fases do projeto, desde a definição da ideia, passando pelo design e desenvolvimento, até à entrega do relatório e do poster. Cada etapa deve estar distribuída pelas semanas, de modo a garantir o cumprimento dos prazos definidos no briefing.  
+(A planificação pode ser representada através de um gráfico de Gantt construído em ferramentas como o ClickUp ou o TeamGantt. Nele devem estar assinaladas as principais fases do projeto, desde a definição da ideia, passando pelo design e desenvolvimento, até à entrega do relatório e do poster. Cada etapa deve estar distribuída pelas semanas, de modo a garantir o cumprimento dos prazos definidos no briefing.) 
 
 
