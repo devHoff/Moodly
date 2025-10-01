@@ -78,6 +78,6 @@ Do lado dos requisitos não funcionais, criar e participar em hangouts e editar 
 
 ## 11. Planificação (temporario)
 
-(A planificação pode ser representada através de um gráfico de Gantt construído em ferramentas como o ClickUp ou o TeamGantt. Nele devem estar assinaladas as principais fases do projeto, desde a definição da ideia, passando pelo design e desenvolvimento, até à entrega do relatório e do poster. Cada etapa deve estar distribuída pelas semanas, de modo a garantir o cumprimento dos prazos definidos no briefing.) 
+(gráfico de Gantt construído em ClickUp. Nele devem estar assinaladas as principais fases do projeto, desde a definição da ideia, passando pelo design e desenvolvimento, até à entrega do relatório e do poster. Cada etapa deve estar distribuída pelas semanas, de modo a garantir o cumprimento dos prazos definidos no briefing.) 
 
 
