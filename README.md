@@ -5,11 +5,11 @@ O **Moodly** é uma aplicação mobile pensada para ajudar calouros universitár
 
 ## Guiões de Teste  
 
-No caso central da aplicação, o utilizador entra na aba de "Conectar", onde surge o perfil de outro estudante com a sua fotografia e lista de interesses. O utilizador decide se quer ou não conectar-se deslizando o perfil. Caso haja interesse mútuo, gera-se uma notificação e a nova ligação fica registada na aba de Conexões.  
+O João, calouro de Engenharia Informática, acabou de instalar o Moodly porque quer conhecer pessoas com gostos parecidos. Ao abrir a aba de Conectar, aparece-lhe o perfil da Ana, que adora música deftones. João desliza o perfil para a direita, interessado em fazer amizade. Mais tarde, a Ana também dá swipe em João. Ambos recebem uma notificação: houve um “connect”! A nova ligação fica automaticamente disponível na aba de Conexões.
 
-Num segundo cenário, o utilizador abre a aba de "Conexões", escolhe um dos matches e inicia uma conversa. A outra pessoa recebe uma notificação e pode responder, dando início a uma troca de mensagens.  
+Alguns dias depois, João abre a aba de Conexões e vê que já tem três "connects". Decide falar com a Ana, pois partilham o mesmo gosto por bandas alternativas. Ele abre o chat e envia a primeira mensagem: “Olá Ana, Qual é a tua musica favorita?”. Ana responde, animada por encontrar alguém com os mesmos interesses. Assim começa a conversa entre os dois. 
 
-Num terceiro cenario acontece a criação de um Hangout. O utilizador define o evento, com data e local, e convida pessoas das suas conexões. Cada convidado recebe um pedido de participação e, ao aceitar, aparece automaticamente como confirmado no evento, e logo a seguir e colocado num groupchat para o mesmo
+Passadas algumas semanas, João já tem um pequeno grupo de amigos através do Moodly. Como todos gostam de cinema, ele decide criar um Hangout para verem juntos a nova estreia de u filme. Na aba de Hangouts, define o evento com data, hora e local, e convida os colegas que já tinha adicionado. Cada convidado recebe o pedido de participação no telemóvel. À medida que vão aceitando, aparecem como confirmados e são automaticamente adicionados a um grupo de chat para organizarem detalhes da ida ao cinema.
 
 ## Plano de Trabalhos  
 Fase 1 – Planeamento e Pesquisa
@@ -58,11 +58,26 @@ Redigir relatório/documentação formal (incluindo todos os artefatos).
 
 ---
 
-## Requisitos  
+## Requisitos Funcionais  
+Estes requisitos descrevem as funcionalidades que a aplicação deve obrigatoriamente oferecer:  
 
-Entre os requisitos funcionais destacam-se a possibilidade de fazer swipe em perfis, gerir conexões, iniciar conversas individuais 
+- **Swipe de Perfis**: o utilizador deve poder visualizar perfis de outros estudantes e deslizar para a direita ou esquerda, indicando interesse em conectar-se ou não.  
+- **Gestão de Conexões (Matches)**: sempre que dois utilizadores mostrem interesse mútuo, deve ser criada uma conexão visível na aba de Conexões.  
+- **Chats Individuais**: a aplicação permitirá iniciar conversas privadas com base nas conexões estabelecidas.  
+- **Group Chats**: deve ser possível criar conversas em grupo, associadas a hangouts.  
+- **Criação e Participação em Hangouts**: os utilizadores devem poder criar eventos com data, hora e local, convidar conexões, e gerir confirmações. Os participantes confirmados entram automaticamente num chat de grupo do evento.  
+- **Perfil do Utilizador**: cada utilizador deve ter um perfil editável, incluindo nome, curso, interesses (música, filmes, livros), foto e definições básicas.  
 
-Do lado dos requisitos não funcionais, criar e participar em hangouts e editar o perfil com base em interesses, a aplicação deve ter uma interface intuitiva, bem como funcionalidades basicas de QoL 
+---
+
+## Requisitos Não Funcionais  
+Estes requisitos garantem a qualidade, segurança e usabilidade da aplicação:  
+
+- **Interface Intuitiva e Amigável**: o design vai ser simples, moderno e adaptado ao público, facilitando a navegação.  
+- **Qualidade de Vida (QoL Features)**: funcionalidades pequenas, mas importantes, como notificações claras, opção de silenciar chats, e confirmação visual de ações (por exemplo, quando se envia uma mensagem).   
+- **Desempenho e Escalabilidade**: a aplicação vai suportar pelo menos 50 utilizadores em simultâneo sem perdas de desempenho significativas.  
+- **Persistência de Dados**: todas as informações (perfis, conexões, mensagens, hangouts) devem ser guardadas de forma consistente numa base de dados relacional (PostgreSQL ou MySQL).  
+- **Disponibilidade e Fiabilidade**: a aplicação vai estar disponível pelo menos 95% do tempo, minimizando falhas e interrupções nos serviços.  
 
 ---
 
