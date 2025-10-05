@@ -42,7 +42,6 @@ Tela de criação/gestão de Hangouts.
 Fase 5 – Testes e Validação 
 Objetivos:
 Aplicar os guiões de teste definidos (swipe, conexões, mensagens, hangouts).
-Testes unitários (JUnit no backend, Espresso no Android).
 Testes de usabilidade com colegas (feedback da interface).
 
 Fase 6 – Entrega e Apresentação
