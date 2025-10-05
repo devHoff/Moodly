@@ -154,7 +154,7 @@ Deixados para a segunda entrega...
 
 ## Planificação (temporario)
 
-https://app.clickup.com/90151621011/v/g/2kyq94ck-575
+https://sharing.clickup.com/90151621011/g/h/2kyq94ck-195/f3fab03e7f271ec
 
 ## Poster
 <img width="186" height="400" alt="Frame 1 (1)" src="https://github.com/user-attachments/assets/bf8fb3de-2057-4767-ae78-b80f8e2b38e4" />
