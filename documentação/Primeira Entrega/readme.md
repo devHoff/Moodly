@@ -154,8 +154,7 @@ Deixados para a segunda entrega...
 
 ## Planificação (temporario)
 
-(gráfico de Gantt construído em ClickUp. Nele devem estar assinaladas as principais fases do projeto, desde a definição da ideia, passando pelo design e desenvolvimento, até à entrega do relatório e do poster. Cada etapa deve estar distribuída pelas semanas, de modo a garantir o cumprimento dos prazos definidos no briefing.) 
-
+https://app.clickup.com/90151621011/v/g/2kyq94ck-575
 
 ## Poster
 <img width="186" height="400" alt="Frame 1 (1)" src="https://github.com/user-attachments/assets/bf8fb3de-2057-4767-ae78-b80f8e2b38e4" />
