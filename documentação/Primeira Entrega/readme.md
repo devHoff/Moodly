@@ -156,8 +156,20 @@ Deixados para a segunda entrega...
 
 (gráfico de Gantt construído em ClickUp. Nele devem estar assinaladas as principais fases do projeto, desde a definição da ideia, passando pelo design e desenvolvimento, até à entrega do relatório e do poster. Cada etapa deve estar distribuída pelas semanas, de modo a garantir o cumprimento dos prazos definidos no briefing.) 
 
+
 ## Poster
-<img width="759" height="1290" alt="Frame 1 (1)" src="https://github.com/user-attachments/assets/bf8fb3de-2057-4767-ae78-b80f8e2b38e4" />
+<img width="186" height="400" alt="Frame 1 (1)" src="https://github.com/user-attachments/assets/bf8fb3de-2057-4767-ae78-b80f8e2b38e4" />
+
+## Powerpoint (em png)
+
+<img width="4000" height="2250" alt="Apresentação-1" src="https://github.com/user-attachments/assets/884ae999-702e-4817-a8aa-f5f2fea43871" />
+<img width="4000" height="2250" alt="Apresentação-2" src="https://github.com/user-attachments/assets/3c4755d1-134a-4907-a29a-5518b51603fc" />
+<img width="4000" height="2250" alt="Apresentação-3" src="https://github.com/user-attachments/assets/ebd09e0e-48a5-46a3-b737-89fb4c120b2a" />
+<img width="4000" height="2250" alt="Apresentação-4" src="https://github.com/user-attachments/assets/20aea681-56ab-4c5d-bda8-1484eb76c965" />
+<img width="4000" height="2250" alt="Apresentação-5" src="https://github.com/user-attachments/assets/17f0e7dd-12d6-4800-929f-d854b5379e3a" />
+<img width="4000" height="2250" alt="Apresentação-6" src="https://github.com/user-attachments/assets/160584a9-3746-48cd-a997-156d9a5de3ea" />
+<img width="4000" height="2250" alt="Apresentação-7" src="https://github.com/user-attachments/assets/61e21061-239f-4c2d-9b49-484a5e72a470" />
+<img width="4000" height="2250" alt="Apresentação-8" src="https://github.com/user-attachments/assets/3a18ab45-ed02-4c71-bc5e-8c3eef2fef2f" />
 
 
 
