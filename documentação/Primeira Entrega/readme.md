@@ -127,7 +127,7 @@ Estes requisitos descrevem as funcionalidades que a aplicação deve obrigatoria
 - **Chats Individuais**: a aplicação permitirá iniciar conversas privadas com base nas conexões estabelecidas.  
 - **Group Chats**: deve ser possível criar conversas em grupo, associadas a hangouts.  
 - **Criação e Participação em Hangouts**: os utilizadores devem poder criar eventos com data, hora e local, convidar conexões, e gerir confirmações. Os participantes confirmados entram automaticamente num chat de grupo do evento.  
-- **Perfil do Utilizador**: cada utilizador deve ter um perfil editável, incluindo nome, curso, interesses (música, filmes, livros), foto e definições básicas.  
+- **Perfil do Utilizador**: cada utilizador deve ter um perfil editável, incluindo nome, curso, interesses (música, filmes, jogos), foto e definições básicas.  
 
 ---
 
