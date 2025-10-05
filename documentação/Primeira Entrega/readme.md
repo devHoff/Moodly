@@ -1,5 +1,5 @@
 # Moodly  
-Elementos do Grupo:  
+Elementos do Grupo: Arthur Hoffman, Deuwer Rabelais, Isimar Quixito, Miguel Almeida 
 
 O **Moodly** é uma aplicação mobile pensada para ajudar calouros universitários a integrarem-se mais facilmente na vida académica. A ideia surge da facto de que muitos estudantes do primeiro ano têm dificuldade em encontrar novos amigos e criar amizades até mesmo dentro do seu curso. A aplicação funciona de forma semelhante a aplicativos como tinder, ou o Bumble, que popularizaram o conceito de “swipe” mas em vez de procurar relações românticas, o objetivo é encontrar pessoas com interesses em comum, como música, filmes ou jogos.  
 
