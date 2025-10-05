@@ -149,11 +149,16 @@ Deixados para a segunda entrega...
 
 ---
 
-## 10. Mockups e Interfaces  
+## Mockups e Interfaces  
 <img width="186" height="400" alt="Frame 1" src="https://github.com/user-attachments/assets/0877e7e8-7af3-4c9d-9b77-e8036ad5fbbc" /> <img width="186" height="400" alt="Frame 2" src="https://github.com/user-attachments/assets/a01359f8-e740-40fe-b9a4-d385c3126405" /> <img width="186" height="400" alt="Frame 3" src="https://github.com/user-attachments/assets/906aec40-1421-4739-b0e3-34719f70a6e5" /> <img width="186" height="400" alt="Frame 4" src="https://github.com/user-attachments/assets/81c9b3fe-2540-4e37-bc95-74c0523eba77" /> <img width="186" height="400" alt="Frame 5" src="https://github.com/user-attachments/assets/bcc3224e-6ece-4b04-8214-e4c8f5ed8a07" /> <img width="186" height="400" alt="Frame 6" src="https://github.com/user-attachments/assets/5cb317f3-c848-47fc-aa8a-fb84507710cc" />
 
-## 11. Planificação (temporario)
+## Planificação (temporario)
 
 (gráfico de Gantt construído em ClickUp. Nele devem estar assinaladas as principais fases do projeto, desde a definição da ideia, passando pelo design e desenvolvimento, até à entrega do relatório e do poster. Cada etapa deve estar distribuída pelas semanas, de modo a garantir o cumprimento dos prazos definidos no briefing.) 
+
+## Poster
+<img width="759" height="1290" alt="Frame 1 (1)" src="https://github.com/user-attachments/assets/bf8fb3de-2057-4767-ae78-b80f8e2b38e4" />
+
+
 
 
