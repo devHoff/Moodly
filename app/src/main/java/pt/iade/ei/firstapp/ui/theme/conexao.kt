@@ -1,4 +1,4 @@
-package pt.iade.ei.firstapp.ui.theme.ui.theme
+package pt.iade.ei.firstapp.ui.theme
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,12 +9,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,18 +41,18 @@ class conexao : ComponentActivity() {
         fun conexao() {
             Row(
 
-                modifier = Modifier
+                modifier = Modifier.Companion
                     .padding()
                     .fillMaxHeight()
                     .fillMaxWidth()
                     .background(Color(color = 0xFF2F0738)),
-                verticalAlignment = Alignment.Top,
+                verticalAlignment = Alignment.Companion.Top,
                 horizontalArrangement = Arrangement.Center,
             )
             {
                 Row(
 
-                    modifier = Modifier
+                    modifier = Modifier.Companion
                         .padding()
                         .fillMaxHeight()
                         .fillMaxWidth(),
@@ -73,38 +71,48 @@ class conexao : ComponentActivity() {
 
 
 
-            Text(text = "Conexões",
-                modifier = Modifier
+            Text(
+                text = "Conexões",
+                modifier = Modifier.Companion
                     .padding()
                     .fillMaxHeight()
                     .fillMaxWidth()
                     .offset(x = 130.dp)
                     .offset(y = 90.dp),
-                    fontSize = 25.sp,
-                    color = Color.White
+                fontSize = 25.sp,
+                color = Color.Companion.White
             )
 
             for (i in 1..3) {
 
 
                 Image(
-                    modifier = Modifier.size(size =500.dp).offset(y = ((-170)+i*120).dp).fillMaxWidth().fillMaxHeight(),
+                    modifier = Modifier.Companion.size(size = 500.dp)
+                        .offset(y = ((-170) + i * 120).dp).fillMaxWidth().fillMaxHeight(),
                     painter = painterResource(id = R.drawable.barraroxagrossa),
-                    contentDescription = "barrafina")
-
-                Text(text = "UserName"+i,
-                    modifier = Modifier.padding().fillMaxWidth().fillMaxHeight().offset(x=70.dp).offset(y=((60)+i*120).dp),
-                    color = Color.White
+                    contentDescription = "barrafina"
                 )
 
-                Text(text = "Mensagem"+i,
-                    modifier = Modifier.padding().fillMaxWidth().fillMaxHeight().offset(x=70.dp).offset(y=((80)+i*120).dp),
-                    color = Color.White)
+                Text(
+                    text = "UserName" + i,
+                    modifier = Modifier.Companion.padding().fillMaxWidth().fillMaxHeight()
+                        .offset(x = 70.dp).offset(y = ((60) + i * 120).dp),
+                    color = Color.Companion.White
+                )
+
+                Text(
+                    text = "Mensagem" + i,
+                    modifier = Modifier.Companion.padding().fillMaxWidth().fillMaxHeight()
+                        .offset(x = 70.dp).offset(y = ((80) + i * 120).dp),
+                    color = Color.Companion.White
+                )
                 Image(
 
-                    modifier = Modifier.size(size =50.dp).offset(y = ((60)+i*120).dp).offset(x=10.dp),
+                    modifier = Modifier.Companion.size(size = 50.dp).offset(y = ((60) + i * 120).dp)
+                        .offset(x = 10.dp),
                     painter = painterResource(id = R.drawable.fotodeperfil),
-                    contentDescription = "foto de perfil")
+                    contentDescription = "foto de perfil"
+                )
 
 
 
