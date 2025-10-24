@@ -90,7 +90,7 @@ class Eventos : ComponentActivity() {
                 contentDescription = "barrafina")
 
             Image(
-                modifier = Modifier.size(size =65.dp).offset(y = ((25)+i*200).dp).fillMaxWidth().fillMaxHeight(),
+                modifier = Modifier.size(size =65.dp).offset(y = ((25)+i*200).dp).fillMaxWidth().fillMaxHeight().offset(x=(-10).dp),
                 painter = painterResource(id = R.drawable.plus),
                 contentDescription = "barrafina")
 
@@ -100,7 +100,7 @@ class Eventos : ComponentActivity() {
             )
 
             Text(text = "Tema"+i,
-                modifier = Modifier.padding().fillMaxWidth().fillMaxHeight().offset(x=70.dp).offset(y=((-10)+i*200).dp),
+                modifier = Modifier.padding().fillMaxWidth().fillMaxHeight().offset(x=70.dp).offset(y=((-5)+i*200).dp),
                 color = Color.White)
 
             Text(text = "Mais detalhes"+i,
