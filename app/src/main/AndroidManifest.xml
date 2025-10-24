@@ -12,6 +12,31 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirstApp">
         <activity
+            android:name=".ui.theme.EventosDetalhe"
+            android:exported="false"
+            android:label="@string/title_activity_eventos_detalhe"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.Eventos"
+            android:exported="false"
+            android:label="@string/title_activity_eventos"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.Chats"
+            android:exported="false"
+            android:label="@string/title_activity_chats"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.ui.theme.conexao"
+            android:exported="false"
+            android:label="@string/title_activity_conexao"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.Conection"
+            android:exported="false"
+            android:label="@string/title_activity_conection"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
             android:name=".ui.theme.ui.theme.TelaInicial"
             android:exported="false"
             android:label="@string/title_activity_tela_inicial"

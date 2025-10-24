@@ -24,8 +24,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.ui.theme.ui.theme.ui.theme.FirstAppTheme
+
 
 class TelaInicial : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,15 +35,13 @@ class TelaInicial : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FirstAppTheme {
-            Tela()
-                }
+                Tela()
             }
         }
+    }
 }
 @Composable
-
 fun Tela() {
-
 
     Row(
 
@@ -67,26 +67,26 @@ fun Tela() {
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "logo"
 
-            )
+                )
         }
     }
 
 
-        Row(
+    Row(
 
-            modifier = Modifier
-                .padding()
-                .fillMaxHeight()
-                .fillMaxWidth(),
+        modifier = Modifier
+            .padding()
+            .fillMaxHeight()
+            .fillMaxWidth(),
+    )
+    {
+        Image(
+
+            modifier = Modifier.size(size = 70.dp),
+            painter = painterResource(id = R.drawable.definicoes),
+            contentDescription = "Def"
+
         )
-        {
-            Image(
-
-                modifier = Modifier.size(size = 70.dp),
-                painter = painterResource(id = R.drawable.definicoes),
-                contentDescription = "Def"
-
-            )
 
     }
 
@@ -104,6 +104,8 @@ fun Tela() {
     {
 
 
+
+
         Image(
 
             modifier = Modifier.size(size = 650.dp).offset(y = 30.dp),
@@ -111,7 +113,14 @@ fun Tela() {
             contentDescription = "Def"
         )
 
+        Text(text = "User.Name",
+            modifier = Modifier
+                .padding()
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .size(size = 250.dp)
 
+        )
 
     }
 
@@ -139,10 +148,140 @@ fun Tela() {
                 .fillMaxWidth()
                 .offset(x = 135.dp)
                 .offset(y = 100.dp),
+            color = Color.White
 
         )
+
+
+        
+
     }
 
+    Image(
+
+        modifier = Modifier.size(size =100.dp).offset(y = 385.dp).offset(x=280.dp),
+        painter = painterResource(id = R.drawable.swipe),
+        contentDescription = "swipe"
+    )
+
+    Image(
+
+        modifier = Modifier.size(size =100.dp).offset(y = 385.dp).offset(x=10.dp),
+        painter = painterResource(id = R.drawable.conection),
+        contentDescription = "swipe"
+    )
+
+    Image(
+
+        modifier = Modifier.size(size =50.dp).offset(y = 495.dp).offset(x=35.dp),
+        painter = painterResource(id = R.drawable.musica),
+        contentDescription = "swipe"
+    )
+
+    Image(
+
+        modifier = Modifier.size(size =50.dp).offset(y = 580.dp).offset(x=35.dp),
+        painter = painterResource(id = R.drawable.filme),
+        contentDescription = "swipe"
+    )
+
+    Image(
+
+        modifier = Modifier.size(size =50.dp).offset(y = 670.dp).offset(x=35.dp),
+        painter = painterResource(id = R.drawable.jogo),
+        contentDescription = "swipe"
+    )
+
+    Text(text = "Jhonny Golden",
+        modifier = Modifier
+            .padding()
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .offset(x = 105.dp)
+            .offset(y = 400.dp),
+        fontSize = 25.sp
+    )
+    Text(text = "Eng.Informática",
+        modifier = Modifier
+            .padding()
+            .fillMaxHeight()
+            .fillMaxWidth()
+            .offset(x = 105.dp)
+            .offset(y = 435.dp),
+        fontSize = 25.sp
+    )
+
+    Column (
+        modifier = Modifier.padding().fillMaxWidth().fillMaxWidth(),
+        // verticalArrangement =
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+       Text(text = "UnderGroundKing-Kmw",
+           modifier = Modifier.padding()
+               // .offset(x = (-110).dp)
+               .offset(y = 490.dp),
+           color = Color.White
+       )
+
+        Text(text = "Sem ti-KMW",
+            modifier = Modifier.padding()
+                //.offset(x = (-110).dp)
+                .offset(y = 495.dp),
+            color = Color.White
+        )
+
+        Text(text = "MrSacaRolhas-Não Compensa",
+            modifier = Modifier.padding()
+                //.offset(x = (-110).dp)
+                .offset(y = 500.dp),
+            color = Color.White
+        )
+
+        Text(text = "LaCasa de Papel",
+            modifier = Modifier.padding()
+               // .offset(x = (-110).dp)
+                .offset(y = 530.dp),
+            color = Color.White
+        )
+
+        Text(text = "Prison Break",
+            modifier = Modifier.padding()
+               // .offset(x = (-110).dp)
+                .offset(y = 535.dp),
+            color = Color.White
+        )
+
+        Text(text = "Breaking Bad",
+            modifier = Modifier.padding()
+                //.offset(x = (-110).dp)
+                .offset(y = 540.dp),
+            color = Color.White
+        )
+
+        Text(text = "Fortnite",
+            modifier = Modifier.padding()
+                //.offset(x = (-110).dp)
+                .offset(y = 570.dp),
+            color = Color.White
+        )
+
+        Text(text = "GTA 5",
+            modifier = Modifier.padding()
+               // .offset(x = (-110).dp)
+                .offset(y = 575.dp),
+            color = Color.White
+        )
+
+        Text(text = "Brawhalla",
+            modifier = Modifier.padding()
+              //  .offset(x = (-110).dp)
+                .offset(y = 580.dp),
+            color = Color.White
+        )
+
+        
+        
+    }
 }
 
 
