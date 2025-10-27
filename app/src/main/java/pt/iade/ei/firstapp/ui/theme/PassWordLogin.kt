@@ -1,4 +1,4 @@
-package pt.iade.ei.firstapp.ui.theme.ui.theme
+package pt.iade.ei.firstapp.ui.theme
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,20 +25,20 @@ import androidx.compose.ui.unit.dp
 import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.ui.theme.ui.theme.ui.theme.FirstAppTheme
 
-class SignUp_4 : ComponentActivity() {
+class PassWordLogin : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             FirstAppTheme {
-SextaTela()
+            PassLogin()
             }
         }
     }
 }
 
 @Composable
-fun SextaTela(){
+fun PassLogin(){
 
 
 
@@ -121,13 +119,6 @@ fun SextaTela(){
             contentDescription = "BAARRA ROXA"
 
         )
-        Image(
-            modifier = Modifier
-                .offset(y =(60).dp),
-            painter = painterResource(id = R.drawable.barra_roxa),
-            contentDescription = "BAARRA ROXA"
-
-        )
 
         Image(
             modifier = Modifier
@@ -146,30 +137,23 @@ fun SextaTela(){
     {
         Text(
             modifier = Modifier.
-            offset(y = (-20).dp)
-                .offset(x=(-80).dp),
-            text = "Filme 1"
+            offset(y = (-15).dp)
+                .offset(x=(-70).dp),
+            text = "PassWord"
 
         )
         Text(
             modifier = Modifier.
-            offset(y = (21).dp)
-                .offset(x=(-77).dp),
-            text = "Filme 2"
-
-        )
-        Text(
-            modifier = Modifier.
-            offset(y = 65.dp)
-                .offset(x=(-80).dp),
-            text = "Filme 3"
+            offset(y = (27).dp)
+                .offset(x=(-38).dp),
+            text = "Confirme a PassWord"
 
         )
 
         Text(
             modifier = Modifier.
-            offset(y = (165).dp)
-                .offset(x=(-5).dp),
+            offset(y = (160).dp)
+                .offset(x=(-13).dp),
             text = "Seguinte"
 
         )
@@ -182,8 +166,9 @@ fun SextaTela(){
 
 @Preview(showBackground = true)
 @Composable
-fun SextaTelaPreview(){
-    pt.iade.ei.firstapp.ui.theme.ui.theme.FirstAppTheme {
-    }
-    SextaTela()
+fun PassLoginPreview(){
+    pt.iade.ei.firstapp.ui.theme.FirstAppTheme { }
+    PassLogin()
+
 }
+

@@ -12,17 +12,42 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirstApp">
         <activity
-            android:name=".ui.theme.ui.theme.TelaInicial"
+            android:name=".ui.theme.EventosDetalhe"
+            android:exported="false"
+            android:label="@string/title_activity_eventos_detalhe"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.Eventos"
+            android:exported="false"
+            android:label="@string/title_activity_eventos"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.Chats"
+            android:exported="false"
+            android:label="@string/title_activity_chats"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.conexao"
+            android:exported="false"
+            android:label="@string/title_activity_conexao"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.Conection"
+            android:exported="false"
+            android:label="@string/title_activity_conection"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.TelaInicial"
             android:exported="false"
             android:label="@string/title_activity_tela_inicial"
             android:theme="@style/Theme.FirstApp" />
         <activity
-            android:name=".ui.theme.ui.theme.PassWordLogin"
+            android:name=".ui.theme.PassWordLogin"
             android:exported="false"
             android:label="@string/title_activity_pass_word_login"
             android:theme="@style/Theme.FirstApp" />
         <activity
-            android:name=".ui.theme.ui.theme.SignUp_4"
+            android:name=".ui.theme.SignUp_4"
             android:exported="false"
             android:label="@string/title_activity_sign_up4"
             android:theme="@style/Theme.FirstApp" />
