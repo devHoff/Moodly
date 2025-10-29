@@ -12,12 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirstApp">
         <activity
-            android:name=".ui.theme.EventosDetalhe"
+            android:name=".activities.EventosDetalhe"
             android:exported="false"
             android:label="@string/title_activity_eventos_detalhe"
             android:theme="@style/Theme.FirstApp" />
         <activity
-            android:name=".ui.theme.Eventos"
+            android:name=".activities.Eventos"
             android:exported="false"
             android:label="@string/title_activity_eventos"
             android:theme="@style/Theme.FirstApp" />
@@ -27,7 +27,7 @@
             android:label="@string/title_activity_chats"
             android:theme="@style/Theme.FirstApp" />
         <activity
-            android:name=".ui.theme.conexao"
+            android:name=".activities.conexao"
             android:exported="false"
             android:label="@string/title_activity_conexao"
             android:theme="@style/Theme.FirstApp" />
@@ -37,7 +37,7 @@
             android:label="@string/title_activity_conection"
             android:theme="@style/Theme.FirstApp" />
         <activity
-            android:name=".ui.theme.TelaInicial"
+            android:name=".activities.TelaInicial"
             android:exported="false"
             android:label="@string/title_activity_tela_inicial"
             android:theme="@style/Theme.FirstApp" />

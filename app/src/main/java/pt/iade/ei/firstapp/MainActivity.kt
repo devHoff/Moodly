@@ -56,7 +56,7 @@ fun PrimeiraTela() {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(Color(0xFF2F0738)) // fundo principal (cor #2F0738)
+                .background(Color(0xFF2D004B)) // fundo principal (cor #2F0738)
                 .fillMaxHeight(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically

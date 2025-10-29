@@ -1,4 +1,4 @@
-package pt.iade.ei.firstapp.ui.theme
+package pt.iade.ei.firstapp.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import pt.iade.ei.firstapp.R
-import pt.iade.ei.firstapp.ui.theme.ui.theme.ui.theme.FirstAppTheme
+import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 
 class TelaInicial : ComponentActivity() {

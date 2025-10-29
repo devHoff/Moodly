@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import pt.iade.ei.firstapp.ui.components.InterestInputCard
 
 @Composable
 fun EditProfileScreen(
