@@ -44,10 +44,10 @@ fun PrimeiraTela() {
     Scaffold(
         bottomBar = {
             BottomAppBar(
-                containerColor = Color(0xFFFFFFF), // cor do bottom bar
-                modifier = Modifier.height(75.dp) // no bottomBar n tem uma função para alterar o tamanho, então manipulamos com esse modifier
+                containerColor = Color(0xFFFFFFF),
+                modifier = Modifier.height(75.dp)
             ) {
-                // pode adicionar ícones ou conteúdo da bottom bar aqui, se quiser
+
             }
         }
     ) { innerPadding ->
@@ -56,7 +56,7 @@ fun PrimeiraTela() {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .background(Color(0xFF2D004B)) // fundo principal (cor #2F0738)
+                .background(Color(0xFF2D004B))
                 .fillMaxHeight(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
