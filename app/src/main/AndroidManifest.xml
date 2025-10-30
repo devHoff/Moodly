@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirstApp">
         <activity
+            android:name=".SplashScreen"
+            android:exported="false"
+            android:label="@string/title_activity_splash_screen"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
             android:name=".activities.EventosDetalhe"
             android:exported="false"
             android:label="@string/title_activity_eventos_detalhe"

@@ -101,9 +101,6 @@ fun Tela() {
     )
     {
 
-
-
-
         Image(
 
             modifier = Modifier.size(size = 650.dp).offset(y = 30.dp),
@@ -154,21 +151,6 @@ fun Tela() {
         
 
     }
-
-    Image(
-
-        modifier = Modifier.size(size =100.dp).offset(y = 385.dp).offset(x=280.dp),
-        painter = painterResource(id = R.drawable.swipe),
-        contentDescription = "swipe"
-    )
-
-    Image(
-
-        modifier = Modifier.size(size =100.dp).offset(y = 385.dp).offset(x=10.dp),
-        painter = painterResource(id = R.drawable.conection),
-        contentDescription = "swipe"
-    )
-
     Image(
 
         modifier = Modifier.size(size =50.dp).offset(y = 495.dp).offset(x=35.dp),
