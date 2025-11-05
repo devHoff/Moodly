@@ -1,32 +1,19 @@
 package pt.iade.ei.firstapp
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -41,14 +28,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import androidx.navigation.NavController
 
 
 @Composable
-fun LoginScreen(
-    onLoginClick: (email: String, password: String) -> Unit,
-    onSignupClick: () -> Unit
-) {
+fun LoginScreen(navController: NavController) {
+
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
 
@@ -125,8 +110,9 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Login button
-        Button(
-            onClick = { onLoginClick(email.value, password.value) },
+        Button(onClick = {
+            navController.navigate("home")
+        },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -142,18 +128,12 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Signup text
-        TextButton(onClick = onSignupClick) {
-            Text(
-                text = "Ainda não tens conta? Regista-te aqui",
-                color = Color(0xFFFFD600),
-                fontSize = 14.sp
-            )
-        }
+        //TextButton(onClick =) {
+        //Text(
+        //  text = "Ainda não tens conta? Regista-te aqui",
+        //  color = Color(0xFFFFD600),
+        // fontSize = 14.sp
+        // )
+        // }
     }
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen(onLoginClick = { _, _ -> }, onSignupClick = {})
 }

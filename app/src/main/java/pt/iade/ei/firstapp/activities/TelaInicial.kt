@@ -29,23 +29,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 
-class TelaInicial : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            FirstAppTheme {
-                Tela()
-            }
-        }
-    }
-}
+
 @Composable
-fun Tela() {
+fun Tela(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,36 +62,8 @@ fun Tela() {
                     .width(400.dp)
                     //.align(Alignment.CenterHorizontally)
                     .align(Alignment.End),
-
-
             ){
-
             }
         }
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun TelaPreview(){
-    Tela()
 }

@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,66 +18,42 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+// import androidx.ink.geometry.Box
+import androidx.navigation.NavController
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
-class SplashScreen : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            FirstAppTheme {
-                TelaInicial()
-            }
-        }
-    }
-}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TelaInicial() {
-    Scaffold(
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Color(0xFFFFFFFF), // corrigido (tinha 7 'F's antes)
-                modifier = Modifier.height(75.dp)
-            ) {
-                // conteúdo da barra inferior
-                Text(
-                    text = "Barra inferior",
-                    color = Color.Black,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
-            }
-        }
-    ) { innerPadding ->
-        // conteúdo principal do Scaffold
-        Row(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(Color(0xFF2D004B))
-                .fillMaxHeight(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo"
-            )
+
+
+fun Splash(navController: NavController) {
+
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(2000)
+        navController.navigate("Login") {
+            popUpTo("splash") { inclusive = true } // remove a splash do histórico
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun TelaInicialPreview() {
-    FirstAppTheme {
-        TelaInicial()
+    // Conteúdo visual da Splash Screen
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF2D004B)),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Logo"
+        )
     }
 }

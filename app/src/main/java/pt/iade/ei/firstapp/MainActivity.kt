@@ -4,26 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import pt.iade.ei.firstapp.activities.Tela
+// import pt.iade.ei.firstapp.activities.TelaInicial
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,47 +17,24 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FirstAppTheme {
-                PrimeiraTela()
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController, startDestination = "SplashScreen",
+                ) {
+                    composable("Login") {
+                        LoginScreen(navController = navController)
+                    }
+
+                    composable(route = "home") {
+                        Tela(navController = navController)
+                    }
+
+                    composable(route = "SplashScreen") {
+                        Splash(navController = navController)
+
+                    }
+                }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PrimeiraTela() {
-    Scaffold(
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Color(0xFFFFFFF),
-                modifier = Modifier.height(75.dp)
-            ) {
-
-            }
-        }
-    ) { innerPadding ->
-        // conteúdo principal do Scaffold
-        Row(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(Color(0xFF2D004B))
-                .fillMaxHeight(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo"
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PrimeiraTelaPreview() {
-    FirstAppTheme {
-        PrimeiraTela()
     }
 }
