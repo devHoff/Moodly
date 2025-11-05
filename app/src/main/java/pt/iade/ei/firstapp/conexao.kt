@@ -30,12 +30,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Message
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -58,7 +60,7 @@ import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.ui.components.InterestInputCard
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
-class Eventos : ComponentActivity() {
+class conexao : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -78,80 +80,92 @@ fun Event() {
     var movies by remember { mutableStateOf("") }
     var games by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF2D004B))
-            .padding(16.dp)
-    ) {
-        Image(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
-        )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "Conexões",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        for (i in 0..4) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Card(
-                colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFF3C0063),
-                    contentColor = Color.White
-                ),
-                modifier = Modifier
-                    .height(100.dp)
-                    .width(400.dp)
-                    .align(Alignment.CenterHorizontally),
-                shape = RoundedCornerShape(25.dp),
+    Scaffold(
+        bottomBar = {
+            BottomAppBar(
+                containerColor = Color(0xFFFFFFFF),
+                modifier = Modifier.height(75.dp)
             ) {
 
-                Row(modifier = Modifier.padding(horizontal = 7.dp, vertical = 8.dp)) {
-                    Icon(
-                        imageVector = Icons.Filled.AccountCircle,
-                        contentDescription = "Foto de perfil",
-                        tint = Color.White,
-                        modifier = Modifier.size(64.dp)
-                    )
+            }
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF2D004B))
+                .padding(16.dp)
+        ) {
+            Image(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo",
+            )
 
-                    Column {
-                        Text(text = "Você se conectou com Delma")
-                        Box (
+            Spacer(modifier = Modifier.height(24.dp))
 
-                        ){
-                            Icon(
-                                imageVector = Icons.Default.Message,
-                                contentDescription = "Ícone de mensagem",
-                                tint = Color(0xFFFFD600),
-                                modifier = Modifier.size(50.dp)
-                            )
+            Text(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                text = "Conexões",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            for (i in 0..4) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFF3C0063),
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .height(100.dp)
+                        .width(400.dp)
+                        .align(Alignment.CenterHorizontally),
+                    shape = RoundedCornerShape(25.dp),
+                ) {
+
+                    Row(modifier = Modifier.padding(horizontal = 7.dp, vertical = 8.dp)) {
+                        Icon(
+                            imageVector = Icons.Filled.AccountCircle,
+                            contentDescription = "Foto de perfil",
+                            tint = Color.White,
+                            modifier = Modifier.size(64.dp)
+                        )
+
+                        Column {
+                            Text(text = "Você se conectou com Delma")
+                            Box(
+
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Message,
+                                    contentDescription = "Ícone de mensagem",
+                                    tint = Color(0xFFFFD600),
+                                    modifier = Modifier.size(50.dp)
+                                )
 
 
-                            Text(
-                                modifier = Modifier.padding(start = 50.dp, top = 10.dp),
-                                text = "Clique para iniciar uma conversa",
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                                Text(
+                                    modifier = Modifier.padding(start = 50.dp, top = 10.dp),
+                                    text = "Clique para iniciar uma conversa",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+
                         }
-
                     }
                 }
             }
         }
     }
-}
+    }
 
 
 

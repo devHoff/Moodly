@@ -30,8 +30,6 @@ fun ProfilePicSelectionScreen(
     onSkipClick: () -> Unit
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-
-
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->

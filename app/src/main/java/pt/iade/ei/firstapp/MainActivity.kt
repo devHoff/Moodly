@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = "home") {
-                        Tela(navController = navController)
+                       // Tela(navController = navController)
                     }
 
                     composable(route = "SplashScreen") {
