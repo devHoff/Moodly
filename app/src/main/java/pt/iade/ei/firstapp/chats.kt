@@ -33,50 +33,60 @@ fun ChatsScreen(
     chats: List<ChatPreview>,
     onChatClick: (ChatPreview) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF2D004B))
-            .padding(horizontal = 16.dp)
-    ) {
-        // 🔹 Top bar
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Left spacer (for centering title)
-            Spacer(modifier = Modifier.width(36.dp))
 
-            // Center title
-            Text(
-                text = "Os teus chats",
-                color = Color(0xFFFFD600),
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
 
-            // Moodly icon (top right)
-            Icon(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Moodly Logo",
-                tint = Color.Unspecified,
-                modifier = Modifier.size(36.dp)
-            )
+    Scaffold(
+        bottomBar = {
+            BottomAppBar(
+                containerColor = Color(0xFFFFFFFF),
+                modifier = Modifier.height(75.dp)
+            ) {
+
+            }
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // 🔹 List of chats
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxSize()
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF2D004B))
+                .padding(horizontal = 16.dp)
         ) {
-            items(chats) { chat ->
-                ChatListItem(chat = chat, onClick = { onChatClick(chat) })
+            // 🔹 Top bar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Spacer(modifier = Modifier.width(36.dp))
+                Text(
+                    text = "Os teus chats",
+                    color = Color(0xFFFFD600),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+
+                Icon(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Moodly Logo",
+                    tint = Color.Unspecified,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // 🔹 List of chats
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(chats) { chat ->
+                    ChatListItem(chat = chat, onClick = { onChatClick(chat) })
+                }
             }
         }
     }

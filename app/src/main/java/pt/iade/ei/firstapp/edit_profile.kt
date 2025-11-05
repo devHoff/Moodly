@@ -43,114 +43,124 @@ fun EditProfileScreen(
         selectedImageUri = uri
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF2D004B))
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Editar Perfil",
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+    Scaffold(
+        bottomBar = {
+            BottomAppBar(
+                containerColor = Color(0xFFFFFFFF),
+                modifier = Modifier.height(75.dp)
+            ) {
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Profile Picture Editor
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(140.dp)
-                .clip(CircleShape)
-                .background(Color(0xFF3C0063))
-                .clickable { imagePickerLauncher.launch("image/*") },
-            contentAlignment = Alignment.Center
-        ) {
-            if (selectedImageUri != null) {
-                AsyncImage(
-                    model = selectedImageUri,
-                    contentDescription = "Profile Picture",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize().clip(CircleShape)
-                )
-            } else {
-                Icon(
-                    painter = painterResource(id = R.drawable.camera),
-                    contentDescription = "Pick Image",
-                    tint = Color(0xFFFFD600),
-                    modifier = Modifier.size(64.dp)
-                )
             }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Interest Inputs (same as before)
-        InterestInputCard(
-            iconRes = R.drawable.music,
-            label = "Músicas",
-            value = music,
-            onValueChange = { music = it },
-            placeholder = "Ex: Arctic Monkeys, Drake, Billie Eilish"
-        )
-
-        InterestInputCard(
-            iconRes = R.drawable.movies,
-            label = "Filmes e Séries",
-            value = movies,
-            onValueChange = { movies = it },
-            placeholder = "Ex: Breaking Bad, Interstellar, One Piece"
-        )
-
-        InterestInputCard(
-            iconRes = R.drawable.games,
-            label = "Jogos",
-            value = games,
-            onValueChange = { games = it },
-            placeholder = "Ex: CS:GO, Minecraft, Hollow Knight"
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Save + Cancel buttons
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth()
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF2D004B))
+                .padding(16.dp)
         ) {
-            Button(
-                onClick = { onCancelClick() },
+            Text(
+                text = "Editar Perfil",
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Profile Picture Editor
+            Box(
                 modifier = Modifier
-                    .weight(1f)
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Gray,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(12.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .size(140.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF3C0063))
+                    .clickable { imagePickerLauncher.launch("image/*") },
+                contentAlignment = Alignment.Center
             ) {
-                Text("Cancelar")
+                if (selectedImageUri != null) {
+                    AsyncImage(
+                        model = selectedImageUri,
+                        contentDescription = "Profile Picture",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize().clip(CircleShape)
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.camera),
+                        contentDescription = "Pick Image",
+                        tint = Color(0xFFFFD600),
+                        modifier = Modifier.size(64.dp)
+                    )
+                }
             }
 
-            Button(
-                onClick = { onSaveClick(selectedImageUri, music, movies, games) },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(50.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFFD600),
-                    contentColor = Color.Black
-                ),
-                shape = RoundedCornerShape(12.dp)
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Interest Inputs (same as before)
+            InterestInputCard(
+                iconRes = R.drawable.music,
+                label = "Músicas",
+                value = music,
+                onValueChange = { music = it },
+                placeholder = "Ex: Arctic Monkeys, Drake, Billie Eilish"
+            )
+
+            InterestInputCard(
+                iconRes = R.drawable.movies,
+                label = "Filmes e Séries",
+                value = movies,
+                onValueChange = { movies = it },
+                placeholder = "Ex: Breaking Bad, Interstellar, One Piece"
+            )
+
+            InterestInputCard(
+                iconRes = R.drawable.games,
+                label = "Jogos",
+                value = games,
+                onValueChange = { games = it },
+                placeholder = "Ex: CS:GO, Minecraft, Hollow Knight"
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Save + Cancel buttons
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Guardar", fontWeight = FontWeight.Bold)
+                Button(
+                    onClick = { onCancelClick() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Gray,
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Cancelar")
+                }
+
+                Button(
+                    onClick = { onSaveClick(selectedImageUri, music, movies, games) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFFD600),
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Guardar", fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
 }
-
 @Preview(showBackground = true, backgroundColor = 0xFF2D004B)
 @Composable
 fun EditProfileScreenPreview() {

@@ -31,12 +31,14 @@ import androidx.compose.material.icons.automirrored.filled.Message
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ControlPoint
 import androidx.compose.material.icons.filled.Message
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -75,101 +77,111 @@ class Eventos : ComponentActivity() {
 @Composable
 fun Even() {
 
-    Column(
+    Scaffold(
+        bottomBar = {
+            BottomAppBar(
+                containerColor = Color(0xFFFFFFFF),
+                modifier = Modifier.height(75.dp)
+            ) {
 
-        modifier = Modifier
-            .padding()
-            .fillMaxSize()
-            .background(Color(0xFF2D004B))
-            .fillMaxHeight(),
-        horizontalAlignment = Alignment.CenterHorizontally
+            }
+        }
+    ) { padding ->
+        Column(
 
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo"
-        )
+            modifier = Modifier
+                .padding()
+                .fillMaxSize()
+                .background(Color(0xFF2D004B))
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally
 
-        Text(
-            modifier = Modifier.padding(top = 20.dp),
-            text = "Eventos",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Logo"
+            )
 
-
-        Column() {
-
-            for (i in 1..4) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF3C0063),
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .height(130.dp)
-                        .width(400.dp)
-                        .align(Alignment.CenterHorizontally),
-                    shape = RoundedCornerShape(25.dp),
-                ) {
+            Text(
+                modifier = Modifier.padding(top = 20.dp),
+                text = "Eventos",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
 
 
-                    Row(modifier = Modifier.padding(horizontal = 7.dp, vertical = 8.dp)) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Foto de perfil",
-                            tint = Color.White,
-                            modifier = Modifier.size(64.dp)
-                        )
+            Column() {
 
-                        Column {
-                            Text(
-                                modifier = Modifier.padding(top = 20.dp),
-                                text = " Organizador:",
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold
+                for (i in 1..4) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFF3C0063),
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .height(130.dp)
+                            .width(400.dp)
+                            .align(Alignment.CenterHorizontally),
+                        shape = RoundedCornerShape(25.dp),
+                    ) {
+
+
+                        Row(modifier = Modifier.padding(horizontal = 7.dp, vertical = 8.dp)) {
+                            Icon(
+                                imageVector = Icons.Filled.AccountCircle,
+                                contentDescription = "Foto de perfil",
+                                tint = Color.White,
+                                modifier = Modifier.size(64.dp)
                             )
-                            Spacer(modifier = Modifier.height(1.dp))
-                            Text(
-                                modifier = Modifier.padding(top = 20.dp),
-                                text = "Dickson:",
-                                fontSize = 15.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Box(
 
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ControlPoint,
-                                    contentDescription = "Ícone de mensagem",
-                                    tint = Color(0xFFFFD600),
-                                    modifier = Modifier.size(50.dp)
-                                )
-
-
+                            Column {
                                 Text(
-                                    modifier = Modifier.padding(start = 30.dp, top = 14.dp),
-                                    text = "    Mais detalhes",
-                                    fontSize = 24.sp,
+                                    modifier = Modifier.padding(top = 20.dp),
+                                    text = " Organizador:",
+                                    fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold
                                 )
-                            }
+                                Spacer(modifier = Modifier.height(1.dp))
+                                Text(
+                                    modifier = Modifier.padding(top = 20.dp),
+                                    text = "Dickson:",
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Box(
 
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ControlPoint,
+                                        contentDescription = "Ícone de mensagem",
+                                        tint = Color(0xFFFFD600),
+                                        modifier = Modifier.size(50.dp)
+                                    )
+
+
+                                    Text(
+                                        modifier = Modifier.padding(start = 30.dp, top = 14.dp),
+                                        text = "    Mais detalhes",
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+
+                            }
                         }
                     }
                 }
-            }
 
+
+            }
 
         }
 
+
     }
-
-
 }
-
 
 
 @Preview(showBackground = true)
