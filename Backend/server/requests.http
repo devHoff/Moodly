@@ -19,3 +19,48 @@ Content-Type: application/json
 
 ### 🟣 GET all users (only this one can be opened in browser)
 GET http://localhost:8080/api/usuarios
+
+### 🟢 Create two users
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "nome": "João",
+  "email": "joao@email.com",
+  "senhaHash": "123456"
+}
+
+###
+
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "nome": "Maria",
+  "email": "maria@email.com",
+  "senhaHash": "123456"
+}
+
+### 🟠 Create a connection (João connects to Maria)
+POST http://localhost:8080/api/connections/request
+Content-Type: application/json
+
+{
+  "user1Id": 1,
+  "user2Id": 2
+}
+
+### 🟣 Get João’s connections
+GET http://localhost:8080/api/connections/1
+
+### 🟣 Get Maria’s connections
+GET http://localhost:8080/api/connections/2
+
+### Create a connection
+POST http://localhost:8080/api/connections/request
+Content-Type: application/json
+
+{
+  "user1Id": 1,
+  "user2Id": 2
+}
