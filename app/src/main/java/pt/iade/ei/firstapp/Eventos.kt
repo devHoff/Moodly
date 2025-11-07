@@ -61,18 +61,7 @@ import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.ui.components.InterestInputCard
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
-class Eventos : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            FirstAppTheme {
-                Even()
-            }
 
-        }
-    }
-}
 
 @Composable
 fun Even() {

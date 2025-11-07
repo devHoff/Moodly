@@ -4,12 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.view.MenuProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import pt.iade.ei.firstapp.activities.Tela
-// import pt.iade.ei.firstapp.activities.TelaInicial
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = "home") {
-                       // Tela(navController = navController)
+                        Tela(navController = navController)
                     }
 
                     composable(route = "SplashScreen") {
@@ -35,6 +36,15 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+
         }
+    }
+
+    override fun addMenuProvider(
+        provider: MenuProvider,
+        owner: androidx.lifecycle.LifecycleOwner,
+        state: androidx.lifecycle.Lifecycle.State
+    ) {
+        TODO("Not yet implemented")
     }
 }

@@ -1,9 +1,5 @@
 package pt.iade.ei.firstapp.activities
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,16 +7,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Message
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -35,26 +33,107 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import androidx.navigation.NavController
+//import androidx.navigation.NavHostController
 import pt.iade.ei.firstapp.R
-import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
-
 
 
 @Composable
-fun Tela() {
-
+fun Tela(navController: NavController) {
     Scaffold(
         bottomBar = {
             BottomAppBar(
-                containerColor = Color(0xFFFFFFFF),
+                containerColor = Color(0xFF190A1C),
                 modifier = Modifier.height(75.dp)
             ) {
+                Row (
+                    modifier = Modifier.weight(1f),
+                    horizontalArrangement = Arrangement.SpaceAround,
+
+                ){
+
+                    Button(
+                        onClick = {
+
+                        },
+                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+
+
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.oi),
+                            contentDescription = "Logo",
+                            modifier = Modifier
+                                .size(36.dp)
+                        )
+                    }
+
+
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.event),
+                            contentDescription = "Logo",
+                            modifier = Modifier
+                                .size(36.dp)
+                        )
+                    }
+
+                    
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.mood),
+                            contentDescription = "Logo",
+                            modifier = Modifier
+                                .size(36.dp)
+                        )
+                    }
+
+
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent)
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(36.dp),
+                            imageVector = Icons.Default.Message,
+                            contentDescription = "Home",
+                            tint = Color.White)
+                    }
+
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent)
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(36.dp),
+                            imageVector = Icons.Default.Message,
+                            contentDescription = "Home",
+                            tint = Color.White)
+                    }
+
+
+                }
+
 
             }
         }
     ) { padding ->
+
+
+
         Column(
+
+
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF2D004B))
@@ -117,7 +196,7 @@ fun Tela() {
                                 contentColor = Color.White
                             ),
                             modifier = Modifier
-                                .height(310.dp)
+                                .height(300.dp)
                                 .width(350.dp)
                         ) {
                             Box(
@@ -250,8 +329,4 @@ fun Tela() {
 
 }
 
-                        @Preview(showBackground = true)
-@Composable
-fun TelaPreview(){
-    Tela()
-}
+
