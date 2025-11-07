@@ -60,19 +60,6 @@ import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.ui.components.InterestInputCard
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
-class conexao : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            FirstAppTheme {
-                Event()
-            }
-
-        }
-    }
-}
-
 @Composable
 fun Event() {
     var selectedImageUri by remember { mutableStateOf("") }
