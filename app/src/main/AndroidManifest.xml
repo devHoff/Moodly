@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirstApp">
         <activity
+            android:name=".TelaInicial2"
+            android:exported="false"
+            android:label="@string/title_activity_tela_inicial2"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
             android:name=".conexao"
             android:exported="false"
             android:label="@string/title_activity_conexao"

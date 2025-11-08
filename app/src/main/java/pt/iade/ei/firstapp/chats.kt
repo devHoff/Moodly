@@ -42,7 +42,7 @@ fun ChatsScreen(navController: NavController) {
 
     // Lista de exemplo de chats
     val chats = listOf(
-        ChatPreview("1", "Maria Santos", "Então, vais ao hangout hoje?", null),
+        ChatPreview("1", "Delma Silva", "Então, vais ao hangout hoje?", null),
         ChatPreview("2", "Pedro Costa", "Olá tudo bem?", null),
         ChatPreview("3", "Inês Silva", "tu: Boa noite!", null)
     )
