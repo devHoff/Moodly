@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Message
@@ -29,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +46,7 @@ import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 
 @Composable
-fun Tela(navController: NavController) {
+fun Tel(navController: NavController) {
 
     Scaffold(
         bottomBar = {
@@ -169,22 +171,23 @@ fun Tela(navController: NavController) {
 
                         ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.foto),
+                            painter = painterResource(id = R.drawable.kmw),
                             contentDescription = "Foto de perfil",
                             tint = Color.Unspecified,
-                            modifier = Modifier.size(280.dp),
+                            modifier = Modifier.size(280.dp).
+                            clip(RoundedCornerShape(75.dp)),
 
                             )
 
                         Text(
-                            text = "Jhonny Golden",
+                            text = "Kelson Almeida",
                             color = Color.White,
                             fontSize = 25.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Eng.Informática",
+                            text = "Design",
                             color = Color.White,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold
@@ -220,7 +223,7 @@ fun Tela(navController: NavController) {
                                         verticalArrangement = Arrangement.spacedBy((-4).dp)
                                     ) {
                                         Text(
-                                            text = "Stranger Things",
+                                            text = "Manifest",
                                             color = Color.White,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.Bold
@@ -232,7 +235,7 @@ fun Tela(navController: NavController) {
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
-                                            text = "La Casa de Papel",
+                                            text = "O Homem do Futuro",
                                             color = Color.White,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.Bold
@@ -261,19 +264,19 @@ fun Tela(navController: NavController) {
                                         verticalArrangement = Arrangement.spacedBy((-4).dp)
                                     ) {
                                         Text(
-                                            text = "Kelson-Uk",
+                                            text = "Drake-8",
                                             color = Color.White,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
-                                            text = "Lil Baby- We Paid",
+                                            text = "Adele-Hello",
                                             color = Color.White,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
-                                            text = "Não Compensa",
+                                            text = "50CENT We Paid",
                                             color = Color.White,
                                             fontSize = 20.sp,
                                             fontWeight = FontWeight.Bold
@@ -332,9 +335,9 @@ fun Tela(navController: NavController) {
 
 @Preview(showBackground = true)
 @Composable
-fun TelaPreview() {
+fun TelPreview() {
     FirstAppTheme {
         val navController = rememberNavController()
-        Tela(navController = navController)
+        Tel(navController = navController)
     }
 }
