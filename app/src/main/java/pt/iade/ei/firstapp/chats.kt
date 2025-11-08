@@ -144,7 +144,7 @@ fun ChatListItem(chat: ChatPreview, onClick: () -> Unit) {
         }
     }
 }
-
+//kjhhf
 @Preview(showBackground = true, backgroundColor = 0xFF2D004B)
 @Composable
 fun ChatsScreenPreview() {
