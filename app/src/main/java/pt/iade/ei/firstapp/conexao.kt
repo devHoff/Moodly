@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Message
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material3.BottomAppBar
@@ -37,6 +38,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,13 +57,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import pt.iade.ei.firstapp.LoginScreen
 import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.ui.components.InterestInputCard
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 @Composable
-fun Event() {
+fun Conex(navController: NavController) {
     var selectedImageUri by remember { mutableStateOf("") }
     var music by remember { mutableStateOf("") }
     var movies by remember { mutableStateOf("") }
@@ -71,9 +76,84 @@ fun Event() {
     Scaffold(
         bottomBar = {
             BottomAppBar(
-                containerColor = Color(0xFFFFFFFF),
+                containerColor = Color(0xFF190A1C),
                 modifier = Modifier.height(75.dp)
             ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    IconButton(
+                        onClick = {
+                            navController.navigate("eve")
+                        },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White
+                        )
+
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.oi),
+                            contentDescription = "Logo",
+                            modifier = Modifier
+                                .size(36.dp)
+                        )
+
+                    }
+
+                    IconButton(onClick = {
+                        navController.navigate("cone")
+                    }
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.event),
+                            contentDescription = "Logo",
+                            modifier = Modifier
+                                .size(36.dp)
+                        )
+                    }
+
+
+                    IconButton(onClick = {
+                        navController.navigate("home")
+                    }
+
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.mood),
+                            contentDescription = "Logo",
+                            modifier = Modifier
+                                .size(36.dp)
+                        )
+                    }
+
+                    IconButton(onClick = {
+                        navController.navigate("chats")
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Message,
+                            contentDescription = "Mensagens",
+                            tint = Color.White,
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+
+                    IconButton(onClick = {
+                        navController.navigate("profile")
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.AccountBox,
+                            contentDescription = "Perfil",
+                            tint = Color.White,
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+
+                }
+
 
             }
         }
@@ -152,12 +232,19 @@ fun Event() {
             }
         }
     }
-    }
+}
+
+
+
+
 
 
 
 @Preview(showBackground = true)
 @Composable
-fun EventPreview() {
-    Event()
+fun ConexPreview() {
+    FirstAppTheme {
+        val navController = rememberNavController()
+        Conex(navController = navController)
+    }
 }

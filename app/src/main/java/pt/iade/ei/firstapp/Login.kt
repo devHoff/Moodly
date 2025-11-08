@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 
 @Composable
@@ -135,5 +137,13 @@ fun LoginScreen(navController: NavController) {
         // fontSize = 14.sp
         // )
         // }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    FirstAppTheme {
+        val navController = rememberNavController()
+        LoginScreen(navController = navController)
     }
 }

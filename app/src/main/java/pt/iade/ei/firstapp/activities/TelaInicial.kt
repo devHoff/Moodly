@@ -22,6 +22,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,30 +36,36 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import pt.iade.ei.firstapp.LoginScreen
 //import androidx.navigation.NavHostController
 import pt.iade.ei.firstapp.R
+import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 
 @Composable
 fun Tela(navController: NavController) {
+
     Scaffold(
         bottomBar = {
             BottomAppBar(
                 containerColor = Color(0xFF190A1C),
                 modifier = Modifier.height(75.dp)
             ) {
-                Row (
-                    modifier = Modifier.weight(1f),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceAround,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                ){
-
-                    Button(
+                    IconButton(
                         onClick = {
-
+                            navController.navigate("eve")
                         },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White
+                        )
 
                     ) {
                         Image(
@@ -66,13 +74,12 @@ fun Tela(navController: NavController) {
                             modifier = Modifier
                                 .size(36.dp)
                         )
+
                     }
 
-
-                    Button(
-                        onClick = { /*TODO*/ },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent)
+                    IconButton(onClick = {
+                        navController.navigate("cone")
+                    },
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.event),
@@ -82,11 +89,9 @@ fun Tela(navController: NavController) {
                         )
                     }
 
-                    
-                    Button(
-                        onClick = { /*TODO*/ },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent)
+
+                    IconButton(onClick = { /* ação */ }
+
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.mood),
@@ -96,31 +101,27 @@ fun Tela(navController: NavController) {
                         )
                     }
 
-
-                    Button(
-                        onClick = { /*TODO*/ },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent)
-                    ) {
+                    IconButton(onClick = {
+                        navController.navigate("chats")
+                    }) {
                         Icon(
-                            modifier = Modifier.size(36.dp),
                             imageVector = Icons.Default.Message,
-                            contentDescription = "Home",
-                            tint = Color.White)
+                            contentDescription = "Mensagens",
+                            tint = Color.White,
+                            modifier = Modifier.size(30.dp)
+                        )
                     }
 
-                    Button(
-                        onClick = { /*TODO*/ },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent)
-                    ) {
+                    IconButton(onClick = {
+                        navController.navigate("profile")
+                    }) {
                         Icon(
-                            modifier = Modifier.size(36.dp),
-                            imageVector = Icons.Default.Message,
-                            contentDescription = "Home",
-                            tint = Color.White)
+                            imageVector = Icons.Default.AccountBox,
+                            contentDescription = "Perfil",
+                            tint = Color.White,
+                            modifier = Modifier.size(30.dp)
+                        )
                     }
-
 
                 }
 
@@ -196,7 +197,7 @@ fun Tela(navController: NavController) {
                                 contentColor = Color.White
                             ),
                             modifier = Modifier
-                                .height(300.dp)
+                                .height(290.dp)
                                 .width(350.dp)
                         ) {
                             Box(
@@ -213,7 +214,7 @@ fun Tela(navController: NavController) {
                                         painter = painterResource(id = R.drawable.filme),
                                         contentDescription = "Filme",
                                         tint = Color(0xFFFFD600),
-                                        modifier = Modifier.size(64.dp)
+                                        modifier = Modifier.size(50.dp)
                                     )
                                     Column(
                                         verticalArrangement = Arrangement.spacedBy((-4).dp)
@@ -254,7 +255,7 @@ fun Tela(navController: NavController) {
                                         painter = painterResource(id = R.drawable.musica),
                                         contentDescription = "Musica",
                                         tint = Color(0xFFFFD600),
-                                        modifier = Modifier.size(64.dp)
+                                        modifier = Modifier.size(50.dp)
                                     )
                                     Column(
                                         verticalArrangement = Arrangement.spacedBy((-4).dp)
@@ -294,7 +295,7 @@ fun Tela(navController: NavController) {
                                         painter = painterResource(id = R.drawable.jogo),
                                         contentDescription = "Filme",
                                         tint = Color(0xFFFFD600),
-                                        modifier = Modifier.size(64.dp)
+                                        modifier = Modifier.size(50.dp)
                                     )
                                     Column(
                                         verticalArrangement = Arrangement.spacedBy((-4).dp)
@@ -329,4 +330,11 @@ fun Tela(navController: NavController) {
 
 }
 
-
+@Preview(showBackground = true)
+@Composable
+fun TelaPreview() {
+    FirstAppTheme {
+        val navController = rememberNavController()
+        Tela(navController = navController)
+    }
+}
