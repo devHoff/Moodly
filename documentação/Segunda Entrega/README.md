@@ -291,8 +291,6 @@ Mensagens trocadas dentro do grupo do evento (chat coletivo)
 
 ---
 
-## Mockups e Interfaces  
-<img width="186" height="400" alt="Frame 1" src="https://github.com/user-attachments/assets/0877e7e8-7af3-4c9d-9b77-e8036ad5fbbc" /> <img width="186" height="400" alt="Frame 2" src="https://github.com/user-attachments/assets/a01359f8-e740-40fe-b9a4-d385c3126405" /> <img width="186" height="400" alt="Frame 3" src="https://github.com/user-attachments/assets/906aec40-1421-4739-b0e3-34719f70a6e5" /> <img width="186" height="400" alt="Frame 4" src="https://github.com/user-attachments/assets/81c9b3fe-2540-4e37-bc95-74c0523eba77" /> <img width="186" height="400" alt="Frame 5" src="https://github.com/user-attachments/assets/bcc3224e-6ece-4b04-8214-e4c8f5ed8a07" /> <img width="186" height="400" alt="Frame 6" src="https://github.com/user-attachments/assets/5cb317f3-c848-47fc-aa8a-fb84507710cc" />
 
 ## Planificação
 
@@ -301,15 +299,14 @@ https://sharing.clickup.com/90151621011/l/h/6-901516711608-1/d48b485a365500a
 ## Poster
 <img width="186" height="400" alt="Frame 1 (1)" src="https://github.com/user-attachments/assets/bf8fb3de-2057-4767-ae78-b80f8e2b38e4" />
 
-## Powerpoint (em png)
+## Conclusão
+OMoodly surge como uma solução inovadora para facilitar a integração social de calouros universitários, promovendo conexões baseadas em interesses em comum e fortalecendo o sentimento de pertença no ambiente académico.
 
-<img width="4000" height="2250" alt="Apresentação-1" src="https://github.com/user-attachments/assets/884ae999-702e-4817-a8aa-f5f2fea43871" />
-<img width="4000" height="2250" alt="Apresentação-2" src="https://github.com/user-attachments/assets/3c4755d1-134a-4907-a29a-5518b51603fc" />
-<img width="4000" height="2250" alt="Apresentação-3" src="https://github.com/user-attachments/assets/ebd09e0e-48a5-46a3-b737-89fb4c120b2a" />
-<img width="4000" height="2250" alt="Apresentação-4" src="https://github.com/user-attachments/assets/20aea681-56ab-4c5d-bda8-1484eb76c965" />
-<img width="4000" height="2250" alt="Apresentação-5" src="https://github.com/user-attachments/assets/17f0e7dd-12d6-4800-929f-d854b5379e3a" />
-<img width="4000" height="2250" alt="Apresentação-6" src="https://github.com/user-attachments/assets/160584a9-3746-48cd-a997-156d9a5de3ea" />
-<img width="4000" height="2250" alt="Apresentação-7" src="https://github.com/user-attachments/assets/61e21061-239f-4c2d-9b49-484a5e72a470" />
-<img width="4000" height="2250" alt="Apresentação-8" src="https://github.com/user-attachments/assets/3a18ab45-ed02-4c71-bc5e-8c3eef2fef2f" />
+A aplicação demonstra o potencial da tecnologia para melhorar a experiência estudantil, reduzindo a solidão e incentivando a interação entre colegas.
+Futuramente, pretende-se aprimorar o sistema de recomendações, implementar chat em tempo real e expandir as funcionalidades para diferentes instituições e contextos sociais.
+O Moodly não é apenas uma aplicação — é uma ponte entre pessoas.
+
+Cada “match” representa uma nova amizade, uma nova história e uma experiência universitária mais humana.
+O futuro do Moodly é continuar a aproximar estudantes, tornando o início da vida académica uma jornada mais acolhedora e conectada.
 
 
