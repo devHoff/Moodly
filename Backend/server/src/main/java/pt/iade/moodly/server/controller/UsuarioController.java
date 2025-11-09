@@ -41,10 +41,35 @@ public class UsuarioController {
         }
 
         Usuario existing = found.get();
-        if (!existing.getSenha().equals(usuario.getSenha())) {
+        if (!existing.getSenhaHash().equals(usuario.getSenhaHash())) {
             return ResponseEntity.status(401).body("Invalid password");
         }
 
         return ResponseEntity.ok(existing);
     }
+    // 🔹 Get user by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        Optional<Usuario> user = usuarioRepository.findById(id);
+        return user.map(ResponseEntity::ok)
+                   .orElse(ResponseEntity.notFound().build());
+    }
+
+    // 🔹 Update user info
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody Usuario updatedUser) {
+        return usuarioRepository.findById(id).map(user -> {
+            if (updatedUser.getNome() != null)
+                user.setNome(updatedUser.getNome());
+            if (updatedUser.getFotoPerfil() != null)
+                user.setFotoPerfil(updatedUser.getFotoPerfil());
+            if (updatedUser.getSenhaHash() != null && !updatedUser.getSenhaHash().isEmpty())
+                user.setSenhaHash(updatedUser.getSenhaHash()); // hash if needed
+
+            usuarioRepository.save(user);
+            return ResponseEntity.ok(user);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+    
+
 }
