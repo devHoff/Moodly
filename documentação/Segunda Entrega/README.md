@@ -11,6 +11,14 @@ Alguns dias depois, João abre a aba de Conexões e vê que já tem três "conne
 
 Passadas algumas semanas, João já tem um pequeno grupo de amigos através do Moodly. Como todos gostam de cinema, ele decide criar um Hangout para verem juntos a nova estreia de um filme. Na aba de Hangouts, define o evento com data, hora e local, e convida os colegas que já tinha adicionado. Cada convidado recebe o pedido de participação no telemóvel. À medida que vão aceitando, aparecem como confirmados e são automaticamente adicionados a um grupo de chat para organizarem detalhes da ida ao cinema.
 
+## Personas
+
+<img width="1920" height="1080" alt="Manual da persona apresentação" src="https://github.com/user-attachments/assets/24383d5e-da09-47b3-91e5-5abfae72673d" />
+
+<img width="1920" height="1080" alt="Manual da persona apresentação-2" src="https://github.com/user-attachments/assets/367eb629-ee26-4f45-99fd-ad243c082d58" />
+
+
+
 ## Plano de Trabalhos  
 Fase 1 – Planeamento e Pesquisa
 Objetivos:
@@ -142,10 +150,144 @@ Estes requisitos garantem a qualidade, segurança e usabilidade da aplicação:
 
 ---
 
-## Modelo do Domínio (temporario)  
+## Diagrama de Classes 
 
-Deixados para a segunda entrega...
+<img width="868" height="321" alt="MER_Moodly drawio-3" src="https://github.com/user-attachments/assets/22b99901-6d72-45eb-a79e-25a2bffe47dd" />
 
+---
+
+## Dicionário de Dados
+
+### Usuário
+
+Armazena os dados principais de cada utilizador do Moodly.
+
+**Campos** - **Tipos de Dados**
+
+* usuar_id   - int auto_increment primary key;
+* nome       - varchar(100) not null;
+* foto_perfil - varchar(255).
+
+
+Cada usuário pode ter vários interesses, conexões, posts, eventos e convites.
+
+--
+
+### Interesse
+
+Guarda os diferentes interesses possíveis, categorizados por tipo.
+
+**Campos** - **Tipos de Dados**
+
+* interes_id - int auto_increment primary key
+* tipo       - enum('musica','filme','jogo','outro') not null
+* nome       - varchar(150) not null
+
+Relaciona-se com Usuario através da tabela associativa Usuario_Interesse
+
+--
+
+### Usuario_Interesse
+
+Tabela associativa que liga utilizadores aos seus interesses.
+
+**Campos** - **Tipos de Dados**
+* usuar_interes_id - int auto_increment primary key
+* usuar_id   - int not null (foreign key para  Usuario(usuar_id)
+* interes_id - int not null (foreign key para Interesse(interes_id)
+
+-- 
+
+### Estado
+
+Define o estado de pedidos, convites e conexões
+
+**Campos** - **Tipos de Dados**
+* estado_id  - int auto_increment primary key
+* descricao  - enum('pendente','aceite','recusado','bloqueado','espera') not null
+
+Usado tanto em Connections quanto em Invite.
+
+--
+
+### Connections
+
+Representa as conexões entre dois utilizadores (quando ambos se aceitam).
+
+**Campos** - **Tipos de Dados**
+* connect_id - int auto_increment primary key
+* usuar1_id  - int not null (foreign key para Usuario(usuar_id))
+* usuar2_id  - int not null (foreign key para Usuario(usuar_id))
+* data_registo - datetime default current_timestamp
+
+Ligação entre dois utilizadores. Cada conexão pode ter vários estados.
+
+--
+
+### Connection_Estado
+
+Regista o histórico de estados de uma conexão
+
+**Campos** - **Tipos de Dados**
+* connect_estado_id - int auto_increment primary key
+* connect_id - int not null (foreign key para Connections(connect_id))
+* estado_id  - int not null (foreign key para Estado(estado_id))
+* data_registo - datetime default current_timestamp
+
+--
+
+### Post
+
+Mensagens privadas trocadas entre usuários que têm uma conexão.
+
+**Campos** - **Tipos de Dados**
+* post_id    - int auto_increment primary key
+* connect_id - int not null (foreign key para Connections(connect_id))
+* autor_id   - int not null (foreign key para Usuario(usuar_id))
+* conteudo   - text not null
+* data_envio - datetime default current_timestamp
+
+--
+
+### Evento
+
+Eventos criados por utilizadores
+
+**Campos** - **Tipos de Dados**
+* evento_id  - int auto_increment primary key
+* criador_id - int not null (foreign key para Usuario(usuar_id))
+* titulo     - varchar(150) not null
+* descricao  - text
+* local      - varchar(200)
+* data_evento - datetime
+
+--
+
+### Invite
+
+Convites enviados para usuários conectados participarem de um evento
+
+**Campos** - **Tipos de Dados**
+* invite_id  - int auto_increment primary key
+* evento_id  - int not null (foreign key para Evento(evento_id))
+* convidado_id - int not null (foreign key para Usuario(usuar_id)
+* estado_id  - int (foreign key para Estado(estado_id))
+* data_envio - datetime default current_timestamp
+
+O criador do evento é implícito, por isso não é necssário campo "criador_id"
+
+--
+
+### Group_Post
+
+Mensagens trocadas dentro do grupo do evento (chat coletivo)
+
+**Campos** - **Tipos de Dados**
+* group_post_id - int auto_increment primary key
+* evento_id  - int not null (foreign key para Evento(evento_id))
+* autor_id   - int not null (foreign key para Usuario(usuar_id))
+* conteudo   - text not null
+* data_envio - datetime default current_timestamp
 
 ---
 
