@@ -296,7 +296,7 @@ Mensagens trocadas dentro do grupo do evento (chat coletivo)
 
 ## Planificação
 
-https://sharing.clickup.com/90151621011/g/h/2kyq94ck-195/f3fab03e7f271ec
+https://sharing.clickup.com/90151621011/l/h/6-901516711608-1/d48b485a365500a
 
 ## Poster
 <img width="186" height="400" alt="Frame 1 (1)" src="https://github.com/user-attachments/assets/bf8fb3de-2057-4767-ae78-b80f8e2b38e4" />
