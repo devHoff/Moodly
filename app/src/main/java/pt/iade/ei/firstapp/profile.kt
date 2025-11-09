@@ -30,20 +30,19 @@ import coil.compose.AsyncImage
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 
+
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    userName: String = "Nome do Usuário",
-    profileImageUrl: String? = null,
-    connectionsCount: Int = 0,
-    music: String = "",
-    movies: String = "",
-    games: String = "",
-    onEditClick: () -> Unit = {},
-    onSettingsClick: () -> Unit = {}
+    userName: String,
+    profileImageUrl: String?,
+    connectionsCount: Int,
+    music: String,
+    movies: String,
+    games: String,
+    onEditClick: () -> Unit,
+    onSettingsClick: () -> Unit
 ) {
-
-
     Scaffold(
         bottomBar = {
             BottomAppBar(
@@ -55,93 +54,78 @@ fun ProfileScreen(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
                     IconButton(
-                        onClick = {navController.navigate("eve")
-                        },
+                        onClick = { navController.navigate("eve") },
                         colors = IconButtonDefaults.iconButtonColors(
                             containerColor = Color.Transparent,
                             contentColor = Color.White
                         )
-
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.oi),
-                            contentDescription = "Logo",
-                            modifier = Modifier
-                                .size(36.dp)
+                            contentDescription = "Events",
+                            modifier = Modifier.size(36.dp)
                         )
-
                     }
 
-                    IconButton(onClick = {
-                        navController.navigate("cone")
-                    }
+                    IconButton(
+                        onClick = { navController.navigate("cone") }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.event),
-                            contentDescription = "Logo",
-                            modifier = Modifier
-                                .size(36.dp)
+                            contentDescription = "Connections",
+                            modifier = Modifier.size(36.dp)
                         )
                     }
 
-
-                    IconButton(onClick = {
-
-                    }
-
+                    IconButton(
+                        onClick = { /* Home/Mood navigation */ }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.mood),
-                            contentDescription = "Logo",
-                            modifier = Modifier
-                                .size(36.dp)
+                            contentDescription = "Mood",
+                            modifier = Modifier.size(36.dp)
                         )
                     }
 
-                    IconButton(onClick = {
-                        navController.navigate("chats")
-                    }) {
+                    IconButton(
+                        onClick = { navController.navigate("chats") }
+                    ) {
                         Icon(
                             imageVector = Icons.Default.Message,
-                            contentDescription = "Mensagens",
+                            contentDescription = "Messages",
                             tint = Color.White,
                             modifier = Modifier.size(30.dp)
                         )
                     }
 
-                    IconButton(onClick = {
-                        navController.navigate("profile")
-                    }) {
+                    IconButton(
+                        onClick = { navController.navigate("profile") }
+                    ) {
                         Icon(
                             imageVector = Icons.Default.AccountBox,
-                            contentDescription = "Perfil",
+                            contentDescription = "Profile",
                             tint = Color.White,
                             modifier = Modifier.size(30.dp)
                         )
                     }
-
                 }
-
-
             }
         }
-    ) { padding ->
-
+    ) { paddingValues ->
         Column(
-
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF2D004B))
-                .padding(20.dp),
+                .padding(20.dp)
+                .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // 🔹 Top bar (settings left, Moodly icon right)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 6.dp),
+                    .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -150,18 +134,18 @@ fun ProfileScreen(
                         painter = painterResource(id = R.drawable.definicoes),
                         contentDescription = "Settings",
                         tint = Color(0xFFFFD600),
-                        modifier = Modifier.size(65.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
                 Icon(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Moodly Logo",
                     tint = Color.Unspecified,
-                    modifier = Modifier.size(65.dp)
+                    modifier = Modifier.size(36.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             // 🔹 Profile Picture (rectangle)
             Box(
@@ -193,9 +177,9 @@ fun ProfileScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-
+            // 🔹 User name
             Text(
                 text = userName,
                 color = Color.White,
@@ -203,8 +187,9 @@ fun ProfileScreen(
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(1.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
+            // 🔹 Connections
             Text(
                 text = "$connectionsCount Conexões",
                 color = Color(0xFFFFD600),
@@ -212,9 +197,9 @@ fun ProfileScreen(
                 fontWeight = FontWeight.Medium
             )
 
-            Spacer(modifier = Modifier.height(1.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-
+            // 🔹 Interests Section
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -222,68 +207,17 @@ fun ProfileScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Interesses:",
+                    text = "Interesses",
                     color = Color.White,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = "Stranger Things",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Lupin",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "La Casa de Papel",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Manifest",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Lupin",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "O Homem do Futuro",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Kelson-Uk",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Lil Baby- We Paid",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "Não Compensa",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+
                 Spacer(modifier = Modifier.height(12.dp))
 
+                InterestItem(icon = R.drawable.music, label = "Músicas", value = music)
+                InterestItem(icon = R.drawable.movies, label = "Filmes e Séries", value = movies)
+                InterestItem(icon = R.drawable.games, label = "Jogos", value = games)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -304,58 +238,57 @@ fun ProfileScreen(
             }
         }
     }
+}
 
-    @Composable
-    fun InterestItem(icon: Int, label: String, value: String) {
-        Column(modifier = Modifier.padding(vertical = 6.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = icon),
-                    contentDescription = label,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = label,
-                    color = Color(0xFFFFD600),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
-            }
-            if (value.isNotBlank()) {
-                Text(
-                    text = value,
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(start = 32.dp, top = 2.dp)
-                )
-            } else {
-                Text(
-                    text = "Sem preferências definidas",
-                    color = Color.Gray,
-                    fontSize = 13.sp,
-                    modifier = Modifier.padding(start = 32.dp, top = 2.dp)
-                )
-            }
+@Composable
+fun InterestItem(icon: Int, label: String, value: String) {
+    Column(modifier = Modifier.padding(vertical = 6.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = label,
+                tint = Color.Unspecified,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = label,
+                color = Color(0xFFFFD600),
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
+        }
+        if (value.isNotBlank()) {
+            Text(
+                text = value,
+                color = Color.White,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(start = 32.dp, top = 2.dp)
+            )
+        } else {
+            Text(
+                text = "Sem preferências definidas",
+                color = Color.Gray,
+                fontSize = 13.sp,
+                modifier = Modifier.padding(start = 32.dp, top = 2.dp)
+            )
         }
     }
 }
 
-
-@Preview(showBackground = true)
+@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
 @Composable
 fun ProfileScreenPreview() {
-    FirstAppTheme {
-        val navController = rememberNavController()
-        ProfileScreen(navController = navController,
-            userName = "João Silva",
-            profileImageUrl = null,
-            connectionsCount = 14,
-            music = "Drake, Arctic Monkeys, Tame Impala",
-            movies = "Interstellar, Breaking Bad, One Piece",
-            games = "Minecraft, Hollow Knight, Valorant",
-            onEditClick = {},
-            onSettingsClick = {})
-    }
+    val navController = rememberNavController()
+    ProfileScreen(
+        navController = navController,
+        userName = "João Silva",
+        profileImageUrl = null,
+        connectionsCount = 14,
+        music = "Drake, Arctic Monkeys, Tame Impala",
+        movies = "Interstellar, Breaking Bad, One Piece",
+        games = "Minecraft, Hollow Knight, Valorant",
+        onEditClick = {},
+        onSettingsClick = {}
+    )
 }
