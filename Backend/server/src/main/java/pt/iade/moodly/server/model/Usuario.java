@@ -1,6 +1,9 @@
 package pt.iade.moodly.server.model;
 
+import java.util.ArrayList;
+
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Usuario")
@@ -21,6 +24,9 @@ public class Usuario {
     @Column(name = "foto_perfil")
     private String fotoPerfil;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UsuarioInteresse> interesses = new ArrayList<>();
+
     public Usuario() {}
 
     // Getters and Setters
@@ -39,5 +45,7 @@ public class Usuario {
     public String getFotoPerfil() { return fotoPerfil; }
     public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
 
+     public List<UsuarioInteresse> getInteresses() { return interesses; }
+    public void setInteresses(List<UsuarioInteresse> interesses) { this.interesses = interesses; }
     
 }

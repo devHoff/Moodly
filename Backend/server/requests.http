@@ -64,3 +64,16 @@ Content-Type: application/json
   "user1Id": 1,
   "user2Id": 2
 }
+
+PUT http://localhost:8080/api/profile/1
+Content-Type: application/json
+
+{
+  "fotoPerfil": "https://example.com/user1.jpg",
+  "interesses": [
+    { "tipo": "musica", "nome": "Drake" },
+    { "tipo": "filme", "nome": "Interstellar" },
+    { "tipo": "jogo", "nome": "Minecraft" }
+  ]
+}
+
