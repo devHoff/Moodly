@@ -29,9 +29,6 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "SplashScreen"
                     ) {
-                        composable("Login") {
-                            LoginScreen(navController)
-                        }
                         composable("home") {
                             Tela(navController)
                         }
