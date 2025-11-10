@@ -165,7 +165,7 @@ fun Conex(navController: NavController) {
                 .padding(16.dp)
         ) {
             Image(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(Alignment.End),
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
             )

@@ -29,7 +29,7 @@ import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 @Composable
 
 
-fun Splash(navController: NavController) {
+fun SplashScreen(navController: NavController) {
 
 
     LaunchedEffect(Unit) {
@@ -58,7 +58,7 @@ fun Splash(navController: NavController) {
 fun SplashPreview() {
     FirstAppTheme {
         val navController = rememberNavController()
-        Splash(navController = navController)
+        SplashScreen(navController = navController)
     }
 }
 

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.core.view.MenuProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -24,18 +24,42 @@ class MainActivity : ComponentActivity() {
                     color = androidx.compose.ui.graphics.Color.White
                 ) {
                     val navController = rememberNavController()
+
                     NavHost(
                         navController = navController,
                         startDestination = "SplashScreen"
                     ) {
-                        composable("Login") { LoginScreen(navController) }
-                        composable("home") {  Tela(navController)  }
-                        composable("SplashScreen") { Splash(navController) }
-                        //composable("EventMoreDetails") { EventMore(navController) }
-                        composable("profile") { ProfileScreen(navController) }
-                        composable("chats") { ChatsScreen(navController) }
-                        composable("cone") { Conex(navController) }
-                        composable("eve") { Even(navController) }
+                        composable("Login") {
+                            LoginScreen(navController)
+                        }
+                        composable("home") {
+                            Tela(navController)
+                        }
+                        composable("SplashScreen") {
+                            SplashScreen(navController)
+                        }
+                        composable("profile") {
+                            val profileViewModel: ProfileViewModel = viewModel()
+                            ProfileScreen(
+                                navController = navController,
+                                profileViewModel = profileViewModel
+                            )
+                        }
+                        composable("editProfile") {
+                            val profileViewModel: ProfileViewModel = viewModel()
+                            EditProfileScreen(
+                                navController = navController,
+                                profileViewModel = profileViewModel)
+                        }
+                        composable("chats") {
+                            ChatsScreen(navController)
+                        }
+                        composable("cone") {
+                            Conex(navController)
+                        }
+                        composable("eve") {
+                            Even(navController)
+                        }
                     }
                 }
             }

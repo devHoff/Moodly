@@ -1,13 +1,9 @@
 package pt.iade.ei.firstapp
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
@@ -27,21 +23,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
-
 
 
 @Composable
 fun ProfileScreen(
     navController: NavController,
-    userName: String,
-    profileImageUrl: String?,
-    connectionsCount: Int,
-    music: String,
-    movies: String,
-    games: String,
-    onEditClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    profileViewModel: ProfileViewModel
 ) {
     Scaffold(
         bottomBar = {
@@ -129,7 +116,10 @@ fun ProfileScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onSettingsClick) {
+                IconButton(onClick = {
+                    // Navigate to settings
+                    // navController.navigate("settings")
+                }) {
                     Icon(
                         painter = painterResource(id = R.drawable.definicoes),
                         contentDescription = "Settings",
@@ -156,9 +146,9 @@ fun ProfileScreen(
                     .background(Color(0xFF3C0063)),
                 contentAlignment = Alignment.Center
             ) {
-                if (profileImageUrl != null) {
+                if (profileViewModel.profileImageUrl != null) {
                     AsyncImage(
-                        model = profileImageUrl,
+                        model = profileViewModel.profileImageUrl,
                         contentDescription = "User Profile Picture",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -181,7 +171,7 @@ fun ProfileScreen(
 
             // 🔹 User name
             Text(
-                text = userName,
+                text = profileViewModel.userName,
                 color = Color.White,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
@@ -191,7 +181,7 @@ fun ProfileScreen(
 
             // 🔹 Connections
             Text(
-                text = "$connectionsCount Conexões",
+                text = "${profileViewModel.connectionsCount} Conexões",
                 color = Color(0xFFFFD600),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
@@ -215,16 +205,18 @@ fun ProfileScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                InterestItem(icon = R.drawable.music, label = "Músicas", value = music)
-                InterestItem(icon = R.drawable.movies, label = "Filmes e Séries", value = movies)
-                InterestItem(icon = R.drawable.games, label = "Jogos", value = games)
+                InterestItem(icon = R.drawable.music, label = "Músicas", value = profileViewModel.music)
+                InterestItem(icon = R.drawable.movies, label = "Filmes e Séries", value = profileViewModel.movies)
+                InterestItem(icon = R.drawable.games, label = "Jogos", value = profileViewModel.games)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // 🔹 Edit Button
+            // 🔹 Edit Button - Now navigates to edit profile
             Button(
-                onClick = onEditClick,
+                onClick = {
+                    navController.navigate("editProfile")
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -276,19 +268,21 @@ fun InterestItem(icon: Int, label: String, value: String) {
     }
 }
 
+@SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true, backgroundColor = 0xFF2D004B)
 @Composable
 fun ProfileScreenPreview() {
     val navController = rememberNavController()
+    val profileViewModel = ProfileViewModel().apply {
+        userName = "João Silva"
+        connectionsCount = 14
+        music = "Drake, Arctic Monkeys, Tame Impala"
+        movies = "Interstellar, Breaking Bad, One Piece"
+        games = "Minecraft, Hollow Knight, Valorant"
+    }
+
     ProfileScreen(
         navController = navController,
-        userName = "João Silva",
-        profileImageUrl = null,
-        connectionsCount = 14,
-        music = "Drake, Arctic Monkeys, Tame Impala",
-        movies = "Interstellar, Breaking Bad, One Piece",
-        games = "Minecraft, Hollow Knight, Valorant",
-        onEditClick = {},
-        onSettingsClick = {}
+        profileViewModel = profileViewModel
     )
 }
