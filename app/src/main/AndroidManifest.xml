@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirstApp">
         <activity
+            android:name=".SelectInt"
+            android:exported="false"
+            android:label="@string/title_activity_select_int"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
             android:name=".TelaInicial2"
             android:exported="false"
             android:label="@string/title_activity_tela_inicial2"

@@ -112,7 +112,7 @@ fun LoginScreen(navController: NavController,
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Login button
+
         Button(onClick = {
             navController.navigate("home")
         },
@@ -130,12 +130,19 @@ fun LoginScreen(navController: NavController,
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = onSignupClick) {
-            Text(
-                text = "Não tens conta? Inicia sessão aqui",
-                color = Color(0xFFFFD600),
-                fontSize = 14.sp
-            )
+        Button(onClick = {
+            navController.navigate("sign")
+        },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text("Ainda não tens conta?  Clique aqui!", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
     }
 }

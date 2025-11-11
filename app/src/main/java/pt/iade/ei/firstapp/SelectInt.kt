@@ -31,11 +31,11 @@ import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfileScreen(
+fun Select(
     navController: NavController,
     profileViewModel: ProfileViewModel
 ) {
-    var selectedImageUri by remember { mutableStateOf<Uri?>(profileViewModel.profileImageUrl as Uri?) }
+    var selectedImageUri by remember { mutableStateOf(profileViewModel.profileImageUrl?.let { Uri.parse(it) }) }
     var music by remember { mutableStateOf(profileViewModel.music) }
     var movies by remember { mutableStateOf(profileViewModel.movies) }
     var games by remember { mutableStateOf(profileViewModel.games) }
@@ -51,13 +51,13 @@ fun EditProfileScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Editar Perfil",
+                        text = "Interesses",
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "Back",
@@ -71,7 +71,6 @@ fun EditProfileScreen(
             )
         },
         bottomBar = {
-            // Bottom buttons that stay fixed at the bottom
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -85,7 +84,9 @@ fun EditProfileScreen(
                         .padding(16.dp)
                 ) {
                     Button(
-                        onClick = { navController.popBackStack() },
+                        onClick = {
+                           // navController.popBackStack()
+                                  },
                         modifier = Modifier
                             .weight(1f)
                             .height(50.dp),
@@ -95,13 +96,13 @@ fun EditProfileScreen(
                         ),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Cancelar")
+                        Text("Voltar")
                     }
 
                     Button(
                         onClick = {
-                            navController.navigate("profile")
-                            profileViewModel.profileImageUrl = selectedImageUri as String?
+                            navController.navigate("home")
+                            profileViewModel.profileImageUrl = selectedImageUri?.toString()
                             profileViewModel.music = music
                             profileViewModel.movies = movies
                             profileViewModel.games = games
@@ -116,7 +117,7 @@ fun EditProfileScreen(
                         ),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Guardar", fontWeight = FontWeight.Bold)
+                        Text("Registar", fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -128,53 +129,14 @@ fun EditProfileScreen(
                 .background(Color(0xFF2D004B))
                 .padding(16.dp)
                 .padding(paddingValues)
-                .verticalScroll(rememberScrollState()) // Add scrolling
+                .verticalScroll(rememberScrollState())
         ) {
             // Profile Picture Section
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(140.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF3C0063))
-                        .clickable { imagePickerLauncher.launch("image/*") },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (selectedImageUri != null) {
-                        AsyncImage(
-                            model = selectedImageUri,
-                            contentDescription = "Profile Picture",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize().clip(CircleShape)
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(id = R.drawable.camera),
-                            contentDescription = "Pick Image",
-                            tint = Color(0xFFFFD600),
-                            modifier = Modifier.size(64.dp)
-                        )
-                    }
-                }
-
-                Text(
-                    text = "Carregar Foto",
-                    color = Color(0xFFFFD600),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
 
             Spacer(modifier = Modifier.height(32.dp))
 
             // Interest Inputs Section
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
                 InterestInputCard(
                     iconRes = R.drawable.music,
                     label = "Músicas",
@@ -204,7 +166,6 @@ fun EditProfileScreen(
                 )
             }
 
-            // Add extra space at the bottom to account for the fixed buttons
             Spacer(modifier = Modifier.height(80.dp))
         }
     }
@@ -216,19 +177,13 @@ fun InterestInputCard(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
-    placeholder: String
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF3C0063)
-        ),
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF3C0063)),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -252,15 +207,11 @@ fun InterestInputCard(
                 value = value,
                 onValueChange = onValueChange,
                 placeholder = {
-                    Text(
-                        text = placeholder,
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp),
+                    .heightIn(min = 100.dp, max = 150.dp),
                 colors = TextFieldDefaults.colors(
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
@@ -283,11 +234,14 @@ fun InterestInputCard(
 @SuppressLint("ViewModelConstructorInComposable")
 @Preview(showBackground = true, backgroundColor = 0xFF2D004B)
 @Composable
-fun EditProfileScreenPreview() {
+fun SelectPreview() {
     val navController = rememberNavController()
+    //val profileViewModel = ProfileViewModel()
     val profileViewModel = ProfileViewModel()
-    EditProfileScreen(
+    Select(
         navController = navController,
-        profileViewModel = profileViewModel
-    )
+        profileViewModel = profileViewModel)
+
 }
+
+

@@ -26,8 +26,7 @@ import coil.compose.AsyncImage
 
 
 @Composable
-fun ProfileScreen(
-    navController: NavController,
+fun ProfileScreen(navController: NavController,
     profileViewModel: ProfileViewModel
 ) {
     Scaffold(
@@ -212,10 +211,10 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // 🔹 Edit Button - Now navigates to edit profile
+
             Button(
                 onClick = {
-                    navController.navigate("editProfile")
+                    navController.navigate("edit")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -252,6 +251,7 @@ fun InterestItem(icon: Int, label: String, value: String) {
         }
         if (value.isNotBlank()) {
             Text(
+
                 text = value,
                 color = Color.White,
                 fontSize = 14.sp,

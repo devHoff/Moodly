@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,10 +26,15 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
 
-                    NavHost(
-                        navController = navController,
-                        startDestination = "SplashScreen"
-                    ) {
+                    NavHost(navController = navController, startDestination = "SplashScreen") {
+
+                        composable("Login") {
+                            LoginScreen(
+                                navController = navController,
+                                onSignupClick = { navController.navigate("home") }
+                            )
+                        }
+
                         composable("home") {
                             Tela(navController)
                         }
@@ -42,12 +48,7 @@ class MainActivity : ComponentActivity() {
                                 profileViewModel = profileViewModel
                             )
                         }
-                        composable("editProfile") {
-                            val profileViewModel: ProfileViewModel = viewModel()
-                            EditProfileScreen(
-                                navController = navController,
-                                profileViewModel = profileViewModel)
-                        }
+
                         composable("chats") {
                             ChatsScreen(navController)
                         }
@@ -57,6 +58,31 @@ class MainActivity : ComponentActivity() {
                         composable("eve") {
                             Even(navController)
                         }
+                        composable(route= "edit") {
+                            val profileViewModel: ProfileViewModel = viewModel()
+                            EditProfileScreen(
+                                navController = navController,
+                                profileViewModel = profileViewModel
+                            )
+                        }
+
+                        composable("Sign") {
+                            SignupScreen(
+                                navController = navController,
+                                onSignupClick = { _, _, _ -> },
+                                onLoginClick = { navController.navigate("home")}
+
+                            )
+                        }
+
+                        composable(route= "Segui") {
+                            val profileViewModel: ProfileViewModel = viewModel()
+                            Select(
+                                navController = navController,
+                                profileViewModel = profileViewModel
+                            )
+                        }
+
                     }
                 }
             }

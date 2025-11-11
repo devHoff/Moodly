@@ -40,11 +40,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 @Composable
-fun SignupScreen(
-    onSignupClick: (name: String, email: String, password: String) -> Unit,
-    onLoginClick: () -> Unit
+fun SignupScreen(   navController: NavController,
+                 onSignupClick: (name: String, email: String, password: String) -> Unit,
+                 onLoginClick: () -> Unit
 ) {
     val name = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
@@ -128,9 +130,10 @@ fun SignupScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Botão de registro
+
         Button(
             onClick = {
+                navController.navigate("Segui")
                 if (password.value == confirmPassword.value) {
                     onSignupClick(name.value, email.value, password.value)
                 }
@@ -144,18 +147,26 @@ fun SignupScreen(
             ),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text("Registar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text("Seguinte", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Ir para login
-        TextButton(onClick = onLoginClick) {
-            Text(
-                text = "Já tens conta? Inicia sessão aqui",
-                color = Color(0xFFFFD600),
-                fontSize = 14.sp
-            )
+
+        Button(
+            onClick = {
+                navController.navigate("Login")
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text("Ja tens conta? Clique para iniciar sesão", fontSize = 16.sp)
         }
     }
 }
@@ -174,8 +185,16 @@ fun textFieldColors() = TextFieldDefaults.colors(
     unfocusedTextColor = Color.White
 )
 
-@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
+
+@Preview(showBackground = true)
 @Composable
 fun SignupScreenPreview() {
-    SignupScreen(onSignupClick = { _, _, _ -> }, onLoginClick = {})
+    FirstAppTheme {
+        val navController = rememberNavController()
+        SignupScreen(
+            navController = navController,
+            onSignupClick = { _, _, _ -> },
+            onLoginClick = {}
+        )
+    }
 }
