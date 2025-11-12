@@ -19,31 +19,60 @@ public class AuthController {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // 🟢 SIGNUP
-    @PostMapping("/signup")
-    public String signup(@RequestBody Usuario user) {
-        if (usuarioRepository.findByEmail(user.getEmail()).isPresent()) {
-            return "Email já registado!";
-        }
-
-        user.setSenhaHash(passwordEncoder.encode(user.getSenhaHash()));
-        usuarioRepository.save(user);
-        return "Conta criada com sucesso!";
+    public static class AuthRequest {
+        public String nome;     // only for signup
+        public String email;
+        public String password; // plain
     }
 
-    // 🔵 LOGIN
-    @PostMapping("/login")
-    public String login(@RequestBody Usuario user) {
-        Optional<Usuario> foundUser = usuarioRepository.findByEmail(user.getEmail());
-        if (foundUser.isEmpty()) {
-            return "Email não encontrado!";
-        }
+    public static class AuthResponse {
+        public boolean ok;
+        public String message;
+        public Long userId;
+        public String nome;
+        public String email;
+        public String fotoPerfil;
 
-        if (passwordEncoder.matches(user.getSenhaHash(), foundUser.get().getSenhaHash())) {
-            return "Login bem-sucedido!";
-        } else {
-            return "Senha incorreta!";
+        public static AuthResponse of(boolean ok, String msg, Usuario u) {
+            AuthResponse r = new AuthResponse();
+            r.ok = ok;
+            r.message = msg;
+            if (u != null) {
+                r.userId = u.getId();
+                r.nome = u.getNome();
+                r.email = u.getEmail();
+                r.fotoPerfil = u.getFotoPerfil();
+            }
+            return r;
         }
+    }
+
+    @PostMapping("/signup")
+    public AuthResponse signup(@RequestBody AuthRequest req) {
+        if (req.email == null || req.password == null || req.nome == null) {
+            return AuthResponse.of(false, "Dados incompletos", null);
+        }
+        if (usuarioRepository.findByEmail(req.email).isPresent()) {
+            return AuthResponse.of(false, "Email já registado", null);
+        }
+        Usuario u = new Usuario();
+        u.setNome(req.nome);
+        u.setEmail(req.email);
+        u.setSenhaHash(passwordEncoder.encode(req.password));
+        usuarioRepository.save(u);
+        return AuthResponse.of(true, "Conta criada com sucesso", u);
+    }
+
+    @PostMapping("/login")
+    public AuthResponse login(@RequestBody AuthRequest req) {
+        Optional<Usuario> found = usuarioRepository.findByEmail(req.email);
+        if (found.isEmpty()) {
+            return AuthResponse.of(false, "Email não encontrado", null);
+        }
+        Usuario u = found.get();
+        if (!passwordEncoder.matches(req.password, u.getSenhaHash())) {
+            return AuthResponse.of(false, "Senha incorreta", null);
+        }
+        return AuthResponse.of(true, "Login bem-sucedido", u);
     }
 }
-
