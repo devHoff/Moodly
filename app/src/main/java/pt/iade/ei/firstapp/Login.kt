@@ -1,44 +1,30 @@
 package pt.iade.ei.firstapp
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-
+import pt.iade.ei.firstapp.ui.auth.AuthViewModel
 
 @Composable
-fun LoginScreen(navController: NavController,
-                onSignupClick: () -> Unit
+fun LoginScreen(
+    navController: NavController,
+    authViewModel: AuthViewModel,            // ✅ receive shared VM
+    onSignupClick: () -> Unit
 ) {
-    val email = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    val loading by authViewModel.loading.collectAsState()
+    val error by authViewModel.error.collectAsState()
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -48,16 +34,6 @@ fun LoginScreen(navController: NavController,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Logo
-        Icon(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Moodly Logo",
-            tint = Color.Unspecified,
-            modifier = Modifier.size(80.dp)
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
         Text(
             text = "Bem-vindo ao Moodly 👋",
             color = Color.White,
@@ -65,57 +41,56 @@ fun LoginScreen(navController: NavController,
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-        // Email input
-        TextField(
-            value = email.value,
-            onValueChange = { email.value = it },
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
             label = { Text("Email") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                cursorColor = Color(0xFFFFD600),
-                focusedIndicatorColor = Color(0xFFFFD600),
-                unfocusedIndicatorColor = Color.Gray,
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
                 focusedLabelColor = Color.White,
                 unfocusedLabelColor = Color.LightGray,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White
+                cursorColor = Color(0xFFFFD600),
+                focusedIndicatorColor = Color(0xFFFFD600)
             )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Password input
-        TextField(
-            value = password.value,
-            onValueChange = { password.value = it },
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
             label = { Text("Senha") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                cursorColor = Color(0xFFFFD600),
-                focusedIndicatorColor = Color(0xFFFFD600),
-                unfocusedIndicatorColor = Color.Gray,
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
                 focusedLabelColor = Color.White,
                 unfocusedLabelColor = Color.LightGray,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White
+                cursorColor = Color(0xFFFFD600),
+                focusedIndicatorColor = Color(0xFFFFD600)
             )
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        if (error != null) {
+            Text(text = error ?: "", color = Color.Red, modifier = Modifier.fillMaxWidth())
+            Spacer(Modifier.height(8.dp))
+        }
 
-        Button(onClick = {
-            navController.navigate("home")
-        },
+        Button(
+            onClick = {
+                // Do NOT navigate here. Setting session flips the gate in MainActivity.
+                authViewModel.login(email, password) { /* no-op */ }
+            },
+            enabled = !loading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -123,37 +98,18 @@ fun LoginScreen(navController: NavController,
                 containerColor = Color(0xFFFFD600),
                 contentColor = Color.Black
             ),
-            shape = RoundedCornerShape(12.dp)
+            shape = MaterialTheme.shapes.medium
         ) {
-            Text("Entrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(if (loading) "Entrando..." else "Entrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
-            navController.navigate("sign")
-        },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = Color.White
-            ),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Text("Ainda não tens conta?  Clique aqui!", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+        TextButton(onClick = onSignupClick) {
+            Text("Não tens conta? Cria uma aqui!", color = Color.White, fontSize = 16.sp)
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    FirstAppTheme {
-        val navController = rememberNavController()
-        LoginScreen(
-            navController = navController,
-            onSignupClick = {}
-        )
-    }
-}
+
+
+
