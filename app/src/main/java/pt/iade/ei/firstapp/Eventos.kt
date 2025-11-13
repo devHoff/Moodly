@@ -151,81 +151,100 @@ fun Even(navController: NavController) {
                 .background(Color(0xFF2D004B)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // LOGO
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo"
+                contentDescription = "Logo",
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .size(120.dp)
             )
 
+            // TÍTULO
             Text(
-                modifier = Modifier.padding(top = 20.dp),
                 text = "Eventos",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                fontSize = 26.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = Color.White,
+                modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
             )
 
-            Column {
-                for (i in 1..4) {
-                    Spacer(modifier = Modifier.height(16.dp))
+            // LISTA DE EVENTOS
+            Column(
+                verticalArrangement = Arrangement.spacedBy(18.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+            ) {
+                repeat(4) {
                     Card(
                         colors = CardDefaults.cardColors(
                             containerColor = Color(0xFF3C0063),
                             contentColor = Color.White
                         ),
+                        elevation = CardDefaults.cardElevation(8.dp),
+                        shape = RoundedCornerShape(20.dp),
                         modifier = Modifier
-                            .height(130.dp)
-                            .width(400.dp)
-                            .align(Alignment.CenterHorizontally),
-                        shape = RoundedCornerShape(25.dp),
+                            .fillMaxWidth()
+                            .height(100.dp)
                     ) {
-                        Row(modifier = Modifier.padding(horizontal = 7.dp, vertical = 8.dp)) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // FOTO / ÍCONE DE PERFIL
                             Icon(
                                 imageVector = Icons.Filled.AccountCircle,
                                 contentDescription = "Foto de perfil",
-                                tint = Color.White,
+                                tint = Color(0xFFFFD600),
                                 modifier = Modifier.size(64.dp)
                             )
 
-                            Column {
+                            Spacer(modifier = Modifier.width(12.dp))
+
+                            // TEXTOS
+                            Column(
+                                modifier = Modifier.weight(1f)
+                            ) {
 
                                 Row (
 
                                 ){
                                     Text(
-                                        modifier = Modifier.padding(top = 20.dp),
                                         text = "Organizador : ",
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight.Bold
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Color(0xFFFFD600)
                                     )
 
                                     Text(
-                                        modifier = Modifier.padding(top = 20.dp),
                                         text = "Dickson",
-                                        fontSize = 15.sp,
+                                        fontSize = 18.sp,
                                         fontWeight = FontWeight.Bold
                                     )
                                 }
 
-                                Box {
 
-                                    Button(
-                                        onClick = {
+                                Spacer(modifier = Modifier.height(8.dp))
 
-                                        },colors = ButtonDefaults.buttonColors(
-                                            containerColor = Color.Transparent)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.ControlPoint,
-                                            contentDescription = "Ícone de mensagem",
-                                            tint = Color(0xFFFFD600),
-                                            modifier = Modifier.size(45.dp).offset(x = (-15).dp)
-                                        )
-                                    }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ControlPoint,
+                                        contentDescription = "Detalhes",
+                                        tint = Color(0xFFFFD600),
+                                        modifier = Modifier
+                                            .size(35.dp)
+                                            .padding(end = 4.dp)
+                                    )
+
                                     Text(
-                                        modifier = Modifier.padding(start = 50.dp, top = 21.dp),
                                         text = "Mais detalhes",
-                                        fontSize = 19.sp,
-                                        fontWeight = FontWeight.Bold
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Medium
                                     )
                                 }
                             }
@@ -234,8 +253,10 @@ fun Even(navController: NavController) {
                 }
             }
         }
+
     }
-}
+    }
+
 
 
 

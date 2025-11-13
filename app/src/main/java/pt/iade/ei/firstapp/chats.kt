@@ -28,7 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import pt.iade.ei.firstapp.activities.Even
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
-import pt.iade.ei.firstapp.ui.theme.ui.theme.Chats
+//import pt.iade.ei.firstapp.ui.theme.ui.theme.Chats
 
 data class ChatPreview(
     val id: String,

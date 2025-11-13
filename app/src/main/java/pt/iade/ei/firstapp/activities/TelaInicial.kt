@@ -140,13 +140,15 @@ fun Tela(navController: NavController) {
                 .background(Color(0xFF2D004B))
                 .padding(16.dp)
         ) {
-            // Logo no topo
-            Image(
-                modifier = Modifier.align(Alignment.End),
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Logo",
-            )
 
+
+            Icon(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Moodly Logo",
+                tint = Color.Unspecified,
+                modifier = Modifier.size(50.dp).align(Alignment.End)
+            )
+            Spacer(modifier = Modifier.height(30.dp))
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,

@@ -1,5 +1,7 @@
 package pt.iade.ei.firstapp
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -7,17 +9,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import pt.iade.ei.firstapp.ui.auth.AuthViewModel
+import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    authViewModel: AuthViewModel,            // ✅ receive shared VM
+    authViewModel: AuthViewModel,
     onSignupClick: () -> Unit
 ) {
     val loading by authViewModel.loading.collectAsState()
@@ -34,6 +40,10 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
+        Image(painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Logo",
+            modifier = Modifier.size(120.dp))
         Text(
             text = "Bem-vindo ao Moodly 👋",
             color = Color.White,
@@ -50,14 +60,18 @@ fun LoginScreen(
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                cursorColor = Color(0xFFFFD600),
+                focusedIndicatorColor = Color(0xFFFFD600),
+                unfocusedIndicatorColor = Color.Gray,
                 focusedLabelColor = Color.White,
                 unfocusedLabelColor = Color.LightGray,
-                cursorColor = Color(0xFFFFD600),
-                focusedIndicatorColor = Color(0xFFFFD600)
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White
             )
-        )
+            )
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -69,12 +83,15 @@ fun LoginScreen(
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                cursorColor = Color(0xFFFFD600),
+                focusedIndicatorColor = Color(0xFFFFD600),
+                unfocusedIndicatorColor = Color.Gray,
                 focusedLabelColor = Color.White,
                 unfocusedLabelColor = Color.LightGray,
-                cursorColor = Color(0xFFFFD600),
-                focusedIndicatorColor = Color(0xFFFFD600)
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White
             )
         )
 
@@ -111,5 +128,18 @@ fun LoginScreen(
     }
 }
 
-
+@SuppressLint("ViewModelConstructorInComposable")
+@Preview(showBackground = true)
+@Composable
+fun LoginScreenPreview() {
+    FirstAppTheme {
+        val navController = rememberNavController()
+        val fakeAuthViewModel = AuthViewModel() // <- precisa de ser o certo
+        LoginScreen(
+            navController = navController,
+            authViewModel = fakeAuthViewModel,
+            onSignupClick = {}
+        )
+    }
+}
 

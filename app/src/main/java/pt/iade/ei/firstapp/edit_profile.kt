@@ -225,12 +225,18 @@ fun InterestInputCard(
             OutlinedTextField(
                 value = value,
                 onValueChange = onValueChange,
-                placeholder = { Text(text = placeholder, color = Color.Gray, fontSize = 14.sp) },
+                placeholder = { Text(text = placeholder, color = Color.White, fontSize = 14.sp) },
                 modifier = Modifier.fillMaxWidth().height(100.dp),
                 colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    cursorColor = Color(0xFFFFD600),
+                    focusedIndicatorColor = Color(0xFFFFD600),
+                    unfocusedIndicatorColor = Color.Gray,
+                    focusedLabelColor = Color.White,
+                    unfocusedLabelColor = Color.LightGray,
                     focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    cursorColor = Color(0xFFFFD600)
+                    unfocusedTextColor = Color.White
                 ),
                 shape = RoundedCornerShape(8.dp),
                 singleLine = false,

@@ -3,13 +3,14 @@ package pt.iade.ei.firstapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.*
+import pt.iade.ei.firstapp.activities.Conex
+import pt.iade.ei.firstapp.activities.Even
 import pt.iade.ei.firstapp.activities.Tela
 import pt.iade.ei.firstapp.ui.auth.AuthViewModel
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
@@ -24,57 +25,66 @@ class MainActivity : ComponentActivity() {
                 val session = authVm.session.collectAsStateWithLifecycle().value
                 val isAuthenticated = session.userId != null
 
-                if (isAuthenticated) {
-                    AppNav(navController = navController, authVm = authVm)
-                } else {
-                    AuthNav(navController = navController, authVm = authVm)
+                // Observa autenticação e redireciona automaticamente
+                LaunchedEffect(isAuthenticated) {
+                    if (isAuthenticated)
+                        navController.navigate("home") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    else
+                        navController.navigate("login") {
+                            popUpTo("home") { inclusive = true }
+                        }
                 }
+
+                AppNavigation(navController, authVm)
             }
         }
     }
 }
 
-/** Auth graph */
 @Composable
-private fun AuthNav(
-    navController: NavHostController,
-    authVm: AuthViewModel
-) {
-    NavHost(navController = navController, startDestination = "Login") {
-        composable("Login") {
+fun AppNavigation(navController: NavHostController, authVm: AuthViewModel) {
+    val session = authVm.session.collectAsStateWithLifecycle().value
+    val userId = session.userId ?: 0L
+
+    NavHost(navController, startDestination = "login") {
+
+        // --- Autenticação ---
+        composable("login") {
             LoginScreen(
                 navController = navController,
                 authViewModel = authVm,
-                onSignupClick = { navController.navigate("Sign") }
+                onSignupClick = { navController.navigate("signup") }
             )
         }
-        composable("Sign") {
-            SignupScreen(
-                navController = navController,
-                authViewModel = authVm
-            )
+        composable("signup") {
+            SignupScreen(navController = navController, authViewModel = authVm,)
         }
-    }
-}
 
-/** App graph */
-@Composable
-private fun AppNav(
-    navController: NavHostController,
-    authVm: AuthViewModel
-) {
-    val session = authVm.session.collectAsStateWithLifecycle().value
-    val userId = session.userId ?: 0L  // App graph only shows when logged in, so userId should exist
 
-    NavHost(navController = navController, startDestination = "home") {
         composable("home") { Tela(navController) }
-        composable("profile") { ProfileScreen(navController = navController) }
+
+        composable("profile") {
+            val profileViewModel: ProfileViewModel = viewModel()
+            ProfileScreen(navController = navController, profileViewModel = profileViewModel)
+        }
+
         composable("edit") {
             EditProfileScreen(
-                userId = userId,                               // ✅ pass userId to persist
+                userId = userId,
                 onCancel = { navController.popBackStack() },
-                onSaved  = { navController.navigate("profile") }
+                onSaved = { navController.navigate("profile") }
             )
         }
+
+        composable("cone") {
+            Conex(navController)
+        }
+
+
+        composable("chats") { ChatsScreen(navController) }
+
+        composable("eve") { Even(navController) }
     }
 }
