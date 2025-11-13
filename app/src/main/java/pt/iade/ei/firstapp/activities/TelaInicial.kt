@@ -141,7 +141,7 @@ fun Tela(navController: NavController) {
                 .padding(16.dp)
         ) {
 
-
+            Spacer(modifier = Modifier.height(30.dp))
             Icon(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Moodly Logo",

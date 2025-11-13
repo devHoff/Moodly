@@ -65,7 +65,8 @@ package pt.iade.ei.firstapp
                                 }
 
                                 IconButton(
-                                    onClick = { /* Home/Mood navigation */ }
+                                    onClick = {   navController.navigate("home")
+                                    }
                                 ) {
                                     Image(
                                         painter = painterResource(id = R.drawable.mood),
