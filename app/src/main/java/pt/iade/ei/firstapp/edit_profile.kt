@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
-    userId: Long,                                   // ✅ required to persist
+    userId: Long,
     profileViewModel: ProfileViewModel = viewModel(),
     onCancel: () -> Unit,
     onSaved: () -> Unit

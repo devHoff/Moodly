@@ -31,8 +31,7 @@ import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Select(
-    navController: NavController,
+fun Select(navController: NavController,
     profileViewModel: ProfileViewModel
 ) {
     var selectedImageUri by remember { mutableStateOf(profileViewModel.profileImageUrl?.let { Uri.parse(it) }) }
@@ -101,7 +100,7 @@ fun Select(
 
                     Button(
                         onClick = {
-                            navController.navigate("home")
+                            navController.navigate("Pic")
                             profileViewModel.profileImageUrl = selectedImageUri?.toString()
                             profileViewModel.music = music
                             profileViewModel.movies = movies
@@ -117,7 +116,7 @@ fun Select(
                         ),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Registar", fontWeight = FontWeight.Bold)
+                        Text("Seguinte", fontWeight = FontWeight.Bold)
                     }
                 }
             }

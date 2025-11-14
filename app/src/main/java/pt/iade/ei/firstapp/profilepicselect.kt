@@ -21,11 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 
 
 @Composable
-fun ProfilePicSelectionScreen(
+fun ProfilePicSelectionScreen(navController: NavController,
     onNextClick: (Uri?) -> Unit,
     onSkipClick: () -> Unit
 ) {
@@ -95,7 +96,11 @@ fun ProfilePicSelectionScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { onNextClick(selectedImageUri) },
+            onClick = {
+
+                onNextClick
+                (selectedImageUri)
+                      },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -105,7 +110,7 @@ fun ProfilePicSelectionScreen(
             ),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text("Continuar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text("Registar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -120,11 +125,4 @@ fun ProfilePicSelectionScreen(
     }
 }
 
-@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
-@Composable
-fun ProfilePicSelectionScreenPreview() {
-    ProfilePicSelectionScreen(
-        onNextClick = {},
-        onSkipClick = {}
-    )
-}
+

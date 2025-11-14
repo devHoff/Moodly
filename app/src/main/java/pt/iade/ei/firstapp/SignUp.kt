@@ -103,13 +103,17 @@ fun SignupScreen(
             Spacer(Modifier.height(8.dp))
         }
 
+
+
         Button(
-            onClick = { authViewModel.signup(nome, email, password) { /* AuthGate flips */ } },
+            onClick = {
+                navController.navigate("intToPic")
+                authViewModel.signup(nome, email, password) { /* AuthGate flips */ } },
             enabled = !loading,
             modifier = Modifier.fillMaxWidth().height(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFD600), contentColor = Color.Black)
         ) {
-            Text(if (loading) "A criar..." else "Criar conta", fontWeight = FontWeight.Bold)
+            Text(if (loading) "A criar..." else "Seguinte", fontWeight = FontWeight.Bold)
         }
 
         Spacer(Modifier.height(8.dp))

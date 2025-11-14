@@ -104,7 +104,6 @@ fun LoginScreen(
 
         Button(
             onClick = {
-                // Do NOT navigate here. Setting session flips the gate in MainActivity.
                 authViewModel.login(email, password) { /* no-op */ }
             },
             enabled = !loading,

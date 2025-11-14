@@ -26,16 +26,7 @@ class MainActivity : ComponentActivity() {
                 val isAuthenticated = session.userId != null
 
                 // Observa autenticação e redireciona automaticamente
-                LaunchedEffect(isAuthenticated) {
-                    if (isAuthenticated)
-                        navController.navigate("home") {
-                            popUpTo("login") { inclusive = true }
-                        }
-                    else
-                        navController.navigate("login") {
-                            popUpTo("home") { inclusive = true }
-                        }
-                }
+
 
                 AppNavigation(navController, authVm)
             }
@@ -86,5 +77,22 @@ fun AppNavigation(navController: NavHostController, authVm: AuthViewModel) {
         composable("chats") { ChatsScreen(navController) }
 
         composable("eve") { Even(navController) }
+        composable("IntToPic") {
+            val profileViewModel: ProfileViewModel = viewModel()
+            Select(navController = navController, profileViewModel = profileViewModel)
+        }
+        composable("Pic") {
+            ProfilePicSelectionScreen(
+                navController = navController,
+                onNextClick = { uri ->
+                    navController.navigate("home")
+                },
+                onSkipClick = {
+                    navController.navigate("home")
+                }
+            )
+        }
+
+
     }
 }
