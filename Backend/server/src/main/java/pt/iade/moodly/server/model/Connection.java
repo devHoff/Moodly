@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "connections")
+@Table(name = "Connections")
 public class Connection {
 
     @Id
@@ -13,10 +13,10 @@ public class Connection {
     private Long id;
 
     @Column(name = "usuar1_id", nullable = false)
-    private Long user1Id;
+    private Long user1Id; // quem enviou o pedido inicialmente
 
     @Column(name = "usuar2_id", nullable = false)
-    private Long user2Id;
+    private Long user2Id; // quem recebeu o pedido inicialmente
 
     @Column(name = "data_criacao", nullable = false)
     private LocalDateTime dataCriacao = LocalDateTime.now();
@@ -57,4 +57,3 @@ public class Connection {
         this.dataCriacao = dataCriacao;
     }
 }
-
