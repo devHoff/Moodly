@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import pt.iade.ei.firstapp.FeedScreen
 import pt.iade.ei.firstapp.LoginScreen
 //import androidx.navigation.NavHostController
 import pt.iade.ei.firstapp.R
@@ -130,206 +131,15 @@ fun Tela(navController: NavController) {
         }
     ) { padding ->
 
-
-
-        Column(
-
-
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF2D004B))
-                .padding(16.dp)
+                .padding(padding)
         ) {
-
-            Spacer(modifier = Modifier.height(30.dp))
-            Icon(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Moodly Logo",
-                tint = Color.Unspecified,
-                modifier = Modifier.size(50.dp).align(Alignment.End)
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp) //
-            ) {
-
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFF3C0063),
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier
-                        .height(650.dp)
-                        .width(400.dp)
-                ) {
-                    Column(
-
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-
-                        ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.foto),
-                            contentDescription = "Foto de perfil",
-                            tint = Color.Unspecified,
-                            modifier = Modifier.size(280.dp),
-
-                            )
-
-                        Text(
-                            text = "Jhonny Golden",
-                            color = Color.White,
-                            fontSize = 25.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "Eng.Informática",
-                            color = Color.White,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-
-                        Card(
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color(0xFF190A1C),
-                                contentColor = Color.White
-                            ),
-                            modifier = Modifier
-                                .height(290.dp)
-                                .width(350.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(14.dp)
-                                ) {
-
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.filme),
-                                        contentDescription = "Filme",
-                                        tint = Color(0xFFFFD600),
-                                        modifier = Modifier.size(50.dp)
-                                    )
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy((-4).dp)
-                                    ) {
-                                        Text(
-                                            text = "Stranger Things",
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "Lupin",
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "La Casa de Papel",
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
-                                }
-                            }
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.musica),
-                                        contentDescription = "Musica",
-                                        tint = Color(0xFFFFD600),
-                                        modifier = Modifier.size(50.dp)
-                                    )
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy((-4).dp)
-                                    ) {
-                                        Text(
-                                            text = "Kelson-Uk",
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "Lil Baby- We Paid",
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "Não Compensa",
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
-                                }
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.jogo),
-                                        contentDescription = "Filme",
-                                        tint = Color(0xFFFFD600),
-                                        modifier = Modifier.size(50.dp)
-                                    )
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy((-4).dp)
-                                    ) {
-                                        Text(
-                                            text = "Fortnite",
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "R6",
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = "League of Legends",
-                                            color = Color.White,
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            FeedScreen(navController)
         }
     }
-
 }
 
 @Preview(showBackground = true)

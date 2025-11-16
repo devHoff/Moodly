@@ -39,7 +39,7 @@ fun AppNavigation(navController: NavHostController, authVm: AuthViewModel) {
     val session = authVm.session.collectAsStateWithLifecycle().value
     val userId = session.userId ?: 0L
 
-    NavHost(navController, startDestination = "login") {
+    NavHost(navController, startDestination = "home") {
 
         // --- Autenticação ---
         composable("login") {
@@ -91,6 +91,9 @@ fun AppNavigation(navController: NavHostController, authVm: AuthViewModel) {
                     navController.navigate("home")
                 }
             )
+        }
+        composable("Feed") {
+            FeedScreen(navController)
         }
 
 
