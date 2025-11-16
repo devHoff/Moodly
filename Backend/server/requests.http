@@ -1,79 +1,174 @@
-### 🟢 SIGNUP (create new user)
-POST http://localhost:8080/api/auth/signup
+@baseUrl = http://localhost:8080
+
+######################################################################
+# 1. AUTH – REGISTAR & LOGIN
+######################################################################
+
+### 🟢 SIGNUP (criar conta)
+POST {{baseUrl}}/api/auth/signup
 Content-Type: application/json
 
 {
   "nome": "João Silva",
-  "email": "joao@email.com",
-  "senhaHash": "123456"
+  "email": "joao@example.com",
+  "password": "123456"
 }
 
-### 🔵 LOGIN (check credentials)
-POST http://localhost:8080/api/auth/login
+### 🔵 LOGIN (entrar na conta)
+POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "email": "joao@email.com",
-  "senhaHash": "123456"
+  "email": "joao@example.com",
+  "password": "123456"
 }
 
-### 🟣 GET all users (only this one can be opened in browser)
-GET http://localhost:8080/api/usuarios
+######################################################################
+# 2. PERFIL – BUSCAR E ATUALIZAR (FOTO + INTERESSES)
+######################################################################
 
-### 🟢 Create two users
-POST http://localhost:8080/api/auth/signup
+### 👤 Buscar utilizador por ID
+GET {{baseUrl}}/api/usuarios/1
+
+### ✏️ Atualizar perfil (foto + interesses)
+# Endpoint: ProfileController.updateProfile (UserProfileUpdateRequest)
+PUT {{baseUrl}}/api/profile/1
 Content-Type: application/json
 
 {
-  "nome": "João",
-  "email": "joao@email.com",
-  "senhaHash": "123456"
-}
-
-###
-
-POST http://localhost:8080/api/auth/signup
-Content-Type: application/json
-
-{
-  "nome": "Maria",
-  "email": "maria@email.com",
-  "senhaHash": "123456"
-}
-
-### 🟠 Create a connection (João connects to Maria)
-POST http://localhost:8080/api/connections/request
-Content-Type: application/json
-
-{
-  "user1Id": 1,
-  "user2Id": 2
-}
-
-### 🟣 Get João’s connections
-GET http://localhost:8080/api/connections/1
-
-### 🟣 Get Maria’s connections
-GET http://localhost:8080/api/connections/2
-
-### Create a connection
-POST http://localhost:8080/api/connections/request
-Content-Type: application/json
-
-{
-  "user1Id": 1,
-  "user2Id": 2
-}
-
-PUT http://localhost:8080/api/profile/1
-Content-Type: application/json
-
-{
-  "fotoPerfil": "https://example.com/user1.jpg",
+  "fotoPerfil": "https://meu-cdn.com/fotos/joao.png",
   "interesses": [
-    { "tipo": "musica", "nome": "Drake" },
-    { "tipo": "filme", "nome": "Interstellar" },
-    { "tipo": "jogo", "nome": "Minecraft" }
+    { "tipo": "musica", "nome": "Rock" },
+    { "tipo": "musica", "nome": "Hip-Hop" },
+    { "tipo": "filme",  "nome": "Sci-Fi" },
+    { "tipo": "jogo",   "nome": "League of Legends" }
   ]
 }
 
+######################################################################
+# 3. CONNECTIONS – SWIPE, MATCH, PENDENTES, DISCOVER
+######################################################################
+
+### 🤝 Enviar pedido de conexão (swipe para direita)
+# currentUserId = quem está a fazer swipe
+# targetUserId  = perfil que aparece no “connect”
+POST {{baseUrl}}/api/connections/request
+Content-Type: application/json
+
+{
+  "currentUserId": 1,
+  "targetUserId": 2
+}
+
+### ✅ Responder a um pedido de conexão (aceitar)
+# Só o user2 da Connection pode aceitar/recusar
+# resposta: "aceite" ou "recusado"
+POST {{baseUrl}}/api/connections/10/respond
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "resposta": "aceite"
+}
+
+### ❌ Responder a um pedido de conexão (recusar)
+POST {{baseUrl}}/api/connections/11/respond
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "resposta": "recusado"
+}
+
+### 👥 Listar conexões mútuas (match aceito) para um user
+GET {{baseUrl}}/api/connections/mutual/1
+
+### 📥 Listar pedidos pendentes recebidos (requests que ainda não respondi)
+# Mostra quem enviou pedido para o userId
+GET {{baseUrl}}/api/connections/pending/2
+
+### 🔍 Discover – perfis para dar swipe
+# PRIORIDADE: utilizadores que já enviaram pedido pendente para este user
+# limit = quantos perfis queres trazer
+GET {{baseUrl}}/api/connections/discover/1?limit=20
+
+######################################################################
+# 4. CHATS 1-1 (ENTRE CONEXÕES)
+######################################################################
+
+### 💬 Enviar mensagem num chat 1-1
+# connectionId = ID da Connection com estado "aceite"
+POST {{baseUrl}}/api/chats/connection/10
+Content-Type: application/json
+
+{
+  "autorId": 1,
+  "conteudo": "Hey, tudo bem? 😄"
+}
+
+### 📜 Buscar mensagens de um chat 1-1
+GET {{baseUrl}}/api/chats/connection/10
+
+######################################################################
+# 5. EVENTOS – CRIAR, CONVIDAR, RESPONDER, LISTAR
+######################################################################
+
+### 📅 Criar evento + enviar convites
+POST {{baseUrl}}/api/events
+Content-Type: application/json
+
+{
+  "criadorId": 1,
+  "titulo": "Noite de Jogos",
+  "descricao": "Bora jogar jogos de tabuleiro e consolas",
+  "local": "Casa do João",
+  "dataEvento": "2025-12-20T21:00:00",
+  "convidadosIds": [2, 3, 4]
+}
+
+### 🙋‍♂️ Responder a um convite (aceitar)
+POST {{baseUrl}}/api/events/5/respond
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "resposta": "aceite"
+}
+
+### 🙅‍♀️ Responder a um convite (recusar)
+POST {{baseUrl}}/api/events/5/respond
+Content-Type: application/json
+
+{
+  "userId": 3,
+  "resposta": "recusado"
+}
+
+### 📂 Listar eventos relacionados com o utilizador
+# "criados"  = eventos onde ele é criador
+# "convidado" = eventos onde foi convidado
+GET {{baseUrl}}/api/events/user/1
+
+### 💌 Listar convites de eventos recebidos por um utilizador
+GET {{baseUrl}}/api/events/invites/2
+
+######################################################################
+# 6. GROUP CHAT DE EVENTO
+######################################################################
+
+### 🧑‍🤝‍🧑 Enviar mensagem no group chat de um evento
+# Só o criador ou convidados com convite "aceite" podem enviar
+POST {{baseUrl}}/api/chats/event/5
+Content-Type: application/json
+
+{
+  "autorId": 2,
+  "conteudo": "Que horas começamos mesmo?"
+}
+
+### 📜 Buscar mensagens do group chat de um evento
+GET {{baseUrl}}/api/chats/event/5
+
+### 📋 (Opcional) Listar eventos em que o user participa para a aba de chats
+# Endpoint helper do ChatController
+GET {{baseUrl}}/api/chats/events-for-user/2
