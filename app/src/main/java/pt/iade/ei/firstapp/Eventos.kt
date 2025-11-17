@@ -51,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -94,6 +95,7 @@ fun Even(navController: NavController) {
                         Image(
                             painter = painterResource(id = R.drawable.oi),
                             contentDescription = "Logo",
+                            colorFilter = ColorFilter.tint(Color.Yellow),
                             modifier = Modifier.size(36.dp)
                         )
                     }
@@ -104,6 +106,7 @@ fun Even(navController: NavController) {
                         Image(
                             painter = painterResource(id = R.drawable.event),
                             contentDescription = "Logo",
+
                             modifier = Modifier.size(36.dp)
                         )
                     }

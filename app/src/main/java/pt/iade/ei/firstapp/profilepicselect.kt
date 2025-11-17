@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 
 
@@ -97,9 +98,8 @@ fun ProfilePicSelectionScreen(navController: NavController,
 
         Button(
             onClick = {
-
-                onNextClick
-                (selectedImageUri)
+                navController.navigate("home")
+                onNextClick(selectedImageUri)
                       },
             modifier = Modifier
                 .fillMaxWidth()
@@ -115,7 +115,8 @@ fun ProfilePicSelectionScreen(navController: NavController,
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = onSkipClick) {
+        TextButton(onClick =
+            onSkipClick) {
             Text(
                 text = "Pular por agora",
                 color = Color(0xFFFFD600),
@@ -124,5 +125,18 @@ fun ProfilePicSelectionScreen(navController: NavController,
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun ProfilePicSelectionPreview() {
+    val navController = rememberNavController()
+
+    ProfilePicSelectionScreen(
+        navController = navController,
+        onNextClick = {},
+        onSkipClick = {}
+    )
+}
+
 
 

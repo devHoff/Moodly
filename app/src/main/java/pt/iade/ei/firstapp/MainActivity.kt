@@ -39,9 +39,11 @@ fun AppNavigation(navController: NavHostController, authVm: AuthViewModel) {
     val session = authVm.session.collectAsStateWithLifecycle().value
     val userId = session.userId ?: 0L
 
-    NavHost(navController, startDestination = "home") {
+    // 👉 UM ÚNICO ProfileViewModel partilhado em todas as rotas
+    val profileViewModel: ProfileViewModel = viewModel()
 
-        // --- Autenticação ---
+    NavHost(navController, startDestination = "SplashScreen") {
+
         composable("login") {
             LoginScreen(
                 navController = navController,
@@ -49,16 +51,18 @@ fun AppNavigation(navController: NavHostController, authVm: AuthViewModel) {
                 onSignupClick = { navController.navigate("signup") }
             )
         }
-        composable("signup") {
-            SignupScreen(navController = navController, authViewModel = authVm,)
-        }
 
+        composable("signup") {
+            SignupScreen(navController = navController, authViewModel = authVm)
+        }
 
         composable("home") { Tela(navController) }
 
         composable("profile") {
-            val profileViewModel: ProfileViewModel = viewModel()
-            ProfileScreen(navController = navController, profileViewModel = profileViewModel)
+            ProfileScreen(
+                navController = navController,
+                profileViewModel = profileViewModel
+            )
         }
 
         composable("edit") {
@@ -69,33 +73,31 @@ fun AppNavigation(navController: NavHostController, authVm: AuthViewModel) {
             )
         }
 
-        composable("cone") {
-            Conex(navController)
-        }
-
-
+        composable("cone") { Conex(navController) }
         composable("chats") { ChatsScreen(navController) }
-
         composable("eve") { Even(navController) }
+
         composable("IntToPic") {
-            val profileViewModel: ProfileViewModel = viewModel()
-            Select(navController = navController, profileViewModel = profileViewModel)
+            Select(
+                navController = navController,
+                profileViewModel = profileViewModel
+            )
         }
+
         composable("Pic") {
             ProfilePicSelectionScreen(
                 navController = navController,
                 onNextClick = { uri ->
-                    navController.navigate("home")
+                    profileViewModel.profileImageUrl = uri?.toString()
+                    navController.navigate("profile")   // 👉 vai para a tela de perfil
                 },
                 onSkipClick = {
-                    navController.navigate("home")
+                    navController.navigate("profile")
                 }
             )
         }
-        composable("Feed") {
-            FeedScreen(navController)
-        }
 
-
+        composable("Feed") { FeedScreen(navController) }
+        composable("SplashScreen") { SplashScreen(navController) }
     }
 }

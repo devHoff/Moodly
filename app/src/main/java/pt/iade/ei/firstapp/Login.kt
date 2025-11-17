@@ -103,7 +103,9 @@ fun LoginScreen(
         }
 
         Button(
+
             onClick = {
+                navController.navigate("home")
                 authViewModel.login(email, password) { /* no-op */ }
             },
             enabled = !loading,

@@ -9,6 +9,8 @@ import pt.iade.ei.firstapp.data.repository.ProfileRepository
 
 class ProfileViewModel : ViewModel() {
 
+
+
     private val repo = ProfileRepository()
 
     var userName: String = ""
@@ -54,6 +56,8 @@ class ProfileViewModel : ViewModel() {
         }
     }
 }
+
+
 
 
 

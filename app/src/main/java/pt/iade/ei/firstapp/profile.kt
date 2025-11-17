@@ -92,7 +92,7 @@ package pt.iade.ei.firstapp
                                     Icon(
                                         imageVector = Icons.Default.AccountBox,
                                         contentDescription = "Profile",
-                                        tint = Color.White,
+                                        tint = Color.Yellow,
                                         modifier = Modifier.size(30.dp)
                                     )
                                 }

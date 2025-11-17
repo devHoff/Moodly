@@ -95,7 +95,7 @@ fun ChatsScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Message,
                             contentDescription = "Mensagens",
-                            tint = Color.White,
+                            tint = Color.Yellow,
                             modifier = Modifier.size(30.dp)
                         )
                     }

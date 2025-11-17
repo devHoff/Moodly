@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -97,6 +98,7 @@ fun Tela(navController: NavController) {
                         Image(
                             painter = painterResource(id = R.drawable.mood),
                             contentDescription = "Logo",
+                            colorFilter = ColorFilter.tint(Color.Yellow),
                             modifier = Modifier
                                 .size(36.dp)
                         )
