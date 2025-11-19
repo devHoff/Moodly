@@ -1,11 +1,9 @@
-@baseUrl = http://localhost:8080
-
 ######################################################################
 # 1. AUTH – REGISTAR & LOGIN
 ######################################################################
 
 ### 🟢 SIGNUP (criar conta)
-POST {{baseUrl}}/api/auth/signup
+POST http://localhost:8080/api/auth/signup
 Content-Type: application/json
 
 {
@@ -15,7 +13,7 @@ Content-Type: application/json
 }
 
 ### 🔵 LOGIN (entrar na conta)
-POST {{baseUrl}}/api/auth/login
+POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
@@ -28,11 +26,10 @@ Content-Type: application/json
 ######################################################################
 
 ### 👤 Buscar utilizador por ID
-GET {{baseUrl}}/api/usuarios/1
+GET http://localhost:8080/api/usuarios/1
 
 ### ✏️ Atualizar perfil (foto + interesses)
-# Endpoint: ProfileController.updateProfile (UserProfileUpdateRequest)
-PUT {{baseUrl}}/api/profile/1
+PUT http://localhost:8080/api/profile/1
 Content-Type: application/json
 
 {
@@ -50,9 +47,7 @@ Content-Type: application/json
 ######################################################################
 
 ### 🤝 Enviar pedido de conexão (swipe para direita)
-# currentUserId = quem está a fazer swipe
-# targetUserId  = perfil que aparece no “connect”
-POST {{baseUrl}}/api/connections/request
+POST http://localhost:8080/api/connections/request
 Content-Type: application/json
 
 {
@@ -60,10 +55,8 @@ Content-Type: application/json
   "targetUserId": 2
 }
 
-### ✅ Responder a um pedido de conexão (aceitar)
-# Só o user2 da Connection pode aceitar/recusar
-# resposta: "aceite" ou "recusado"
-POST {{baseUrl}}/api/connections/10/respond
+### ✅ Responder a um pedido (aceitar)
+POST http://localhost:8080/api/connections/1/respond
 Content-Type: application/json
 
 {
@@ -71,8 +64,8 @@ Content-Type: application/json
   "resposta": "aceite"
 }
 
-### ❌ Responder a um pedido de conexão (recusar)
-POST {{baseUrl}}/api/connections/11/respond
+### ❌ Responder a um pedido (recusar)
+POST http://localhost:8080/api/connections/11/respond
 Content-Type: application/json
 
 {
@@ -80,25 +73,21 @@ Content-Type: application/json
   "resposta": "recusado"
 }
 
-### 👥 Listar conexões mútuas (match aceito) para um user
-GET {{baseUrl}}/api/connections/mutual/1
+### 👥 Listar conexões mútuas (estado = aceite)
+GET http://localhost:8080/api/connections/mutual/1
 
-### 📥 Listar pedidos pendentes recebidos (requests que ainda não respondi)
-# Mostra quem enviou pedido para o userId
-GET {{baseUrl}}/api/connections/pending/2
+### 📥 Pedidos pendentes recebidos
+GET http://localhost:8080/api/connections/pending/2
 
-### 🔍 Discover – perfis para dar swipe
-# PRIORIDADE: utilizadores que já enviaram pedido pendente para este user
-# limit = quantos perfis queres trazer
-GET {{baseUrl}}/api/connections/discover/1?limit=20
+### 🔍 Discover – perfis para swipe (prioridade para quem enviou pedido)
+GET http://localhost:8080/api/connections/discover/1?limit=20
 
 ######################################################################
 # 4. CHATS 1-1 (ENTRE CONEXÕES)
 ######################################################################
 
 ### 💬 Enviar mensagem num chat 1-1
-# connectionId = ID da Connection com estado "aceite"
-POST {{baseUrl}}/api/chats/connection/10
+POST http://localhost:8080/api/chats/connection/10
 Content-Type: application/json
 
 {
@@ -106,15 +95,15 @@ Content-Type: application/json
   "conteudo": "Hey, tudo bem? 😄"
 }
 
-### 📜 Buscar mensagens de um chat 1-1
-GET {{baseUrl}}/api/chats/connection/10
+### 📜 Buscar mensagens do chat 1-1
+GET http://localhost:8080/api/chats/connection/10
 
 ######################################################################
 # 5. EVENTOS – CRIAR, CONVIDAR, RESPONDER, LISTAR
 ######################################################################
 
-### 📅 Criar evento + enviar convites
-POST {{baseUrl}}/api/events
+### 📅 Criar evento + convites
+POST http://localhost:8080/api/events
 Content-Type: application/json
 
 {
@@ -126,8 +115,8 @@ Content-Type: application/json
   "convidadosIds": [2, 3, 4]
 }
 
-### 🙋‍♂️ Responder a um convite (aceitar)
-POST {{baseUrl}}/api/events/5/respond
+### 🙋‍♂️ Aceitar convite
+POST http://localhost:8080/api/events/5/respond
 Content-Type: application/json
 
 {
@@ -135,8 +124,8 @@ Content-Type: application/json
   "resposta": "aceite"
 }
 
-### 🙅‍♀️ Responder a um convite (recusar)
-POST {{baseUrl}}/api/events/5/respond
+### 🙅‍♀️ Recusar convite
+POST http://localhost:8080/api/events/5/respond
 Content-Type: application/json
 
 {
@@ -144,21 +133,18 @@ Content-Type: application/json
   "resposta": "recusado"
 }
 
-### 📂 Listar eventos relacionados com o utilizador
-# "criados"  = eventos onde ele é criador
-# "convidado" = eventos onde foi convidado
-GET {{baseUrl}}/api/events/user/1
+### 📂 Listar eventos relacionados ao user
+GET http://localhost:8080/api/events/user/1
 
-### 💌 Listar convites de eventos recebidos por um utilizador
-GET {{baseUrl}}/api/events/invites/2
+### 💌 Listar convites recebidos
+GET http://localhost:8080/api/events/invites/2
 
 ######################################################################
 # 6. GROUP CHAT DE EVENTO
 ######################################################################
 
-### 🧑‍🤝‍🧑 Enviar mensagem no group chat de um evento
-# Só o criador ou convidados com convite "aceite" podem enviar
-POST {{baseUrl}}/api/chats/event/5
+### 🧑‍🤝‍🧑 Enviar mensagem no group chat do evento
+POST http://localhost:8080/api/chats/event/5
 Content-Type: application/json
 
 {
@@ -166,9 +152,8 @@ Content-Type: application/json
   "conteudo": "Que horas começamos mesmo?"
 }
 
-### 📜 Buscar mensagens do group chat de um evento
-GET {{baseUrl}}/api/chats/event/5
+### 📜 Buscar mensagens do group chat
+GET http://localhost:8080/api/chats/event/5
 
-### 📋 (Opcional) Listar eventos em que o user participa para a aba de chats
-# Endpoint helper do ChatController
-GET {{baseUrl}}/api/chats/events-for-user/2
+### 📋 Eventos em que o user participa (para aba de chats)
+GET http://localhost:8080/api/chats/events-for-user/2
