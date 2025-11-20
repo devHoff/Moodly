@@ -1,35 +1,37 @@
 package pt.iade.moodly.server.model;
 
-import java.util.ArrayList;
-
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuario")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "usuar_id")
     private Long id;
 
+    @Column(name = "usuar_nome", nullable = false, length = 100)
     private String nome;
 
-    @Column(unique = true)
+    @Column(name = "usuar_email", nullable = false, unique = true, length = 150)
     private String email;
 
-    @Column(name = "senha_hash")
+    @Column(name = "usuar_senha_hash", nullable = false, length = 255)
     private String senhaHash;
 
-    @Column(name = "foto_perfil")
+    @Column(name = "usuar_foto_perfil", length = 255)
     private String fotoPerfil;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UsuarioInteresse> interesses = new ArrayList<>();
+    public Usuario() {
+    }
 
-    public Usuario() {}
+    public Usuario(String nome, String email, String senhaHash) {
+        this.nome = nome;
+        this.email = email;
+        this.senhaHash = senhaHash;
+    }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -44,8 +46,4 @@ public class Usuario {
 
     public String getFotoPerfil() { return fotoPerfil; }
     public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
-
-     public List<UsuarioInteresse> getInteresses() { return interesses; }
-    public void setInteresses(List<UsuarioInteresse> interesses) { this.interesses = interesses; }
-    
 }

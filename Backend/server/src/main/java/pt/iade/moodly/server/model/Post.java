@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Post")
+@Table(name = "post")
 public class Post {
 
     @Id
@@ -14,17 +14,17 @@ public class Post {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "connect_id", nullable = false)
+    @JoinColumn(name = "post_connect_id", nullable = false)
     private Connection connection;
 
     @ManyToOne
-    @JoinColumn(name = "autor_id", nullable = false)
+    @JoinColumn(name = "post_usuar_id", nullable = false)
     private Usuario autor;
 
-    @Column(name = "conteudo", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "post_conteudo", nullable = false, columnDefinition = "TEXT")
     private String conteudo;
 
-    @Column(name = "data_envio")
+    @Column(name = "post_data_envio")
     private LocalDateTime dataEnvio;
 
     public Post() {}
@@ -36,40 +36,18 @@ public class Post {
         this.dataEnvio = LocalDateTime.now();
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public Connection getConnection() {
-        return connection;
-    }
+    public Connection getConnection() { return connection; }
+    public void setConnection(Connection connection) { this.connection = connection; }
 
-    public void setConnection(Connection connection) {
-        this.connection = connection;
-    }
+    public Usuario getAutor() { return autor; }
+    public void setAutor(Usuario autor) { this.autor = autor; }
 
-    public Usuario getAutor() {
-        return autor;
-    }
+    public String getConteudo() { return conteudo; }
+    public void setConteudo(String conteudo) { this.conteudo = conteudo; }
 
-    public void setAutor(Usuario autor) {
-        this.autor = autor;
-    }
-
-    public String getConteudo() {
-        return conteudo;
-    }
-
-    public void setConteudo(String conteudo) {
-        this.conteudo = conteudo;
-    }
-
-    public LocalDateTime getDataEnvio() {
-        return dataEnvio;
-    }
-
-    public void setDataEnvio(LocalDateTime dataEnvio) {
-        this.dataEnvio = dataEnvio;
-    }
+    public LocalDateTime getDataEnvio() { return dataEnvio; }
+    public void setDataEnvio(LocalDateTime dataEnvio) { this.dataEnvio = dataEnvio; }
 }
 

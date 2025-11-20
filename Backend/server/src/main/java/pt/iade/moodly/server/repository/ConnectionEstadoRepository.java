@@ -14,3 +14,4 @@ public interface ConnectionEstadoRepository extends JpaRepository<ConnectionEsta
     List<ConnectionEstado> findByConnection(Connection connection);
 }
 
+

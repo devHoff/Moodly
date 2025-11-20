@@ -3,7 +3,7 @@ package pt.iade.moodly.server.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import pt.iade.moodly.server.model.Estado;
+import pt.iade.moodly.server.model.EstadoInvite;
 import pt.iade.moodly.server.model.Evento;
 import pt.iade.moodly.server.model.Invite;
 import pt.iade.moodly.server.model.Usuario;
@@ -20,6 +20,7 @@ public interface InviteRepository extends JpaRepository<Invite, Long> {
     Optional<Invite> findByEventoAndConvidado(Evento evento, Usuario convidado);
 
     @Query("SELECT i FROM Invite i WHERE i.convidado = :user AND i.estado = :estado")
-    List<Invite> findByConvidadoAndEstado(@Param("user") Usuario user, @Param("estado") Estado estado);
+    List<Invite> findByConvidadoAndEstado(@Param("user") Usuario user, @Param("estado") EstadoInvite estado);
 }
+
 

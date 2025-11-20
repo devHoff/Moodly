@@ -1,9 +1,16 @@
-######################################################################
-# 1. AUTH – REGISTAR & LOGIN
-######################################################################
+###############################################
+# 0 — BASE URL
+###############################################
+@url = http://localhost:8080
 
-### 🟢 SIGNUP (criar conta)
-POST http://localhost:8080/api/auth/signup
+
+
+###############################################
+# 1 — AUTH
+###############################################
+
+### SIGNUP (creates user)
+POST {{url}}/api/auth/signup
 Content-Type: application/json
 
 {
@@ -12,8 +19,8 @@ Content-Type: application/json
   "password": "123456"
 }
 
-### 🔵 LOGIN (entrar na conta)
-POST http://localhost:8080/api/auth/login
+### LOGIN
+POST {{url}}/api/auth/login
 Content-Type: application/json
 
 {
@@ -21,33 +28,37 @@ Content-Type: application/json
   "password": "123456"
 }
 
-######################################################################
-# 2. PERFIL – BUSCAR E ATUALIZAR (FOTO + INTERESSES)
-######################################################################
 
-### 👤 Buscar utilizador por ID
-GET http://localhost:8080/api/usuarios/1
 
-### ✏️ Atualizar perfil (foto + interesses)
-PUT http://localhost:8080/api/profile/1
+###############################################
+# 2 — PROFILE (update user interests + photo)
+###############################################
+
+### GET PROFILE
+GET {{url}}/api/usuarios/1
+
+
+### UPDATE PROFILE (returns updated DTO)
+PUT {{url}}/api/profile/1
 Content-Type: application/json
 
 {
-  "fotoPerfil": "https://meu-cdn.com/fotos/joao.png",
+  "fotoPerfil": "https://cdn.moodly.app/perfil/joao.png",
   "interesses": [
     { "tipo": "musica", "nome": "Rock" },
-    { "tipo": "musica", "nome": "Hip-Hop" },
     { "tipo": "filme",  "nome": "Sci-Fi" },
-    { "tipo": "jogo",   "nome": "League of Legends" }
+    { "tipo": "jogo",   "nome": "Valorant" }
   ]
 }
 
-######################################################################
-# 3. CONNECTIONS – SWIPE, MATCH, PENDENTES, DISCOVER
-######################################################################
 
-### 🤝 Enviar pedido de conexão (swipe para direita)
-POST http://localhost:8080/api/connections/request
+
+###############################################
+# 3 — CONNECTIONS / MATCH
+###############################################
+
+### SEND CONNECTION REQUEST (swipe right)
+POST {{url}}/api/connections/request
 Content-Type: application/json
 
 {
@@ -55,8 +66,13 @@ Content-Type: application/json
   "targetUserId": 2
 }
 
-### ✅ Responder a um pedido (aceitar)
-POST http://localhost:8080/api/connections/1/respond
+
+### LIST PENDING REQUESTS FOR USER 2
+GET {{url}}/api/connections/pending/2
+
+
+### ACCEPT REQUEST (replace 3 with real connectionId)
+POST {{url}}/api/connections/3/respond
 Content-Type: application/json
 
 {
@@ -64,8 +80,9 @@ Content-Type: application/json
   "resposta": "aceite"
 }
 
-### ❌ Responder a um pedido (recusar)
-POST http://localhost:8080/api/connections/11/respond
+
+### REFUSE REQUEST
+POST {{url}}/api/connections/3/respond
 Content-Type: application/json
 
 {
@@ -73,50 +90,55 @@ Content-Type: application/json
   "resposta": "recusado"
 }
 
-### 👥 Listar conexões mútuas (estado = aceite)
-GET http://localhost:8080/api/connections/mutual/1
 
-### 📥 Pedidos pendentes recebidos
-GET http://localhost:8080/api/connections/pending/2
+### LIST MUTUAL CONNECTIONS FOR USER 1
+GET {{url}}/api/connections/mutual/1
 
-### 🔍 Discover – perfis para swipe (prioridade para quem enviou pedido)
-GET http://localhost:8080/api/connections/discover/1?limit=20
 
-######################################################################
-# 4. CHATS 1-1 (ENTRE CONEXÕES)
-######################################################################
+### DISCOVER USERS (prioritizes users who sent request)
+GET {{url}}/api/connections/discover/1?limit=20
 
-### 💬 Enviar mensagem num chat 1-1
-POST http://localhost:8080/api/chats/connection/10
+
+
+###############################################
+# 4 — DIRECT CHAT (1–1)
+###############################################
+
+### SEND MESSAGE (replace 3 with accepted connectionId)
+POST {{url}}/api/chats/connection/3
 Content-Type: application/json
 
 {
   "autorId": 1,
-  "conteudo": "Hey, tudo bem? 😄"
+  "conteudo": "Olá! 😄 Tudo bem?"
 }
 
-### 📜 Buscar mensagens do chat 1-1
-GET http://localhost:8080/api/chats/connection/10
 
-######################################################################
-# 5. EVENTOS – CRIAR, CONVIDAR, RESPONDER, LISTAR
-######################################################################
+### GET MESSAGES OF A CHAT
+GET {{url}}/api/chats/connection/3
 
-### 📅 Criar evento + convites
-POST http://localhost:8080/api/events
+
+
+###############################################
+# 5 — EVENTS
+###############################################
+
+### CREATE EVENT
+POST {{url}}/api/events
 Content-Type: application/json
 
 {
   "criadorId": 1,
-  "titulo": "Noite de Jogos",
-  "descricao": "Bora jogar jogos de tabuleiro e consolas",
+  "titulo": "Festa de Sábado",
+  "descricao": "Evento com amigos 😎",
   "local": "Casa do João",
-  "dataEvento": "2025-12-20T21:00:00",
-  "convidadosIds": [2, 3, 4]
+  "dataEvento": "2025-12-25T20:00:00",
+  "convidadosIds": [2,3]
 }
 
-### 🙋‍♂️ Aceitar convite
-POST http://localhost:8080/api/events/5/respond
+
+### ACCEPT EVENT INVITE (replace 5 with eventId)
+POST {{url}}/api/events/5/respond
 Content-Type: application/json
 
 {
@@ -124,8 +146,9 @@ Content-Type: application/json
   "resposta": "aceite"
 }
 
-### 🙅‍♀️ Recusar convite
-POST http://localhost:8080/api/events/5/respond
+
+### REFUSE EVENT INVITE
+POST {{url}}/api/events/5/respond
 Content-Type: application/json
 
 {
@@ -133,27 +156,33 @@ Content-Type: application/json
   "resposta": "recusado"
 }
 
-### 📂 Listar eventos relacionados ao user
-GET http://localhost:8080/api/events/user/1
 
-### 💌 Listar convites recebidos
-GET http://localhost:8080/api/events/invites/2
+### LIST EVENTS FOR A USER
+GET {{url}}/api/events/user/1
 
-######################################################################
-# 6. GROUP CHAT DE EVENTO
-######################################################################
 
-### 🧑‍🤝‍🧑 Enviar mensagem no group chat do evento
-POST http://localhost:8080/api/chats/event/5
+### LIST INVITES FOR USER
+GET {{url}}/api/events/invites/2
+
+
+
+###############################################
+# 6 — GROUP CHAT (EVENT)
+###############################################
+
+### SEND MESSAGE TO EVENT CHAT
+POST {{url}}/api/chats/event/5
 Content-Type: application/json
 
 {
   "autorId": 2,
-  "conteudo": "Que horas começamos mesmo?"
+  "conteudo": "A que horas começamos? 😄"
 }
 
-### 📜 Buscar mensagens do group chat
-GET http://localhost:8080/api/chats/event/5
 
-### 📋 Eventos em que o user participa (para aba de chats)
-GET http://localhost:8080/api/chats/events-for-user/2
+### GET GROUP CHAT MESSAGES
+GET {{url}}/api/chats/event/5
+
+
+### (OPTIONAL) EVENTS WHERE USER PARTICIPATES (FOR CHAT LIST)
+GET {{url}}/api/chats/events-for-user/2

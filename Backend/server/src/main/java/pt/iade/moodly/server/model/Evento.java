@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Evento")
+@Table(name = "evento")
 public class Evento {
 
     @Id
@@ -14,65 +14,37 @@ public class Evento {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "criador_id", nullable = false)
+    @JoinColumn(name = "evento_usuar_id", nullable = false)
     private Usuario criador;
 
-    @Column(name = "titulo", nullable = false)
+    @Column(name = "evento_titulo", nullable = false, length = 150)
     private String titulo;
 
-    @Column(name = "descricao", columnDefinition = "TEXT")
+    @Column(name = "evento_descricao", columnDefinition = "TEXT")
     private String descricao;
 
-    @Column(name = "local")
+    @Column(name = "evento_local", length = 200)
     private String local;
 
-    @Column(name = "data_evento")
+    @Column(name = "evento_data")
     private LocalDateTime dataEvento;
 
     public Evento() {}
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public Usuario getCriador() {
-        return criador;
-    }
+    public Usuario getCriador() { return criador; }
+    public void setCriador(Usuario criador) { this.criador = criador; }
 
-    public void setCriador(Usuario criador) {
-        this.criador = criador;
-    }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    public String getTitulo() {
-        return titulo;
-    }
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
+    public String getLocal() { return local; }
+    public void setLocal(String local) { this.local = local; }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getLocal() {
-        return local;
-    }
-
-    public void setLocal(String local) {
-        this.local = local;
-    }
-
-    public LocalDateTime getDataEvento() {
-        return dataEvento;
-    }
-
-    public void setDataEvento(LocalDateTime dataEvento) {
-        this.dataEvento = dataEvento;
-    }
+    public LocalDateTime getDataEvento() { return dataEvento; }
+    public void setDataEvento(LocalDateTime dataEvento) { this.dataEvento = dataEvento; }
 }
-

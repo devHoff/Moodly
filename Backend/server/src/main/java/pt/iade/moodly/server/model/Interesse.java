@@ -1,30 +1,26 @@
 package pt.iade.moodly.server.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Interesse")
+@Table(name = "interesse")
 public class Interesse {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "interes_id")
+    @Column(name = "inter_id")
     private Long id;
 
-    @Column(name = "tipo", nullable = false)
-    private String tipo;
+    @Column(name = "inter_nome", nullable = false, length = 60)
+    private String nome; // tipo: "musica", "filme", "jogo"
 
-    @Column(name = "nome", nullable = false)
-    private String nome;
+    public Interesse() {}
 
-    // Getters/setters
+    public Interesse(String nome) {
+        this.nome = nome;
+    }
+
     public Long getId() { return id; }
-    public String getTipo() { return tipo; }
-    public void setTipo(String tipo) { this.tipo = tipo; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }

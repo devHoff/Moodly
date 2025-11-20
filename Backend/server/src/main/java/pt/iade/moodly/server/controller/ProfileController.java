@@ -1,7 +1,6 @@
 package pt.iade.moodly.server.controller;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.iade.moodly.server.model.*;
@@ -18,27 +17,25 @@ public class ProfileController {
     private final UsuarioRepository usuarioRepo;
     private final UsuarioInteresseRepository usuarioInteresseRepo;
     private final InteresseRepository interesseRepo;
+    private final SubinteresseRepository subinteresseRepo;
 
-    @Autowired
-    public ProfileController(
-            UsuarioRepository usuarioRepo,
-            UsuarioInteresseRepository usuarioInteresseRepo,
-            InteresseRepository interesseRepo
-    ) {
+    public ProfileController(UsuarioRepository usuarioRepo,
+                             UsuarioInteresseRepository usuarioInteresseRepo,
+                             InteresseRepository interesseRepo,
+                             SubinteresseRepository subinteresseRepo) {
         this.usuarioRepo = usuarioRepo;
         this.usuarioInteresseRepo = usuarioInteresseRepo;
         this.interesseRepo = interesseRepo;
+        this.subinteresseRepo = subinteresseRepo;
     }
 
-    // -----------------------------
-    // DTOs
-    // -----------------------------
+    // ---------- DTOs ----------
+
     public static class InterestDTO {
-        private String tipo;
-        private String nome;
+        private String tipo; // categoria: "musica", "filme"
+        private String nome; // subinteresse: "Rock"
 
         public InterestDTO() {}
-
         public InterestDTO(String tipo, String nome) {
             this.tipo = tipo;
             this.nome = nome;
@@ -85,9 +82,8 @@ public class ProfileController {
         public void setInteresses(List<InterestDTO> interesses) { this.interesses = interesses; }
     }
 
-    // -----------------------------
-    // ATUALIZAR PERFIL (200 OK + DTO)
-    // -----------------------------
+    // ---------- UPDATE PROFILE ----------
+
     @PutMapping("/{userId}")
     @Transactional
     public ResponseEntity<UserProfileResponseDTO> updateProfile(
@@ -97,52 +93,53 @@ public class ProfileController {
         Usuario usuario = usuarioRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Atualizar foto
         usuario.setFotoPerfil(request.getFotoPerfil());
 
-        // Remover interesses antigos (ligação usuário-interesse)
+        // apagar ligações antigas
         usuarioInteresseRepo.deleteAllByUsuarioId(userId);
 
-        // Adicionar novos interesses
         if (request.getInteresses() != null) {
-            for (InterestDTO interestDTO : request.getInteresses()) {
-                if (interestDTO.getNome() == null || interestDTO.getNome().isBlank()) continue;
+            for (InterestDTO dto : request.getInteresses()) {
+                if (dto.getNome() == null || dto.getNome().isBlank()
+                        || dto.getTipo() == null || dto.getTipo().isBlank()) {
+                    continue;
+                }
 
-                // Buscar ou criar interesse
-                Interesse interesse = interesseRepo.findByNomeAndTipo(
-                                interestDTO.getNome(),
-                                interestDTO.getTipo()
-                        )
-                        .orElseGet(() -> {
-                            Interesse novo = new Interesse();
-                            novo.setNome(interestDTO.getNome());
-                            novo.setTipo(interestDTO.getTipo());
-                            return interesseRepo.save(novo);
-                        });
+                // tipo -> Interesse (categoria)
+                Interesse interesse = interesseRepo.findByNome(dto.getTipo())
+                        .orElseGet(() -> interesseRepo.save(new Interesse(dto.getTipo())));
 
-                UsuarioInteresse link = new UsuarioInteresse();
-                link.setUsuario(usuario);
-                link.setInteresse(interesse);
-                usuarioInteresseRepo.save(link);
+                // nome -> Subinteresse ligado a esse Interesse
+                Subinteresse sub = subinteresseRepo.findByNomeAndInteresse(dto.getNome(), interesse)
+                        .orElseGet(() -> subinteresseRepo.save(
+                                new Subinteresse(interesse, dto.getNome())
+                        ));
+
+                UsuarioInteresse ui = new UsuarioInteresse();
+                ui.setUsuario(usuario);
+                ui.setSubinteresse(sub);
+                usuarioInteresseRepo.save(ui);
             }
         }
 
         usuarioRepo.save(usuario);
 
-        // Construir DTO de resposta SEM expor diretamente o entity (evita LazyInitialization)
+        // construir resposta
         UserProfileResponseDTO resp = new UserProfileResponseDTO();
         resp.setId(usuario.getId());
         resp.setNome(usuario.getNome());
         resp.setEmail(usuario.getEmail());
         resp.setFotoPerfil(usuario.getFotoPerfil());
 
-        // Buscar interesses via UsuarioInteresseRepository (em vez de usuario.getInteresses())
         List<UsuarioInteresse> links = usuarioInteresseRepo.findByUsuarioId(userId);
         List<InterestDTO> interessesDTO = new ArrayList<>();
         for (UsuarioInteresse ui : links) {
-            Interesse i = ui.getInteresse();
-            if (i != null) {
-                interessesDTO.add(new InterestDTO(i.getTipo(), i.getNome()));
+            Subinteresse s = ui.getSubinteresse();
+            if (s != null && s.getInteresse() != null) {
+                interessesDTO.add(new InterestDTO(
+                        s.getInteresse().getNome(),
+                        s.getNome()
+                ));
             }
         }
         resp.setInteresses(interessesDTO);

@@ -1,28 +1,33 @@
 package pt.iade.moodly.server.model;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Usuario_Interesse")
+@Table(name = "usuario_interesse")
 public class UsuarioInteresse {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "usuar_interes_id")
+    @Column(name = "usint_id")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "usuar_id", nullable = false)
+    @JoinColumn(name = "usint_usuar_id", nullable = false)
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "interes_id", nullable = false)
-    private Interesse interesse;
+    @JoinColumn(name = "usint_subinter_id", nullable = false)
+    private Subinteresse subinteresse;
 
-    // Getters/setters
+    public UsuarioInteresse() {}
+
     public Long getId() { return id; }
+
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public Interesse getInteresse() { return interesse; }
-    public void setInteresse(Interesse interesse) { this.interesse = interesse; }
+    public Subinteresse getSubinteresse() { return subinteresse; }
+    public void setSubinteresse(Subinteresse subinteresse) { this.subinteresse = subinteresse; }
 }
+
 

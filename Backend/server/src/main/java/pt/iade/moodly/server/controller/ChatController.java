@@ -16,37 +16,40 @@ public class ChatController {
 
     private final ConnectionRepository connectionRepository;
     private final ConnectionEstadoRepository connectionEstadoRepository;
-    private final EstadoRepository estadoRepository;
+    private final EstadoConexaoRepository estadoConexaoRepository;
     private final PostRepository postRepository;
     private final UsuarioRepository usuarioRepository;
     private final EventoRepository eventoRepository;
     private final InviteRepository inviteRepository;
     private final GroupPostRepository groupPostRepository;
+    private final EstadoInviteRepository estadoInviteRepository;
 
     public ChatController(ConnectionRepository connectionRepository,
                           ConnectionEstadoRepository connectionEstadoRepository,
-                          EstadoRepository estadoRepository,
+                          EstadoConexaoRepository estadoConexaoRepository,
                           PostRepository postRepository,
                           UsuarioRepository usuarioRepository,
                           EventoRepository eventoRepository,
                           InviteRepository inviteRepository,
-                          GroupPostRepository groupPostRepository) {
+                          GroupPostRepository groupPostRepository,
+                          EstadoInviteRepository estadoInviteRepository) {
         this.connectionRepository = connectionRepository;
         this.connectionEstadoRepository = connectionEstadoRepository;
-        this.estadoRepository = estadoRepository;
+        this.estadoConexaoRepository = estadoConexaoRepository;
         this.postRepository = postRepository;
         this.usuarioRepository = usuarioRepository;
         this.eventoRepository = eventoRepository;
         this.inviteRepository = inviteRepository;
         this.groupPostRepository = groupPostRepository;
+        this.estadoInviteRepository = estadoInviteRepository;
     }
-
-    // ---------- CHAT 1-1 ----------
 
     public static class SendMessageDTO {
         public Long autorId;
         public String conteudo;
     }
+
+    // ----- 1-1 Chat -----
 
     @PostMapping("/connection/{connectionId}")
     public ResponseEntity<?> sendDirectMessage(@PathVariable Long connectionId,
@@ -58,9 +61,9 @@ public class ChatController {
         Connection connection = connectionRepository.findById(connectionId)
                 .orElseThrow(() -> new RuntimeException("Connection não encontrada"));
 
-        // verificar se a ligação está aceite
-        Estado estadoAceite = estadoRepository.findByDescricao("aceite")
+        EstadoConexao estadoAceite = estadoConexaoRepository.findByDescricao("aceite")
                 .orElseThrow(() -> new RuntimeException("Estado 'aceite' não existe"));
+
         ConnectionEstado lastEstado = connectionEstadoRepository
                 .findTopByConnectionOrderByDataRegistoDesc(connection)
                 .orElseThrow(() -> new RuntimeException("Estado da ligação não encontrado"));
@@ -92,7 +95,7 @@ public class ChatController {
         return ResponseEntity.ok(messages);
     }
 
-    // ---------- GROUP CHAT (EVENTO) ----------
+    // ----- Group Chat (Eventos) -----
 
     @PostMapping("/event/{eventId}")
     public ResponseEntity<?> sendGroupMessage(@PathVariable Long eventId,
@@ -107,7 +110,6 @@ public class ChatController {
         Usuario autor = usuarioRepository.findById(dto.autorId)
                 .orElseThrow(() -> new RuntimeException("Autor não encontrado"));
 
-        // Só criador ou convidados aceites podem enviar mensagens
         boolean allowed = false;
 
         if (evento.getCriador().getId().equals(autor.getId())) {
@@ -117,7 +119,7 @@ public class ChatController {
             if (inviteOpt.isPresent()) {
                 Invite inv = inviteOpt.get();
                 if (inv.getEstado() != null &&
-                        "aceite".equalsIgnoreCase(inv.getEstado().getDescricao())) {
+                        "aceite".equalsIgnoreCase(inv.getEstado().getNome())) {
                     allowed = true;
                 }
             }
@@ -142,7 +144,6 @@ public class ChatController {
         return ResponseEntity.ok(messages);
     }
 
-    // Pequeno helper: listar eventos onde o user participa (para a aba de chats se quiseres)
     @GetMapping("/events-for-user/{userId}")
     public ResponseEntity<?> getEventsForUser(@PathVariable Long userId) {
         Usuario user = usuarioRepository.findById(userId)
@@ -157,4 +158,3 @@ public class ChatController {
         return ResponseEntity.ok(resp);
     }
 }
-

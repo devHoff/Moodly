@@ -10,3 +10,4 @@ public interface GroupPostRepository extends JpaRepository<GroupPost, Long> {
 
     List<GroupPost> findByEventoOrderByDataEnvioAsc(Evento evento);
 }
+

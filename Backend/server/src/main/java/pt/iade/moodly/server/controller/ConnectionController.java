@@ -1,13 +1,11 @@
 package pt.iade.moodly.server.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pt.iade.moodly.server.model.*;
 import pt.iade.moodly.server.repository.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/connections")
@@ -17,21 +15,20 @@ public class ConnectionController {
     private final ConnectionRepository connectionRepository;
     private final UsuarioRepository usuarioRepository;
     private final ConnectionEstadoRepository connectionEstadoRepository;
-    private final EstadoRepository estadoRepository;
+    private final EstadoConexaoRepository estadoConexaoRepository;
 
-    @Autowired
     public ConnectionController(ConnectionRepository connectionRepository,
                                 UsuarioRepository usuarioRepository,
                                 ConnectionEstadoRepository connectionEstadoRepository,
-                                EstadoRepository estadoRepository) {
+                                EstadoConexaoRepository estadoConexaoRepository) {
         this.connectionRepository = connectionRepository;
         this.usuarioRepository = usuarioRepository;
         this.connectionEstadoRepository = connectionEstadoRepository;
-        this.estadoRepository = estadoRepository;
+        this.estadoConexaoRepository = estadoConexaoRepository;
     }
 
-    private Estado getEstadoOrThrow(String descricao) {
-        return estadoRepository.findByDescricao(descricao)
+    private EstadoConexao getEstadoOrThrow(String descricao) {
+        return estadoConexaoRepository.findByDescricao(descricao)
                 .orElseThrow(() -> new RuntimeException("Estado '" + descricao + "' não existe na BD"));
     }
 
@@ -42,7 +39,7 @@ public class ConnectionController {
 
     public static class ConnectionResponseDTO {
         public Long connectionId;
-        public String status; // pendente / aceite / recusado / bloqueado / espera
+        public String status;
         public boolean mutual;
     }
 
@@ -60,14 +57,14 @@ public class ConnectionController {
         Usuario target = usuarioRepository.findById(dto.targetUserId)
                 .orElseThrow(() -> new RuntimeException("User alvo não encontrado"));
 
-        Estado pendente = getEstadoOrThrow("pendente");
-        Estado aceite = getEstadoOrThrow("aceite");
-
-        // 1) Ver se já há um pedido do outro user para mim (outro já swipou para a direita)
-        Optional<Connection> opp = connectionRepository
-                .findByUser1IdAndUser2Id(dto.targetUserId, dto.currentUserId);
+        EstadoConexao pendente = getEstadoOrThrow("pendente");
+        EstadoConexao aceite = getEstadoOrThrow("aceite");
 
         ConnectionResponseDTO resp = new ConnectionResponseDTO();
+
+        // 1) Já existe pedido na direcção inversa?
+        Optional<Connection> opp = connectionRepository
+                .findByUser1IdAndUser2Id(dto.targetUserId, dto.currentUserId);
 
         if (opp.isPresent()) {
             Connection existing = opp.get();
@@ -76,7 +73,6 @@ public class ConnectionController {
 
             if (lastEstadoOpt.isPresent() &&
                     "pendente".equalsIgnoreCase(lastEstadoOpt.get().getEstado().getDescricao())) {
-                // Agora fica aceite (match mútuo)
                 ConnectionEstado accepted = new ConnectionEstado(existing, aceite);
                 connectionEstadoRepository.save(accepted);
 
@@ -93,7 +89,7 @@ public class ConnectionController {
             }
         }
 
-        // 2) Ver se já existe um pedido meu para ele
+        // 2) Já existe pedido na mesma direcção?
         Optional<Connection> sameDir = connectionRepository
                 .findByUser1IdAndUser2Id(dto.currentUserId, dto.targetUserId);
         if (sameDir.isPresent()) {
@@ -134,10 +130,12 @@ public class ConnectionController {
             return ResponseEntity.badRequest().body("Dados incompletos");
         }
 
-        Connection connection = connectionRepository.findById(connectionId)
-                .orElseThrow(() -> new RuntimeException("Connection não encontrada"));
+        Optional<Connection> connectionOpt = connectionRepository.findById(connectionId);
+        if (connectionOpt.isEmpty()) {
+            return ResponseEntity.status(404).body("Connection não encontrada");
+        }
+        Connection connection = connectionOpt.get();
 
-        // Só quem recebeu o pedido (user2) pode responder
         if (!connection.getUser2Id().equals(dto.userId)) {
             return ResponseEntity.status(403).body("Apenas o utilizador convidado pode responder ao pedido");
         }
@@ -153,7 +151,7 @@ public class ConnectionController {
             return ResponseEntity.badRequest().body("Resposta inválida (use 'aceite' ou 'recusado')");
         }
 
-        Estado estado = getEstadoOrThrow(respostaNorm);
+        EstadoConexao estado = getEstadoOrThrow(respostaNorm);
         ConnectionEstado ce = new ConnectionEstado(connection, estado);
         connectionEstadoRepository.save(ce);
 
@@ -163,14 +161,13 @@ public class ConnectionController {
         return ResponseEntity.ok(resp);
     }
 
-    // Ligações mútuas (estado atual = aceite)
     @GetMapping("/mutual/{userId}")
     public ResponseEntity<?> getMutualConnections(@PathVariable Long userId) {
         Usuario user = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User não encontrado"));
 
         List<Connection> all = connectionRepository.findAllForUser(user.getId());
-        Estado estadoAceite = getEstadoOrThrow("aceite");
+        EstadoConexao estadoAceite = getEstadoOrThrow("aceite");
 
         List<Usuario> mutuals = new ArrayList<>();
 
@@ -187,21 +184,18 @@ public class ConnectionController {
         return ResponseEntity.ok(mutuals);
     }
 
-    // Pedidos pendentes recebidos pelo user (ainda não respondeu)
     @GetMapping("/pending/{userId}")
     public ResponseEntity<?> getPendingRequests(@PathVariable Long userId) {
         Usuario user = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User não encontrado"));
 
-        Estado estadoPendente = getEstadoOrThrow("pendente");
+        EstadoConexao estadoPendente = getEstadoOrThrow("pendente");
         List<Connection> all = connectionRepository.findAllForUser(user.getId());
 
         List<Map<String, Object>> result = new ArrayList<>();
 
         for (Connection c : all) {
-            if (!c.getUser2Id().equals(user.getId())) {
-                continue; // apenas pedidos em que sou user2 (fui convidado)
-            }
+            if (!c.getUser2Id().equals(user.getId())) continue;
 
             Optional<ConnectionEstado> lastEstadoOpt =
                     connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
@@ -210,35 +204,30 @@ public class ConnectionController {
                     lastEstadoOpt.get().getEstado().getId().equals(estadoPendente.getId())) {
 
                 Long otherId = c.getUser1Id();
-                Optional<Usuario> otherOpt = usuarioRepository.findById(otherId);
-                if (otherOpt.isPresent()) {
-                    Usuario other = otherOpt.get();
+                usuarioRepository.findById(otherId).ifPresent(other -> {
                     Map<String, Object> item = new HashMap<>();
                     item.put("connectionId", c.getId());
                     item.put("userId", other.getId());
                     item.put("nome", other.getNome());
                     item.put("fotoPerfil", other.getFotoPerfil());
                     result.add(item);
-                }
+                });
             }
         }
 
         return ResponseEntity.ok(result);
     }
 
-    // Discover: perfis aleatórios, com prioridade para quem já me mandou pedido pendente
     @GetMapping("/discover/{userId}")
     public ResponseEntity<?> discoverUsers(@PathVariable Long userId,
                                            @RequestParam(defaultValue = "20") int limit) {
         Usuario current = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User não encontrado"));
 
-        Estado pendente = getEstadoOrThrow("pendente");
-        Estado aceite = getEstadoOrThrow("aceite");
+        EstadoConexao pendente = getEstadoOrThrow("pendente");
 
         List<Connection> allConns = connectionRepository.findAll();
 
-        // map connectionId -> estadoAtual
         Map<Long, String> currentStatus = new HashMap<>();
         for (Connection c : allConns) {
             connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c)
@@ -262,7 +251,6 @@ public class ConnectionController {
                     alreadyConnectedOrPending.add(other);
                 } else if ("pendente".equalsIgnoreCase(status)) {
                     alreadyConnectedOrPending.add(other);
-                    // pedidos que recebi (eles são user1, eu user2)
                     if (c.getUser2Id().equals(userId)) {
                         pendingToCurrent.add(c.getUser1Id());
                     }
@@ -273,7 +261,6 @@ public class ConnectionController {
         List<Usuario> allUsers = usuarioRepository.findAll();
         List<Usuario> result = new ArrayList<>();
 
-        // 1º prioridade: quem já me mandou pedido pendente
         for (Usuario u : allUsers) {
             if (u.getId().equals(userId)) continue;
             if (pendingToCurrent.contains(u.getId())) {
@@ -281,7 +268,6 @@ public class ConnectionController {
             }
         }
 
-        // depois outros users sem qualquer ligação
         for (Usuario u : allUsers) {
             if (u.getId().equals(userId)) continue;
             if (result.contains(u)) continue;

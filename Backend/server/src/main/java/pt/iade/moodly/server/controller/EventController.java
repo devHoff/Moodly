@@ -7,7 +7,6 @@ import pt.iade.moodly.server.repository.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/events")
@@ -17,21 +16,21 @@ public class EventController {
     private final EventoRepository eventoRepository;
     private final UsuarioRepository usuarioRepository;
     private final InviteRepository inviteRepository;
-    private final EstadoRepository estadoRepository;
+    private final EstadoInviteRepository estadoInviteRepository;
 
     public EventController(EventoRepository eventoRepository,
                            UsuarioRepository usuarioRepository,
                            InviteRepository inviteRepository,
-                           EstadoRepository estadoRepository) {
+                           EstadoInviteRepository estadoInviteRepository) {
         this.eventoRepository = eventoRepository;
         this.usuarioRepository = usuarioRepository;
         this.inviteRepository = inviteRepository;
-        this.estadoRepository = estadoRepository;
+        this.estadoInviteRepository = estadoInviteRepository;
     }
 
-    private Estado getEstadoOrThrow(String descricao) {
-        return estadoRepository.findByDescricao(descricao)
-                .orElseThrow(() -> new RuntimeException("Estado '" + descricao + "' não existe"));
+    private EstadoInvite getEstadoInviteOrThrow(String nome) {
+        return estadoInviteRepository.findByNome(nome)
+                .orElseThrow(() -> new RuntimeException("EstadoInvite '" + nome + "' não existe"));
     }
 
     public static class CreateEventDTO {
@@ -60,7 +59,7 @@ public class EventController {
         evento.setDataEvento(dto.dataEvento);
         eventoRepository.save(evento);
 
-        Estado pendente = getEstadoOrThrow("pendente");
+        EstadoInvite pendente = getEstadoInviteOrThrow("pendente");
 
         if (dto.convidadosIds != null) {
             for (Long convidadoId : dto.convidadosIds) {
@@ -100,17 +99,16 @@ public class EventController {
             return ResponseEntity.badRequest().body("Resposta inválida (use 'aceite' ou 'recusado')");
         }
 
-        Estado estado = getEstadoOrThrow(respostaNorm);
+        EstadoInvite estado = getEstadoInviteOrThrow(respostaNorm);
         invite.setEstado(estado);
         inviteRepository.save(invite);
 
         Map<String, Object> resp = new HashMap<>();
         resp.put("inviteId", invite.getId());
-        resp.put("estado", estado.getDescricao());
+        resp.put("estado", estado.getNome());
         return ResponseEntity.ok(resp);
     }
 
-    // Eventos do utilizador (criados + convidado)
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getEventsForUser(@PathVariable Long userId) {
         Usuario user = usuarioRepository.findById(userId)
@@ -125,7 +123,6 @@ public class EventController {
         return ResponseEntity.ok(resp);
     }
 
-    // Lista de convites do user
     @GetMapping("/invites/{userId}")
     public ResponseEntity<?> getInvitesForUser(@PathVariable Long userId) {
         Usuario user = usuarioRepository.findById(userId)
@@ -135,3 +132,4 @@ public class EventController {
         return ResponseEntity.ok(invites);
     }
 }
+
