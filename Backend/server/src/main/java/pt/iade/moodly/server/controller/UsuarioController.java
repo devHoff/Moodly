@@ -3,73 +3,166 @@ package pt.iade.moodly.server.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pt.iade.moodly.server.model.Interesse;
+import pt.iade.moodly.server.model.Subinteresse;
 import pt.iade.moodly.server.model.Usuario;
+import pt.iade.moodly.server.model.UsuarioInteresse;
+import pt.iade.moodly.server.repository.UsuarioInteresseRepository;
 import pt.iade.moodly.server.repository.UsuarioRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin(origins = "*")
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioInteresseRepository usuarioInteresseRepository;
 
     @Autowired
-    public UsuarioController(UsuarioRepository usuarioRepository) {
+    public UsuarioController(UsuarioRepository usuarioRepository,
+                             UsuarioInteresseRepository usuarioInteresseRepository) {
         this.usuarioRepository = usuarioRepository;
+        this.usuarioInteresseRepository = usuarioInteresseRepository;
     }
 
-    // REGISTER
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody Usuario usuario) {
-        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email already registered");
+    public static class InteresseDto {
+        private String tipo;
+        private String nome;
+
+        public InteresseDto() {
         }
 
-        // For now, store password directly (hashing can come later)
-        Usuario saved = usuarioRepository.save(usuario);
-        return ResponseEntity.ok(saved);
+        public InteresseDto(String tipo, String nome) {
+            this.tipo = tipo;
+            this.nome = nome;
+        }
+
+        public String getTipo() {
+            return tipo;
+        }
+
+        public void setTipo(String tipo) {
+            this.tipo = tipo;
+        }
+
+        public String getNome() {
+            return nome;
+        }
+
+        public void setNome(String nome) {
+            this.nome = nome;
+        }
     }
 
-    // LOGIN
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Usuario usuario) {
-        Optional<Usuario> found = usuarioRepository.findByEmail(usuario.getEmail());
+    public static class UsuarioResponseDto {
+        private Long id;
+        private String nome;
+        private String email;
+        private String fotoPerfil;
+        private List<InteresseDto> interesses;
 
-        if (found.isEmpty()) {
-            return ResponseEntity.status(404).body("User not found");
+        public Long getId() {
+            return id;
         }
 
-        Usuario existing = found.get();
-        if (!existing.getSenhaHash().equals(usuario.getSenhaHash())) {
-            return ResponseEntity.status(401).body("Invalid password");
+        public void setId(Long id) {
+            this.id = id;
         }
 
-        return ResponseEntity.ok(existing);
+        public String getNome() {
+            return nome;
+        }
+
+        public void setNome(String nome) {
+            this.nome = nome;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getFotoPerfil() {
+            return fotoPerfil;
+        }
+
+        public void setFotoPerfil(String fotoPerfil) {
+            this.fotoPerfil = fotoPerfil;
+        }
+
+        public List<InteresseDto> getInteresses() {
+            return interesses;
+        }
+
+        public void setInteresses(List<InteresseDto> interesses) {
+            this.interesses = interesses;
+        }
     }
-    // 🔹 Get user by ID
+
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        Optional<Usuario> user = usuarioRepository.findById(id);
-        return user.map(ResponseEntity::ok)
-                   .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UsuarioResponseDto> getUserById(@PathVariable Long id) {
+        Optional<Usuario> optUser = usuarioRepository.findById(id);
+        if (optUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Usuario user = optUser.get();
+
+        UsuarioResponseDto dto = new UsuarioResponseDto();
+        dto.setId(user.getId());
+        dto.setNome(user.getNome());
+        dto.setEmail(user.getEmail());
+        dto.setFotoPerfil(user.getFotoPerfil());
+
+        List<UsuarioInteresse> links = usuarioInteresseRepository.findByUsuarioId(id);
+        List<InteresseDto> interessesDto = new ArrayList<>();
+
+        for (UsuarioInteresse ui : links) {
+            Subinteresse sub = ui.getSubinteresse();
+            if (sub == null) {
+                continue;
+            }
+            Interesse interesse = sub.getInteresse();
+            String tipo = interesse != null ? interesse.getNome() : null;
+            String nome = sub.getNome();
+            if (tipo != null && nome != null) {
+                interessesDto.add(new InteresseDto(tipo, nome));
+            }
+        }
+
+        dto.setInteresses(interessesDto);
+
+        return ResponseEntity.ok(dto);
     }
 
-    // 🔹 Update user info
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody Usuario updatedUser) {
-        return usuarioRepository.findById(id).map(user -> {
-            if (updatedUser.getNome() != null)
-                user.setNome(updatedUser.getNome());
-            if (updatedUser.getFotoPerfil() != null)
-                user.setFotoPerfil(updatedUser.getFotoPerfil());
-            if (updatedUser.getSenhaHash() != null && !updatedUser.getSenhaHash().isEmpty())
-                user.setSenhaHash(updatedUser.getSenhaHash()); // hash if needed
+    public ResponseEntity<UsuarioResponseDto> updateUser(
+            @PathVariable Long id,
+            @RequestBody Usuario updatedUser
+    ) {
+        Optional<Usuario> optUser = usuarioRepository.findById(id);
+        if (optUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-            usuarioRepository.save(user);
-            return ResponseEntity.ok(user);
-        }).orElse(ResponseEntity.notFound().build());
+        Usuario user = optUser.get();
+
+        if (updatedUser.getNome() != null) {
+            user.setNome(updatedUser.getNome());
+        }
+        if (updatedUser.getFotoPerfil() != null) {
+            user.setFotoPerfil(updatedUser.getFotoPerfil());
+        }
+
+        usuarioRepository.save(user);
+
+        return getUserById(id);
     }
-    
-
 }
