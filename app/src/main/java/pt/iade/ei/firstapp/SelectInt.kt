@@ -6,15 +6,39 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,22 +46,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import kotlinx.coroutines.launch
+import pt.iade.ei.firstapp.data.SessionManager
+import pt.iade.ei.firstapp.data.repository.ProfileRepository
 
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun Select(navController: NavController,
-    profileViewModel: ProfileViewModel
-) {
-    var selectedImageUri by remember { mutableStateOf(profileViewModel.profileImageUrl?.let { Uri.parse(it) }) }
-    var music by remember { mutableStateOf(profileViewModel.music) }
-    var movies by remember { mutableStateOf(profileViewModel.movies) }
-    var games by remember { mutableStateOf(profileViewModel.games) }
+fun Select(navController: NavController) {
+    var music by remember { mutableStateOf(SessionManager.music) }
+    var movies by remember { mutableStateOf(SessionManager.movies) }
+    var games by remember { mutableStateOf(SessionManager.games) }
+
+    var selectedImageUri by remember {
+        mutableStateOf(SessionManager.fotoPerfil?.let { Uri.parse(it) })
+    }
+
+    var loading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    val scope = rememberCoroutineScope()
+    val profileRepo = remember { ProfileRepository() }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -47,125 +79,191 @@ fun Select(navController: NavController,
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Interesses",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.White
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF2D004B)
-                )
-            )
-        },
-        bottomBar = {
-            Surface(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF2D004B)),
-                color = Color(0xFF2D004B)
+                    .background(Color(0xFF2D004B))
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    Button(
-                        onClick = {
-                           // navController.popBackStack()
-                                  },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White,
-                            contentColor = Color.Black
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text("Voltar")
-                    }
-
-                    Button(
-                        onClick = {
-                            navController.navigate("Pic")
-                            profileViewModel.profileImageUrl = selectedImageUri?.toString()
-                            profileViewModel.music = music
-                            profileViewModel.movies = movies
-                            profileViewModel.games = games
-
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(50.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFFFD600),
-                            contentColor = Color.Black
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text("Seguinte", fontWeight = FontWeight.Bold)
-                    }
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Voltar",
+                        tint = Color.White
+                    )
                 }
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Os teus interesses",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
             }
         }
-    ) { paddingValues ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF2D004B))
-                .padding(16.dp)
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Profile Picture Section
+            Spacer(modifier = Modifier.height(24.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Text(
+                text = "Ajuda-nos a encontrar pessoas como tu",
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Escreve alguns interesses, separados por vírgulas",
+                color = Color.LightGray,
+                fontSize = 14.sp
+            )
 
-            // Interest Inputs Section
-            Column(modifier = Modifier.fillMaxWidth()) {
-                InterestInputCard(
-                    iconRes = R.drawable.music,
-                    label = "Músicas",
-                    value = music,
-                    onValueChange = { music = it },
-                    placeholder = "Ex: Arctic Monkeys, Drake, Billie Eilish"
-                )
+            Spacer(modifier = Modifier.height(24.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                InterestInputCard(
-                    iconRes = R.drawable.movies,
-                    label = "Filmes e Séries",
-                    value = movies,
-                    onValueChange = { movies = it },
-                    placeholder = "Ex: Breaking Bad, Interstellar, One Piece"
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                InterestInputCard(
-                    iconRes = R.drawable.games,
-                    label = "Jogos",
-                    value = games,
-                    onValueChange = { games = it },
-                    placeholder = "Ex: CS:GO, Minecraft, Hollow Knight"
-                )
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF3C0063))
+                    .clickable { imagePickerLauncher.launch("image/*") },
+                contentAlignment = Alignment.Center
+            ) {
+                if (selectedImageUri != null) {
+                    AsyncImage(
+                        model = selectedImageUri,
+                        contentDescription = "Imagem de perfil",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.camera),
+                        contentDescription = "Pick image",
+                        tint = Color(0xFFFFD600),
+                        modifier = Modifier.size(48.dp)
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
+            InterestInputCard(
+                iconRes = R.drawable.musica,
+                label = "Música",
+                value = music,
+                onValueChange = { music = it }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            InterestInputCard(
+                iconRes = R.drawable.filme,
+                label = "Séries e filmes",
+                value = movies,
+                onValueChange = { movies = it }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            InterestInputCard(
+                iconRes = R.drawable.jogo,
+                label = "Jogos",
+                value = games,
+                onValueChange = { games = it }
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            if (error != null) {
+                Text(text = error ?: "", color = Color.Red)
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Button(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Voltar")
+                }
+
+                Button(
+                    onClick = {
+                        scope.launch {
+                            val userId = SessionManager.userId
+                            if (userId == null) {
+                                error = "Utilizador inválido, faz login outra vez."
+                                return@launch
+                            }
+
+                            loading = true
+                            error = null
+
+                            try {
+                                SessionManager.music = music
+                                SessionManager.movies = movies
+                                SessionManager.games = games
+                                SessionManager.fotoPerfil = selectedImageUri?.toString()
+
+                                fun splitInterests(text: String): List<String> =
+                                    text.split(",")
+                                        .map { it.trim() }
+                                        .filter { it.isNotEmpty() }
+
+                                val musicList = splitInterests(music)
+                                val moviesList = splitInterests(movies)
+                                val gamesList = splitInterests(games)
+
+                                profileRepo.updateProfile(
+                                    userId = userId,
+                                    fotoPerfil = SessionManager.fotoPerfil,
+                                    music = musicList,
+                                    movies = moviesList,
+                                    games = gamesList
+                                )
+
+                                navController.navigate("Pic")
+                            } catch (e: Exception) {
+                                error = e.message ?: "Erro ao guardar interesses"
+                            } finally {
+                                loading = false
+                            }
+                        }
+                    },
+                    enabled = !loading,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFFD600),
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(if (loading) "A guardar..." else "Próximo")
+                }
+            }
         }
     }
 }
@@ -175,72 +273,63 @@ fun InterestInputCard(
     iconRes: Int,
     label: String,
     value: String,
-    onValueChange: (String) -> Unit,
+    onValueChange: (String) -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF3C0063)),
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF3C0063),
+            contentColor = Color.White
+        ),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 8.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = iconRes),
-                    contentDescription = label,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+        Row(
+            modifier = Modifier
+                .padding(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Icon(
+                painter = painterResource(id = iconRes),
+                contentDescription = label,
+                tint = Color(0xFFFFD600),
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
                 Text(
                     text = label,
-                    color = Color(0xFFFFD600),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 14.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = value,
+                    onValueChange = onValueChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = {
+                        Text(
+                            "Ex: rock, pop, jazz",
+                            color = Color.LightGray,
+                            fontSize = 12.sp
+                        )
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        cursorColor = Color(0xFFFFD600),
+                        focusedIndicatorColor = Color(0xFFFFD600),
+                        unfocusedIndicatorColor = Color.Gray,
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.LightGray,
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White
+                    )
                 )
             }
-
-            OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                placeholder = {
-
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 100.dp, max = 150.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    focusedContainerColor = Color(0xFF2D004B),
-                    unfocusedContainerColor = Color(0xFF2D004B),
-                    focusedIndicatorColor = Color(0xFFFFD600),
-                    unfocusedIndicatorColor = Color.Gray,
-                    cursorColor = Color(0xFFFFD600),
-                    focusedPlaceholderColor = Color.Gray,
-                    unfocusedPlaceholderColor = Color.Gray
-                ),
-                shape = RoundedCornerShape(8.dp),
-                singleLine = false,
-                maxLines = 3
-            )
         }
     }
-}
-
-@SuppressLint("ViewModelConstructorInComposable")
-@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
-@Composable
-fun SelectPreview() {
-    val navController = rememberNavController()
-    //val profileViewModel = ProfileViewModel()
-    val profileViewModel = ProfileViewModel()
-    Select(
-        navController = navController,
-        profileViewModel = profileViewModel)
-
 }
 
 

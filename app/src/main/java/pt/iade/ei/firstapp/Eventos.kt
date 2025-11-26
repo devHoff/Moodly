@@ -258,8 +258,7 @@ fun Even(navController: NavController) {
         }
 
     }
-    }
-
+}
 
 
 
@@ -271,3 +270,4 @@ fun EvenPreview() {
         Even(navController = navController)
     }
 }
+

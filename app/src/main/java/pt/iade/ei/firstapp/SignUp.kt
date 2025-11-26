@@ -17,20 +17,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import pt.iade.ei.firstapp.ui.auth.AuthViewModel
+import kotlinx.coroutines.launch
+import pt.iade.ei.firstapp.data.SessionManager
+import pt.iade.ei.firstapp.data.repository.AuthRepository
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 @Composable
 fun SignupScreen(
-    navController: NavController,
-    authViewModel: AuthViewModel
+    navController: NavController
 ) {
-    val loading by authViewModel.loading.collectAsState()
-    val error by authViewModel.error.collectAsState()
-
     var nome by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    var loading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    val scope = rememberCoroutineScope()
+    val authRepo = remember { AuthRepository() }
 
     Column(
         modifier = Modifier
@@ -40,15 +44,19 @@ fun SignupScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Image(painter = painterResource(id = R.drawable.logo),
+        Image(
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
-            modifier = Modifier.size(120.dp))
+            modifier = Modifier.size(120.dp)
+        )
         Spacer(Modifier.height(16.dp))
         Text("Criar conta", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = nome, onValueChange = { nome = it }, label = { Text("Nome") },
+            value = nome,
+            onValueChange = { nome = it },
+            label = { Text("Nome") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -63,8 +71,11 @@ fun SignupScreen(
             )
         )
         Spacer(Modifier.height(12.dp))
+
         OutlinedTextField(
-            value = email, onValueChange = { email = it }, label = { Text("Email") },
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
@@ -79,8 +90,11 @@ fun SignupScreen(
             )
         )
         Spacer(Modifier.height(12.dp))
+
         OutlinedTextField(
-            value = password, onValueChange = { password = it }, label = { Text("Senha") },
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Senha") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
@@ -96,45 +110,74 @@ fun SignupScreen(
             )
         )
 
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp))
 
         if (error != null) {
             Text(text = error ?: "", color = Color.Red, modifier = Modifier.fillMaxWidth())
             Spacer(Modifier.height(8.dp))
         }
 
-
-
         Button(
             onClick = {
-                navController.navigate("intToPic")
-                authViewModel.signup(nome, email, password) { /* AuthGate flips */ } },
+                scope.launch {
+                    if (nome.isBlank() || email.isBlank() || password.isBlank()) {
+                        error = "Preenche todos os campos"
+                        return@launch
+                    }
+                    loading = true
+                    error = null
+
+                    val result = authRepo.signup(nome, email, password)
+                    loading = false
+
+                    result.onSuccess { user ->
+                        SessionManager.userId = user.id
+                        SessionManager.nome = user.nome
+                        SessionManager.email = user.email
+                        SessionManager.fotoPerfil = user.fotoPerfil
+
+                        // depois de registar, vai para a screen de interesses/foto
+                        navController.navigate("IntToPic") {
+                            popUpTo("login") { inclusive = false }
+                        }
+                    }.onFailure { e ->
+                        error = e.message ?: "Falha a registar conta"
+                    }
+                }
+            },
             enabled = !loading,
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFD600), contentColor = Color.Black)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFFFD600),
+                contentColor = Color.Black
+            ),
+            shape = MaterialTheme.shapes.medium
         ) {
-            Text(if (loading) "A criar..." else "Seguinte", fontWeight = FontWeight.Bold)
+            Text(
+                if (loading) "A criar..." else "Registar",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
 
-        Spacer(Modifier.height(8.dp))
-        TextButton(onClick = { navController.popBackStack() }) {
+        Spacer(Modifier.height(12.dp))
+
+        // botão que tinhas antes: "já tens conta?"
+        TextButton(onClick = { navController.navigate("login") }) {
             Text("Já tens conta? Inicia sessão", color = Color.White)
         }
     }
 }
 
-
-@SuppressLint("ViewModelConstructorInComposable")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview(showBackground = true)
 @Composable
 fun SignupScreenPreview() {
     FirstAppTheme {
         val navController = rememberNavController()
-        val fakeAuthViewModel = AuthViewModel() // <- precisa de ser o certo
-        SignupScreen(
-            navController = navController,
-            authViewModel = fakeAuthViewModel,
-
-            )
+        SignupScreen(navController = navController)
     }
 }
+

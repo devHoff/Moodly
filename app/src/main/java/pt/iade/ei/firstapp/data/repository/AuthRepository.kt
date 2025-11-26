@@ -7,52 +7,47 @@ class AuthRepository {
 
     private val api: AuthApi = RetrofitClient.authApi()
 
-    suspend fun signup(nome: String, email: String, password: String): AuthApi.AuthResponse {
-        // Prefer the /api/auth/signup contract
+    suspend fun signup(
+        nome: String,
+        email: String,
+        password: String
+    ): Result<AuthApi.UsuarioDTO> {
         return try {
-            api.signupAuth(AuthApi.AuthRequest(nome = nome, email = email, password = password))
-        } catch (e: Exception) {
-            // Fallback to /api/usuarios/register (returns UsuarioDTO)
-            val u = api.signupUsuarios(
-                AuthApi.UsuarioDTO(
-                    id = null,
+            val user = api.register(
+                AuthApi.RegisterRequest(
                     nome = nome,
                     email = email,
-                    senhaHash = password,
-                    fotoPerfil = null
+                    password = password
                 )
             )
-            AuthApi.AuthResponse(
-                ok = (u.id != null),
-                message = if (u.id != null) "Conta criada com sucesso" else "Falha ao criar conta",
-                userId = u.id,
-                nome = u.nome,
-                email = u.email,
-                fotoPerfil = u.fotoPerfil
-            )
+            if (user.id != null) {
+                Result.success(user)
+            } else {
+                Result.failure(Exception("Falha a registar conta"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
-    suspend fun login(email: String, password: String): AuthApi.AuthResponse {
-        // Prefer the /api/auth/login JSON
+    suspend fun login(
+        email: String,
+        password: String
+    ): Result<AuthApi.UsuarioDTO> {
         return try {
-            api.loginAuth(AuthApi.AuthRequest(email = email, password = password))
-        } catch (e: Exception) {
-            // Fallback to /api/usuarios/login (returns UsuarioDTO)
-            val u = api.loginUsuarios(
-                AuthApi.UsuariosLoginRequest(email = email, senhaHash = password)
+            val user = api.login(
+                AuthApi.LoginRequest(
+                    email = email,
+                    password = password
+                )
             )
-            if (u.id == null) {
-                AuthApi.AuthResponse(
-                    ok = false, message = "Credenciais inválidas",
-                    userId = null, nome = null, email = null, fotoPerfil = null
-                )
+            if (user.id != null) {
+                Result.success(user)
             } else {
-                AuthApi.AuthResponse(
-                    ok = true, message = "Login bem-sucedido",
-                    userId = u.id, nome = u.nome, email = u.email, fotoPerfil = u.fotoPerfil
-                )
+                Result.failure(Exception("Credenciais inválidas"))
             }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

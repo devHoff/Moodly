@@ -3,9 +3,28 @@ package pt.iade.ei.firstapp
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,20 +36,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import pt.iade.ei.firstapp.ui.auth.AuthViewModel
+import kotlinx.coroutines.launch
+import pt.iade.ei.firstapp.data.SessionManager
+import pt.iade.ei.firstapp.data.repository.AuthRepository
+import pt.iade.ei.firstapp.data.repository.UsuarioRepository
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    authViewModel: AuthViewModel,
     onSignupClick: () -> Unit
 ) {
-    val loading by authViewModel.loading.collectAsState()
-    val error by authViewModel.error.collectAsState()
-
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var loading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    val scope = rememberCoroutineScope()
+    val authRepo = remember { AuthRepository() }
+    val usuarioRepo = remember { UsuarioRepository() }
 
     Column(
         modifier = Modifier
@@ -40,10 +64,11 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
-        Image(painter = painterResource(id = R.drawable.logo),
+        Image(
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
-            modifier = Modifier.size(120.dp))
+            modifier = Modifier.size(120.dp)
+        )
         Text(
             text = "Bem-vindo ao Moodly 👋",
             color = Color.White,
@@ -70,8 +95,7 @@ fun LoginScreen(
                 focusedTextColor = Color.White,
                 unfocusedTextColor = Color.White
             )
-            )
-
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -98,15 +122,65 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         if (error != null) {
-            Text(text = error ?: "", color = Color.Red, modifier = Modifier.fillMaxWidth())
-            Spacer(Modifier.height(8.dp))
+            Text(
+                text = error ?: "",
+                color = Color.Red,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
         }
 
         Button(
-
             onClick = {
-                navController.navigate("home")
-                authViewModel.login(email, password) { /* no-op */ }
+                scope.launch {
+                    if (email.isBlank() || password.isBlank()) {
+                        error = "Preenche email e senha"
+                        return@launch
+                    }
+                    loading = true
+                    error = null
+
+                    val result = authRepo.login(email, password)
+
+                    result.onSuccess { user ->
+                        SessionManager.applyUser(user)
+
+                        val id = user.id
+                        if (id != null) {
+                            val detalheRes = usuarioRepo.getUsuarioDetalhe(id)
+                            detalheRes.onSuccess { detalhe ->
+                                val musicList = mutableListOf<String>()
+                                val moviesList = mutableListOf<String>()
+                                val gamesList = mutableListOf<String>()
+
+                                detalhe.interesses.orEmpty().forEach { i ->
+                                    val tipo = i.tipo?.lowercase() ?: ""
+                                    val nome = i.nome ?: ""
+                                    if (nome.isBlank()) return@forEach
+                                    when {
+                                        "musica" in tipo || "music" in tipo -> musicList.add(nome)
+                                        "filme" in tipo || "film" in tipo || "serie" in tipo || "series" in tipo -> moviesList.add(nome)
+                                        "jogo" in tipo || "game" in tipo -> gamesList.add(nome)
+                                    }
+                                }
+
+                                SessionManager.applyInterests(
+                                    musicList = musicList,
+                                    moviesList = moviesList,
+                                    gamesList = gamesList
+                                )
+                            }
+                        }
+
+                        loading = false
+                        navController.navigate("home") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    }.onFailure { e ->
+                        loading = false
+                        error = e.message ?: "Credenciais inválidas"
+                    }
+                }
             },
             enabled = !loading,
             modifier = Modifier
@@ -118,7 +192,11 @@ fun LoginScreen(
             ),
             shape = MaterialTheme.shapes.medium
         ) {
-            Text(if (loading) "Entrando..." else "Entrar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(
+                if (loading) "Entrando..." else "Entrar",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -129,18 +207,15 @@ fun LoginScreen(
     }
 }
 
-@SuppressLint("ViewModelConstructorInComposable")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     FirstAppTheme {
         val navController = rememberNavController()
-        val fakeAuthViewModel = AuthViewModel() // <- precisa de ser o certo
         LoginScreen(
             navController = navController,
-            authViewModel = fakeAuthViewModel,
             onSignupClick = {}
         )
     }
 }
-

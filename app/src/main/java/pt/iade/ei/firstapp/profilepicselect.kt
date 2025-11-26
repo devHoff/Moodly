@@ -24,19 +24,30 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-
+import kotlinx.coroutines.launch
+import pt.iade.ei.firstapp.data.SessionManager
+import pt.iade.ei.firstapp.data.repository.ProfileRepository
 
 @Composable
-fun ProfilePicSelectionScreen(navController: NavController,
+fun ProfilePicSelectionScreen(
+    navController: NavController,
     onNextClick: (Uri?) -> Unit,
     onSkipClick: () -> Unit
 ) {
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedImageUri by remember {
+        mutableStateOf(SessionManager.fotoPerfil?.let { Uri.parse(it) })
+    }
+    var loading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         selectedImageUri = uri
     }
+
+    val scope = rememberCoroutineScope()
+    val profileRepo = remember { ProfileRepository() }
 
     Column(
         modifier = Modifier
@@ -72,7 +83,6 @@ fun ProfilePicSelectionScreen(navController: NavController,
                 .clip(CircleShape)
                 .background(Color(0xFF3C0063))
                 .clickable {
-                    // opens gallery
                     imagePickerLauncher.launch("image/*")
                 },
             contentAlignment = Alignment.Center
@@ -82,7 +92,7 @@ fun ProfilePicSelectionScreen(navController: NavController,
                     model = selectedImageUri,
                     contentDescription = "Selected profile picture",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize().clip(CircleShape)
+                    modifier = Modifier.fillMaxSize()
                 )
             } else {
                 Icon(
@@ -94,13 +104,58 @@ fun ProfilePicSelectionScreen(navController: NavController,
             }
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        if (error != null) {
+            Text(text = error ?: "", color = Color.Red)
+            Spacer(modifier = Modifier.height(8.dp))
+        }
 
         Button(
             onClick = {
-                navController.navigate("home")
-                onNextClick(selectedImageUri)
-                      },
+                scope.launch {
+                    val userId = SessionManager.userId
+                    if (userId == null) {
+                        error = "Utilizador inválido, faz login outra vez."
+                        return@launch
+                    }
+
+                    loading = true
+                    error = null
+
+                    try {
+                        // guarda no SessionManager
+                        SessionManager.fotoPerfil = selectedImageUri?.toString()
+
+                        fun splitInterests(text: String): List<String> =
+                            text.split(",")
+                                .map { it.trim() }
+                                .filter { it.isNotEmpty() }
+
+                        val musicList = splitInterests(SessionManager.music)
+                        val moviesList = splitInterests(SessionManager.movies)
+                        val gamesList = splitInterests(SessionManager.games)
+
+                        profileRepo.updateProfile(
+                            userId = userId,
+                            fotoPerfil = SessionManager.fotoPerfil,
+                            music = musicList,
+                            movies = moviesList,
+                            games = gamesList
+                        )
+
+                        onNextClick(selectedImageUri)
+                        navController.navigate("home") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    } catch (e: Exception) {
+                        error = e.message ?: "Erro ao guardar perfil"
+                    } finally {
+                        loading = false
+                    }
+                }
+            },
+            enabled = !loading,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -110,13 +165,16 @@ fun ProfilePicSelectionScreen(navController: NavController,
             ),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Text("Registar", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(
+                if (loading) "A guardar..." else "Registar",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick =
-            onSkipClick) {
+        TextButton(onClick = onSkipClick) {
             Text(
                 text = "Pular por agora",
                 color = Color(0xFFFFD600),

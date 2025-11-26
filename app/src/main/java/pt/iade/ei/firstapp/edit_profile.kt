@@ -15,9 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,29 +25,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import kotlinx.coroutines.launch
+import pt.iade.ei.firstapp.data.SessionManager
+import pt.iade.ei.firstapp.data.repository.ProfileRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(
     userId: Long,
-    profileViewModel: ProfileViewModel = viewModel(),
     onCancel: () -> Unit,
     onSaved: () -> Unit
 ) {
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    var music by remember { mutableStateOf(profileViewModel.music) }
-    var movies by remember { mutableStateOf(profileViewModel.movies) }
-    var games by remember { mutableStateOf(profileViewModel.games) }
+    var selectedImageUri by remember {
+        mutableStateOf(SessionManager.fotoPerfil?.let { Uri.parse(it) })
+    }
+    var music by remember { mutableStateOf(SessionManager.music) }
+    var movies by remember { mutableStateOf(SessionManager.movies) }
+    var games by remember { mutableStateOf(SessionManager.games) }
 
-    val updating by profileViewModel.updating.collectAsStateWithLifecycle()
-    val error by profileViewModel.error.collectAsStateWithLifecycle()
+    var updating by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         selectedImageUri = uri
-        profileViewModel.profileImageUrl = uri?.toString()
     }
+
+    val scope = rememberCoroutineScope()
+    val repo = remember { ProfileRepository() }
 
     Scaffold(
         topBar = {
@@ -74,16 +79,22 @@ fun EditProfileScreen(
         },
         bottomBar = {
             Surface(
-                modifier = Modifier.fillMaxWidth().background(Color(0xFF2D004B)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFF2D004B)),
                 color = Color(0xFF2D004B)
             ) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
                 ) {
                     Button(
                         onClick = onCancel,
-                        modifier = Modifier.weight(1f).height(50.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
                             contentColor = Color.Black
@@ -93,24 +104,58 @@ fun EditProfileScreen(
 
                     Button(
                         onClick = {
-                            // push current UI values into VM
-                            profileViewModel.music = music
-                            profileViewModel.movies = movies
-                            profileViewModel.games = games
-                            // persist on backend
-                            profileViewModel.update(userId) {
-                                onSaved()   // navigate after successful save
+                            scope.launch {
+                                if (userId <= 0) {
+                                    error = "Utilizador inválido."
+                                    return@launch
+                                }
+                                updating = true
+                                error = null
+                                try {
+                                    SessionManager.music = music
+                                    SessionManager.movies = movies
+                                    SessionManager.games = games
+                                    SessionManager.fotoPerfil = selectedImageUri?.toString()
+
+                                    fun splitInterests(text: String): List<String> =
+                                        text.split(",")
+                                            .map { it.trim() }
+                                            .filter { it.isNotEmpty() }
+
+                                    val musicList = splitInterests(music)
+                                    val moviesList = splitInterests(movies)
+                                    val gamesList = splitInterests(games)
+
+                                    repo.updateProfile(
+                                        userId = userId,
+                                        fotoPerfil = SessionManager.fotoPerfil,
+                                        music = musicList,
+                                        movies = moviesList,
+                                        games = gamesList
+                                    )
+
+                                    onSaved()
+                                } catch (e: Exception) {
+                                    error = e.message ?: "Erro ao guardar perfil"
+                                } finally {
+                                    updating = false
+                                }
                             }
                         },
                         enabled = !updating,
-                        modifier = Modifier.weight(1f).height(50.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(50.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFFFFD600),
                             contentColor = Color.Black
                         ),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text(if (updating) "A guardar..." else "Guardar", fontWeight = FontWeight.Bold)
+                        Text(
+                            if (updating) "A guardar..." else "Guardar",
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -120,136 +165,78 @@ fun EditProfileScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF2D004B))
-                .padding(16.dp)
                 .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Box(
+                modifier = Modifier
+                    .size(150.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF3C0063))
+                    .clickable { imagePickerLauncher.launch("image/*") },
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(140.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF3C0063))
-                        .clickable { imagePickerLauncher.launch("image/*") },
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (selectedImageUri != null) {
-                        AsyncImage(
-                            model = selectedImageUri,
-                            contentDescription = "Profile Picture",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize().clip(CircleShape)
-                        )
-                    } else {
-                        Icon(
-                            painter = painterResource(id = R.drawable.camera),
-                            contentDescription = "Pick Image",
-                            tint = Color(0xFFFFD600)
-                        )
-                    }
+                if (selectedImageUri != null) {
+                    AsyncImage(
+                        model = selectedImageUri,
+                        contentDescription = "Foto de perfil",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.camera),
+                        contentDescription = "Pick Image",
+                        tint = Color(0xFFFFD600),
+                        modifier = Modifier.size(64.dp)
+                    )
                 }
-
-                Text(
-                    text = "Carregar Foto",
-                    color = Color(0xFFFFD600),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
             }
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+
             if (error != null) {
                 Text(text = error ?: "", color = Color.Red)
-                Spacer(Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
             }
 
-            Spacer(Modifier.height(16.dp))
-
             InterestInputCard(
-                iconRes = R.drawable.music,
-                label = "Músicas",
+                iconRes = R.drawable.musica,
+                label = "Música",
                 value = music,
-                onValueChange = { music = it },
-                placeholder = "Ex: Arctic Monkeys, Drake, Billie Eilish"
+                onValueChange = { music = it }
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             InterestInputCard(
-                iconRes = R.drawable.movies,
-                label = "Filmes e Séries",
+                iconRes = R.drawable.filme,
+                label = "Filmes e séries",
                 value = movies,
-                onValueChange = { movies = it },
-                placeholder = "Ex: Breaking Bad, Interstellar, One Piece"
+                onValueChange = { movies = it }
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             InterestInputCard(
-                iconRes = R.drawable.games,
+                iconRes = R.drawable.jogo,
                 label = "Jogos",
                 value = games,
-                onValueChange = { games = it },
-                placeholder = "Ex: CS:GO, Minecraft, Hollow Knight"
+                onValueChange = { games = it }
             )
 
-            Spacer(Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
 
-@Composable
-fun InterestInputCard(
-    iconRes: Int,
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    placeholder: String
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF3C0063)),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 8.dp)) {
-                Icon(painter = painterResource(id = iconRes), contentDescription = label, tint = Color.Unspecified)
-                Spacer(Modifier.width(8.dp))
-                Text(text = label, color = Color(0xFFFFD600), fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            }
-
-            OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                placeholder = { Text(text = placeholder, color = Color.White, fontSize = 14.sp) },
-                modifier = Modifier.fillMaxWidth().height(100.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    cursorColor = Color(0xFFFFD600),
-                    focusedIndicatorColor = Color(0xFFFFD600),
-                    unfocusedIndicatorColor = Color.Gray,
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.LightGray,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White
-                ),
-                shape = RoundedCornerShape(8.dp),
-                singleLine = false,
-                maxLines = 3
-            )
-        }
-    }
-}
-
-@SuppressLint("ViewModelConstructorInComposable")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview(showBackground = true, backgroundColor = 0xFF2D004B)
 @Composable
 fun EditProfileScreenPreview() {
+    val navController = rememberNavController()
     EditProfileScreen(
         userId = 1L,
         onCancel = {},
