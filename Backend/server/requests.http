@@ -35,12 +35,12 @@ Content-Type: application/json
 ###############################################
 
 ### GET PROFILE
-GET {{url}}/api/usuarios/9
+GET {{url}}/api/usuarios/13
 
 
 
 ### UPDATE PROFILE (returns updated DTO)
-PUT {{url}}/api/profile/9
+PUT {{url}}/api/profile/13
 Content-Type: application/json
 
 {
