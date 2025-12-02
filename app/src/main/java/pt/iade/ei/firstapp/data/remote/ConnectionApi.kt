@@ -1,7 +1,6 @@
 package pt.iade.ei.firstapp.data.remote
 
 import com.google.gson.annotations.SerializedName
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -9,56 +8,50 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ConnectionApi {
-
-    data class ConnectionSuggestionDTO(
-        @SerializedName("userId") val userId: Long,
-        @SerializedName("nome") val nome: String,
-        @SerializedName("fotoPerfil") val fotoPerfil: String?,
-        @SerializedName("musicInterests") val musicInterests: List<String>?,
-        @SerializedName("moviesInterests") val moviesInterests: List<String>?,
-        @SerializedName("gamesInterests") val gamesInterests: List<String>?
-    )
-
-    data class ConnectionDTO(
-        @SerializedName("connectionId") val connectionId: Long,
-        @SerializedName("userId") val userId: Long,
-        @SerializedName("nome") val nome: String,
+    data class UsuarioDTO(
+        @SerializedName("id") val id: Long,
+        @SerializedName("nome") val nome: String?,
+        @SerializedName("email") val email: String?,
         @SerializedName("fotoPerfil") val fotoPerfil: String?
     )
 
     data class ConnectionRequestBody(
-        @SerializedName("remetenteId") val remetenteId: Long,
-        @SerializedName("destinatarioId") val destinatarioId: Long
+        @SerializedName("currentUserId") val currentUserId: Long,
+        @SerializedName("targetUserId") val targetUserId: Long
     )
 
-    data class ConnectionResponseBody(
-        @SerializedName("estado") val estado: String
+    data class ConnectionRequestResponse(
+        @SerializedName("connectionId") val connectionId: Long?,
+        @SerializedName("status") val status: String?,
+        @SerializedName("mutual") val mutual: Boolean
+    )
+
+    data class PendingConnectionDTO(
+        @SerializedName("connectionId") val connectionId: Long,
+        @SerializedName("userId") val userId: Long,
+        @SerializedName("nome") val nome: String?,
+        @SerializedName("fotoPerfil") val fotoPerfil: String?
     )
 
     @GET("/api/connections/discover/{userId}")
-    suspend fun discoverConnections(
+    suspend fun discoverUsers(
         @Path("userId") userId: Long,
-        @Query("limit") limit: Int = 1
-    ): List<ConnectionSuggestionDTO>
+        @Query("limit") limit: Int = 20
+    ): List<UsuarioDTO>
 
     @POST("/api/connections/request")
-    suspend fun requestConnection(
+    suspend fun sendConnectionRequest(
         @Body body: ConnectionRequestBody
-    ): Response<Void>
-
-    @POST("/api/connections/{connectionId}/respond")
-    suspend fun respondConnection(
-        @Path("connectionId") connectionId: Long,
-        @Body body: ConnectionResponseBody
-    ): Response<Void>
+    ): ConnectionRequestResponse
 
     @GET("/api/connections/mutual/{userId}")
     suspend fun mutualConnections(
         @Path("userId") userId: Long
-    ): List<ConnectionDTO>
+    ): List<UsuarioDTO>
 
     @GET("/api/connections/pending/{userId}")
     suspend fun pendingConnections(
         @Path("userId") userId: Long
-    ): List<ConnectionDTO>
+    ): List<PendingConnectionDTO>
 }
+

@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    private const val BASE_URL = "http://127.0.0.1:8080"
+    private const val BASE_URL = "http://10.0.2.2:8080"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -37,4 +37,10 @@ object RetrofitClient {
     fun profileApi(): ProfileApi = retrofit.create(ProfileApi::class.java)
 
     fun usuarioApi(): UsuarioApi = retrofit.create(UsuarioApi::class.java)
+
+    fun connectionApi(): ConnectionApi = retrofit.create(ConnectionApi::class.java)
+
+    fun chatApi(): ChatApi = retrofit.create(ChatApi::class.java)
+
+    fun eventApi(): EventApi = retrofit.create(EventApi::class.java)
 }

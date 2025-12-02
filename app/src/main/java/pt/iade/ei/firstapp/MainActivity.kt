@@ -78,7 +78,7 @@ fun AppNavigation(navController: NavHostController) {
             )
         }
 
-        composable("Feed") { FeedScreen(navController) }
+        composable("Feed") { ConnectScreen(navController) }
         composable("SplashScreen") { SplashScreen(navController) }
     }
 }

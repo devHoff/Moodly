@@ -38,9 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import pt.iade.ei.firstapp.FeedScreen
+import pt.iade.ei.firstapp.ConnectScreen
 import pt.iade.ei.firstapp.LoginScreen
-//import androidx.navigation.NavHostController
 import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
@@ -139,7 +138,7 @@ fun Tela(navController: NavController) {
                 .background(Color(0xFF2D004B))
                 .padding(padding)
         ) {
-            FeedScreen(navController)
+            ConnectScreen(navController)
         }
     }
 }
