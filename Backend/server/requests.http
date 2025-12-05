@@ -69,15 +69,15 @@ Content-Type: application/json
 
 
 ### LIST PENDING REQUESTS FOR USER 2
-GET {{url}}/api/connections/pending/2
+GET {{url}}/api/connections/pending/1
 
 
 ### ACCEPT REQUEST (replace 3 with real connectionId)
-POST {{url}}/api/connections/3/respond
+POST {{url}}/api/connections/4/respond
 Content-Type: application/json
 
 {
-  "userId": 2,
+  "userId": 1,
   "resposta": "aceite"
 }
 
@@ -93,7 +93,7 @@ Content-Type: application/json
 
 
 ### LIST MUTUAL CONNECTIONS FOR USER 1
-GET {{url}}/api/connections/mutual/1
+GET {{url}}/api/connections/mutual/19
 
 
 ### DISCOVER USERS (prioritizes users who sent request)

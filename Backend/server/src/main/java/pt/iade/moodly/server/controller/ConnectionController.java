@@ -2,8 +2,14 @@ package pt.iade.moodly.server.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pt.iade.moodly.server.model.*;
-import pt.iade.moodly.server.repository.*;
+import pt.iade.moodly.server.model.Connection;
+import pt.iade.moodly.server.model.ConnectionEstado;
+import pt.iade.moodly.server.model.EstadoConexao;
+import pt.iade.moodly.server.model.Usuario;
+import pt.iade.moodly.server.repository.ConnectionEstadoRepository;
+import pt.iade.moodly.server.repository.ConnectionRepository;
+import pt.iade.moodly.server.repository.EstadoConexaoRepository;
+import pt.iade.moodly.server.repository.UsuarioRepository;
 
 import java.util.*;
 
@@ -43,6 +49,26 @@ public class ConnectionController {
         public boolean mutual;
     }
 
+    public static class RespondConnectionDTO {
+        public Long userId;
+        public String resposta;
+    }
+
+    public static class PendingConnectionDTO {
+        public Long connectionId;
+        public Long userId;
+        public String nome;
+        public String fotoPerfil;
+    }
+
+    public static class OutgoingConnectionDTO {
+        public Long connectionId;
+        public Long userId;
+        public String nome;
+        public String fotoPerfil;
+        public boolean mutual;
+    }
+
     @PostMapping("/request")
     public ResponseEntity<?> sendConnection(@RequestBody ConnectionRequestDTO dto) {
         if (dto.currentUserId == null || dto.targetUserId == null) {
@@ -62,7 +88,6 @@ public class ConnectionController {
 
         ConnectionResponseDTO resp = new ConnectionResponseDTO();
 
-        // 1) Já existe pedido na direcção inversa?
         Optional<Connection> opp = connectionRepository
                 .findByUser1IdAndUser2Id(dto.targetUserId, dto.currentUserId);
 
@@ -89,7 +114,6 @@ public class ConnectionController {
             }
         }
 
-        // 2) Já existe pedido na mesma direcção?
         Optional<Connection> sameDir = connectionRepository
                 .findByUser1IdAndUser2Id(dto.currentUserId, dto.targetUserId);
         if (sameDir.isPresent()) {
@@ -104,7 +128,6 @@ public class ConnectionController {
             }
         }
 
-        // 3) Criar nova ligação pendente
         Connection connection = new Connection(current.getId(), target.getId());
         connectionRepository.save(connection);
 
@@ -116,11 +139,6 @@ public class ConnectionController {
         resp.mutual = false;
 
         return ResponseEntity.ok(resp);
-    }
-
-    public static class RespondConnectionDTO {
-        public Long userId;
-        public String resposta; // "aceite" ou "recusado"
     }
 
     @PostMapping("/{connectionId}/respond")
@@ -140,90 +158,118 @@ public class ConnectionController {
             return ResponseEntity.status(403).body("Apenas o utilizador convidado pode responder ao pedido");
         }
 
-        Optional<ConnectionEstado> lastEstadoOpt =
-                connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(connection);
-        if (lastEstadoOpt.isEmpty()) {
-            return ResponseEntity.badRequest().body("Estado da ligação não encontrado");
-        }
-
-        String respostaNorm = dto.resposta.toLowerCase(Locale.ROOT);
-        if (!respostaNorm.equals("aceite") && !respostaNorm.equals("recusado")) {
-            return ResponseEntity.badRequest().body("Resposta inválida (use 'aceite' ou 'recusado')");
-        }
-
-        EstadoConexao estado = getEstadoOrThrow(respostaNorm);
-        ConnectionEstado ce = new ConnectionEstado(connection, estado);
+        EstadoConexao novoEstado = getEstadoOrThrow(dto.resposta.toLowerCase());
+        ConnectionEstado ce = new ConnectionEstado(connection, novoEstado);
         connectionEstadoRepository.save(ce);
 
-        Map<String, Object> resp = new HashMap<>();
-        resp.put("connectionId", connectionId);
-        resp.put("status", estado.getDescricao());
-        return ResponseEntity.ok(resp);
+        return ResponseEntity.ok("Estado atualizado para " + dto.resposta);
     }
 
     @GetMapping("/mutual/{userId}")
-    public ResponseEntity<?> getMutualConnections(@PathVariable Long userId) {
-        Usuario user = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User não encontrado"));
+    public ResponseEntity<List<Usuario>> mutualConnections(@PathVariable Long userId) {
+        EstadoConexao aceite = getEstadoOrThrow("aceite");
+        List<Connection> allConns = connectionRepository.findAll();
+        Set<Long> added = new HashSet<>();
+        List<Usuario> result = new ArrayList<>();
 
-        List<Connection> all = connectionRepository.findAllForUser(user.getId());
-        EstadoConexao estadoAceite = getEstadoOrThrow("aceite");
-
-        List<Usuario> mutuals = new ArrayList<>();
-
-        for (Connection c : all) {
+        for (Connection c : allConns) {
             Optional<ConnectionEstado> lastEstadoOpt =
                     connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
-            if (lastEstadoOpt.isPresent() &&
-                    lastEstadoOpt.get().getEstado().getId().equals(estadoAceite.getId())) {
-                Long otherId = c.getUser1Id().equals(user.getId()) ? c.getUser2Id() : c.getUser1Id();
-                usuarioRepository.findById(otherId).ifPresent(mutuals::add);
+            if (lastEstadoOpt.isEmpty()) continue;
+            if (!Objects.equals(lastEstadoOpt.get().getEstado().getId(), aceite.getId())) continue;
+
+            Long otherId = null;
+            if (c.getUser1Id().equals(userId)) {
+                otherId = c.getUser2Id();
+            } else if (c.getUser2Id().equals(userId)) {
+                otherId = c.getUser1Id();
             }
-        }
+            if (otherId == null) continue;
+            if (added.contains(otherId)) continue;
 
-        return ResponseEntity.ok(mutuals);
-    }
-
-    @GetMapping("/pending/{userId}")
-    public ResponseEntity<?> getPendingRequests(@PathVariable Long userId) {
-        Usuario user = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User não encontrado"));
-
-        EstadoConexao estadoPendente = getEstadoOrThrow("pendente");
-        List<Connection> all = connectionRepository.findAllForUser(user.getId());
-
-        List<Map<String, Object>> result = new ArrayList<>();
-
-        for (Connection c : all) {
-            if (!c.getUser2Id().equals(user.getId())) continue;
-
-            Optional<ConnectionEstado> lastEstadoOpt =
-                    connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
-
-            if (lastEstadoOpt.isPresent() &&
-                    lastEstadoOpt.get().getEstado().getId().equals(estadoPendente.getId())) {
-
-                Long otherId = c.getUser1Id();
-                usuarioRepository.findById(otherId).ifPresent(other -> {
-                    Map<String, Object> item = new HashMap<>();
-                    item.put("connectionId", c.getId());
-                    item.put("userId", other.getId());
-                    item.put("nome", other.getNome());
-                    item.put("fotoPerfil", other.getFotoPerfil());
-                    result.add(item);
-                });
+            Usuario other = usuarioRepository.findById(otherId).orElse(null);
+            if (other != null) {
+                added.add(otherId);
+                result.add(other);
             }
         }
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/discover/{userId}")
-    public ResponseEntity<?> discoverUsers(@PathVariable Long userId,
-                                           @RequestParam(defaultValue = "20") int limit) {
-        Usuario current = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User não encontrado"));
+    @GetMapping("/pending/{userId}")
+    public ResponseEntity<List<PendingConnectionDTO>> pendingConnections(@PathVariable Long userId) {
+        EstadoConexao pendente = getEstadoOrThrow("pendente");
+        List<Connection> allConns = connectionRepository.findAll();
+        List<PendingConnectionDTO> result = new ArrayList<>();
 
+        for (Connection c : allConns) {
+            if (!c.getUser2Id().equals(userId)) continue;
+
+            Optional<ConnectionEstado> lastEstadoOpt =
+                    connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
+            if (lastEstadoOpt.isEmpty()) continue;
+            if (!Objects.equals(lastEstadoOpt.get().getEstado().getId(), pendente.getId())) continue;
+
+            Long otherId = c.getUser1Id();
+            Usuario other = usuarioRepository.findById(otherId).orElse(null);
+            if (other == null) continue;
+
+            PendingConnectionDTO dto = new PendingConnectionDTO();
+            dto.connectionId = c.getId();
+            dto.userId = other.getId();
+            dto.nome = other.getNome();
+            dto.fotoPerfil = other.getFotoPerfil();
+
+            result.add(dto);
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/outgoing/{userId}")
+    public ResponseEntity<List<OutgoingConnectionDTO>> outgoingConnections(@PathVariable Long userId) {
+        EstadoConexao pendente = getEstadoOrThrow("pendente");
+        EstadoConexao aceite = getEstadoOrThrow("aceite");
+
+        List<Connection> connections = connectionRepository.findByUser1Id(userId);
+        List<OutgoingConnectionDTO> result = new ArrayList<>();
+
+        for (Connection c : connections) {
+            Optional<ConnectionEstado> lastEstadoOpt =
+                    connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
+            if (lastEstadoOpt.isEmpty()) continue;
+
+            ConnectionEstado last = lastEstadoOpt.get();
+            Long estadoId = last.getEstado().getId();
+
+            boolean isPending = Objects.equals(estadoId, pendente.getId());
+            boolean isMutual = Objects.equals(estadoId, aceite.getId());
+
+            if (!isPending && !isMutual) continue;
+
+            Long otherId = c.getUser2Id();
+            Usuario other = usuarioRepository.findById(otherId).orElse(null);
+            if (other == null) continue;
+
+            OutgoingConnectionDTO dto = new OutgoingConnectionDTO();
+            dto.connectionId = c.getId();
+            dto.userId = other.getId();
+            dto.nome = other.getNome();
+            dto.fotoPerfil = other.getFotoPerfil();
+            dto.mutual = isMutual;
+
+            result.add(dto);
+        }
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/discover/{userId}")
+    public ResponseEntity<List<Usuario>> discoverUsers(
+            @PathVariable Long userId,
+            @RequestParam(name = "limit", defaultValue = "20") int limit
+    ) {
         EstadoConexao pendente = getEstadoOrThrow("pendente");
 
         List<Connection> allConns = connectionRepository.findAll();

@@ -11,10 +11,25 @@ import pt.iade.moodly.server.repository.InteresseRepository;
 import pt.iade.moodly.server.repository.SubinteresseRepository;
 import pt.iade.moodly.server.repository.UsuarioInteresseRepository;
 import pt.iade.moodly.server.repository.UsuarioRepository;
-
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Map;
+import java.util.Objects;
+import org.springframework.util.StringUtils;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -212,4 +227,33 @@ public class ProfileController {
 
         return getProfile(userId);
     }
+@PostMapping("/{userId}/foto-perfil")
+@Transactional
+public ResponseEntity<ProfileController.UserProfileResponseDTO> uploadFotoPerfil(
+        @PathVariable Long userId,
+        @RequestParam("file") MultipartFile file,
+        HttpServletRequest request
+) throws IOException {
+
+    Usuario usuario = usuarioRepo.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+    String uploadDir = request.getServletContext().getRealPath("/uploads/profile/");
+    Files.createDirectories(Paths.get(uploadDir));
+
+    String original = file.getOriginalFilename();
+    String ext = "";
+    if (original != null && original.contains(".")) {
+        ext = original.substring(original.lastIndexOf("."));
+    }
+    String fileName = "user-" + userId + "-" + System.currentTimeMillis() + ext;
+
+    Path dest = Paths.get(uploadDir, fileName);
+    file.transferTo(dest.toFile());
+
+    String fotoUrl = "/uploads/profile/" + fileName;
+    usuario.setFotoPerfil(fotoUrl);
+    usuarioRepo.save(usuario);
+
+    return getProfile(userId);
+}
 }

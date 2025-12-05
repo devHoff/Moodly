@@ -12,8 +12,11 @@ public interface ConnectionRepository extends JpaRepository<Connection, Long> {
 
     List<Connection> findByUser1IdOrUser2Id(Long user1Id, Long user2Id);
 
+    List<Connection> findByUser1Id(Long user1Id);
+
     Optional<Connection> findByUser1IdAndUser2Id(Long user1Id, Long user2Id);
 
     @Query("SELECT c FROM Connection c WHERE (c.user1Id = :userId OR c.user2Id = :userId)")
     List<Connection> findAllForUser(@Param("userId") Long userId);
 }
+
