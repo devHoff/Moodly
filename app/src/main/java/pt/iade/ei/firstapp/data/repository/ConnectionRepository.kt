@@ -8,11 +8,11 @@ class ConnectionRepository {
     private val api: ConnectionApi = RetrofitClient.connectionApi()
 
     suspend fun discoverUsers(
-        currentUserId: Long,
-        limit: Int = 20
+        userId: Long,
+        limit: Int
     ): Result<List<ConnectionApi.UsuarioDTO>> {
         return try {
-            val list = api.discoverUsers(currentUserId, limit)
+            val list = api.discoverUsers(userId, limit)
             Result.success(list)
         } catch (e: Exception) {
             Result.failure(e)
@@ -24,12 +24,11 @@ class ConnectionRepository {
         targetUserId: Long
     ): Result<ConnectionApi.ConnectionRequestResponse> {
         return try {
-            val resp = api.sendConnectionRequest(
-                ConnectionApi.ConnectionRequestBody(
-                    currentUserId = currentUserId,
-                    targetUserId = targetUserId
-                )
+            val body = ConnectionApi.ConnectionRequestBody(
+                currentUserId = currentUserId,
+                targetUserId = targetUserId
             )
+            val resp = api.sendConnectionRequest(body)
             Result.success(resp)
         } catch (e: Exception) {
             Result.failure(e)
@@ -57,6 +56,15 @@ class ConnectionRepository {
             Result.failure(e)
         }
     }
+
+    suspend fun outgoingConnections(
+        userId: Long
+    ): Result<List<ConnectionApi.OutgoingConnectionDTO>> {
+        return try {
+            val list = api.outgoingConnections(userId)
+            Result.success(list)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
-
-

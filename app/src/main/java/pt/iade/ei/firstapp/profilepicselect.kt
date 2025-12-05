@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +28,7 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.repository.ProfileRepository
+import pt.iade.ei.firstapp.data.uriToMultipart
 
 @Composable
 fun ProfilePicSelectionScreen(
@@ -34,11 +36,13 @@ fun ProfilePicSelectionScreen(
     onNextClick: (Uri?) -> Unit,
     onSkipClick: () -> Unit
 ) {
-    var selectedImageUri by remember {
-        mutableStateOf(SessionManager.fotoPerfil?.let { Uri.parse(it) })
-    }
+    val context = LocalContext.current
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var loading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+
+    val scope = rememberCoroutineScope()
+    val profileRepo = remember { ProfileRepository() }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -46,8 +50,7 @@ fun ProfilePicSelectionScreen(
         selectedImageUri = uri
     }
 
-    val scope = rememberCoroutineScope()
-    val profileRepo = remember { ProfileRepository() }
+
 
     Column(
         modifier = Modifier
@@ -75,8 +78,6 @@ fun ProfilePicSelectionScreen(
         )
 
         Spacer(modifier = Modifier.height(40.dp))
-
-        // Profile picture preview + click to open gallery
         Box(
             modifier = Modifier
                 .size(150.dp)
@@ -112,49 +113,42 @@ fun ProfilePicSelectionScreen(
         }
 
         Button(
-            onClick = {
-                scope.launch {
-                    val userId = SessionManager.userId
-                    if (userId == null) {
-                        error = "Utilizador inválido, faz login outra vez."
-                        return@launch
-                    }
-
-                    loading = true
-                    error = null
-
-                    try {
-                        // guarda no SessionManager
-                        SessionManager.fotoPerfil = selectedImageUri?.toString()
-
-                        fun splitInterests(text: String): List<String> =
-                            text.split(",")
-                                .map { it.trim() }
-                                .filter { it.isNotEmpty() }
-
-                        val musicList = splitInterests(SessionManager.music)
-                        val moviesList = splitInterests(SessionManager.movies)
-                        val gamesList = splitInterests(SessionManager.games)
-
-                        profileRepo.updateProfile(
-                            userId = userId,
-                            fotoPerfil = SessionManager.fotoPerfil,
-                            music = musicList,
-                            movies = moviesList,
-                            games = gamesList
-                        )
-
-                        onNextClick(selectedImageUri)
-                        navController.navigate("home") {
-                            popUpTo("login") { inclusive = true }
+                onClick = {
+                    scope.launch {
+                        val userId = SessionManager.userId
+                        if (userId == null) {
+                            error = "Utilizador inválido, faz login outra vez."
+                            return@launch
                         }
-                    } catch (e: Exception) {
-                        error = e.message ?: "Erro ao guardar perfil"
-                    } finally {
-                        loading = false
+                        if (selectedImageUri == null) {
+                            error = "Escolhe uma foto ou clica em 'Pular por agora'."
+                            return@launch
+                        }
+
+                        loading = true
+                        error = null
+
+                        try {
+                            val part = uriToMultipart(context, selectedImageUri!!)
+
+                            val profile = profileRepo.uploadProfilePhoto(
+                                userId = userId,
+                                photoPart = part
+                            )
+
+                            SessionManager.fotoPerfil = profile.fotoPerfil
+
+                            onNextClick(selectedImageUri)
+                            navController.navigate("home") {
+                                popUpTo("login") { inclusive = true }
+                            }
+                        } catch (e: Exception) {
+                            error = e.message ?: "Erro ao guardar perfil"
+                        } finally {
+                            loading = false
+                        }
                     }
-                }
-            },
+                },
             enabled = !loading,
             modifier = Modifier
                 .fillMaxWidth()

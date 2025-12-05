@@ -22,6 +22,15 @@ interface ChatApi {
         @SerializedName("conteudo") val conteudo: String
     )
 
+    data class ConnectionChatDTO(
+        @SerializedName("connectionId") val connectionId: Long,
+        @SerializedName("otherUserId") val otherUserId: Long,
+        @SerializedName("otherUserName") val otherUserName: String?,
+        @SerializedName("otherUserPhoto") val otherUserPhoto: String?,
+        @SerializedName("lastMessage") val lastMessage: String?,
+        @SerializedName("lastMessageTime") val lastMessageTime: String?
+    )
+
     data class EventChatDTO(
         @SerializedName("eventoId") val eventoId: Long,
         @SerializedName("titulo") val titulo: String
@@ -36,7 +45,7 @@ interface ChatApi {
     suspend fun sendConnectionMessage(
         @Path("connectionId") connectionId: Long,
         @Body body: SendMessageBody
-    ): Response<Void>
+    ): Response<ChatMessageDTO>
 
     @GET("/api/chats/event/{eventId}/messages")
     suspend fun getEventMessages(
@@ -47,10 +56,15 @@ interface ChatApi {
     suspend fun sendEventMessage(
         @Path("eventId") eventId: Long,
         @Body body: SendMessageBody
-    ): Response<Void>
+    ): Response<ChatMessageDTO>
 
     @GET("/api/chats/events-for-user/{userId}")
     suspend fun eventsForUser(
         @Path("userId") userId: Long
     ): List<EventChatDTO>
+
+    @GET("/api/chats/user/{userId}/connections")
+    suspend fun connectionChats(
+        @Path("userId") userId: Long
+    ): List<ConnectionChatDTO>
 }

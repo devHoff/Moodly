@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,14 +31,18 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.repository.ProfileRepository
+import pt.iade.ei.firstapp.data.uriToMultipart
+import pt.iade.ei.firstapp.ui.components.InterestInputCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+
 fun EditProfileScreen(
     userId: Long,
     onCancel: () -> Unit,
     onSaved: () -> Unit
 ) {
+    val context = LocalContext.current
     var selectedImageUri by remember {
         mutableStateOf(SessionManager.fotoPerfil?.let { Uri.parse(it) })
     }
@@ -115,7 +120,14 @@ fun EditProfileScreen(
                                     SessionManager.music = music
                                     SessionManager.movies = movies
                                     SessionManager.games = games
-                                    SessionManager.fotoPerfil = selectedImageUri?.toString()
+
+                                    var fotoUrl: String? = SessionManager.fotoPerfil
+                                    if (selectedImageUri != null) {
+                                        val part = uriToMultipart(context, selectedImageUri!!)
+                                        fotoUrl = repo.uploadProfilePhoto(userId, part).toString()
+                                    }
+
+                                    SessionManager.fotoPerfil = fotoUrl
 
                                     fun splitInterests(text: String): List<String> =
                                         text.split(",")
@@ -128,7 +140,7 @@ fun EditProfileScreen(
 
                                     repo.updateProfile(
                                         userId = userId,
-                                        fotoPerfil = SessionManager.fotoPerfil,
+                                        fotoPerfil = fotoUrl,
                                         music = musicList,
                                         movies = moviesList,
                                         games = gamesList
@@ -206,7 +218,8 @@ fun EditProfileScreen(
                 iconRes = R.drawable.musica,
                 label = "Música",
                 value = music,
-                onValueChange = { music = it }
+                onValueChange = { music = it },
+                placeholder = "Ex: Arctic Monkeys, Drake, Billie Eilish"
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -215,7 +228,8 @@ fun EditProfileScreen(
                 iconRes = R.drawable.filme,
                 label = "Filmes e séries",
                 value = movies,
-                onValueChange = { movies = it }
+                onValueChange = { movies = it },
+                placeholder = "Ex: Breaking Bad, Interstellar, One Piece"
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -224,7 +238,8 @@ fun EditProfileScreen(
                 iconRes = R.drawable.jogo,
                 label = "Jogos",
                 value = games,
-                onValueChange = { games = it }
+                onValueChange = { games = it },
+                placeholder = "Ex: CS:GO, Minecraft, Hollow Knight"
             )
 
             Spacer(modifier = Modifier.height(80.dp))

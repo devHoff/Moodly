@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import pt.iade.ei.firstapp.data.SessionManager
+import pt.iade.ei.firstapp.data.remote.buildImageUrl
 
 @Composable
 fun ProfileScreen(
@@ -36,7 +37,7 @@ fun ProfileScreen(
     val music = SessionManager.music
     val movies = SessionManager.movies
     val games = SessionManager.games
-    val photoUrl = SessionManager.fotoPerfil
+    val photoUrl = buildImageUrl(SessionManager.fotoPerfil)
 
     Scaffold(
         bottomBar = {
@@ -108,8 +109,6 @@ fun ProfileScreen(
         ) {
 
             Spacer(modifier = Modifier.height(32.dp))
-
-            // FOTO + NOME CENTRADOS
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -123,7 +122,7 @@ fun ProfileScreen(
                         .background(Color(0xFF3C0063)),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (photoUrl != null && photoUrl.isNotBlank()) {
+                    if (!photoUrl.isNullOrBlank()) {
                         AsyncImage(
                             model = photoUrl,
                             contentDescription = "Foto de perfil",
@@ -158,8 +157,6 @@ fun ProfileScreen(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-
-            // CAIXA DE INTERESSES
             Card(
                 modifier = Modifier
                     .fillMaxWidth()

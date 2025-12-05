@@ -136,7 +136,6 @@ fun SignupScreen(
                         SessionManager.email = user.email
                         SessionManager.fotoPerfil = user.fotoPerfil
 
-                        // depois de registar, vai para a screen de interesses/foto
                         navController.navigate("IntToPic") {
                             popUpTo("login") { inclusive = false }
                         }
@@ -163,8 +162,6 @@ fun SignupScreen(
         }
 
         Spacer(Modifier.height(12.dp))
-
-        // botão que tinhas antes: "já tens conta?"
         TextButton(onClick = { navController.navigate("login") }) {
             Text("Já tens conta? Inicia sessão", color = Color.White)
         }

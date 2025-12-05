@@ -45,15 +45,14 @@ fun SelectInterestsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF2D004B)) // dark purple background
+            .background(Color(0xFF2D004B))
             .padding(16.dp)
     ) {
-        // Top bar
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Spacer(modifier = Modifier.size(32.dp)) // placeholder for settings icon
+            Spacer(modifier = Modifier.size(32.dp))
             Icon(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Moodly Logo",
@@ -74,7 +73,6 @@ fun SelectInterestsScreen(
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        // Music section
         InterestInputCard(
             iconRes = R.drawable.music,
             label = "Músicas",
@@ -83,7 +81,7 @@ fun SelectInterestsScreen(
             placeholder = "Ex: Arctic Monkeys, Drake, Billie Eilish"
         )
 
-        // Movies section
+
         InterestInputCard(
             iconRes = R.drawable.movies,
             label = "Filmes e Séries",
@@ -92,7 +90,6 @@ fun SelectInterestsScreen(
             placeholder = "Ex: Breaking Bad, Interstellar, One Piece"
         )
 
-        // Games section
         InterestInputCard(
             iconRes = R.drawable.games,
             label = "Jogos",
@@ -131,7 +128,7 @@ fun InterestInputCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF3C0063)), // lighter purple
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF3C0063)),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -140,7 +137,7 @@ fun InterestInputCard(
                 Icon(
                     painter = painterResource(id = iconRes),
                     contentDescription = label,
-                    tint = Color.Unspecified, // keeps original icon colors
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(28.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))

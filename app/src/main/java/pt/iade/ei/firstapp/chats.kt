@@ -1,17 +1,41 @@
 package pt.iade.ei.firstapp
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Message
-import androidx.compose.material3.*
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,33 +43,50 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import pt.iade.ei.firstapp.activities.Even
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import pt.iade.ei.firstapp.data.SessionManager
+import pt.iade.ei.firstapp.data.remote.ChatApi
+import pt.iade.ei.firstapp.data.remote.buildImageUrl
+import pt.iade.ei.firstapp.data.repository.ChatRepository
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
-//import pt.iade.ei.firstapp.ui.theme.ui.theme.Chats
-
-data class ChatPreview(
-    val id: String,
-    val name: String,
-    val lastMessage: String,
-    val profilePicUrl: String? = null
-)
 
 @Composable
 fun ChatsScreen(navController: NavController) {
+    val chatRepository = remember { ChatRepository() }
+    val currentUserId = SessionManager.userId
 
-    // Lista de exemplo de chats
-    val chats = listOf(
-        ChatPreview("1", "Delma Silva", "Então, vais ao hangout hoje?", null),
-        ChatPreview("2", "Pedro Costa", "Olá tudo bem?", null),
-        ChatPreview("3", "Inês Silva", "tu: Boa noite!", null)
-    )
+    var loading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var chats by remember { mutableStateOf<List<ChatApi.ConnectionChatDTO>>(emptyList()) }
+
+    LaunchedEffect(currentUserId) {
+        if (currentUserId == null) {
+            error = "Utilizador inválido. Faz login outra vez."
+            return@LaunchedEffect
+        }
+
+        loading = true
+        error = null
+
+        val result = withContext(Dispatchers.IO) {
+            chatRepository.getConnectionChats(currentUserId)
+        }
+
+        result.onSuccess { list ->
+            chats = list
+        }.onFailure { e ->
+            error = e.message ?: "Erro ao carregar chats"
+        }
+
+        loading = false
+    }
 
     Scaffold(
         bottomBar = {
@@ -58,30 +99,29 @@ fun ChatsScreen(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Exemplo: ícones na bottom bar
-                    IconButton(onClick = {
-                        navController.navigate("even")
-                    }) {
+                    IconButton(
+                        onClick = { navController.navigate("eve") },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White
+                        )
+                    ) {
                         Image(
                             painter = painterResource(id = R.drawable.oi),
-                            contentDescription = "Home",
-                            modifier = Modifier.size(36.dp)
-                        )
-                    }
-
-                    IconButton(onClick = {
-                        navController.navigate("cone")
-                    }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.event),
                             contentDescription = "Eventos",
                             modifier = Modifier.size(36.dp)
                         )
                     }
 
-                    IconButton(onClick = {
-                        navController.navigate("home")
-                    }) {
+                    IconButton(onClick = { navController.navigate("cone") }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.event),
+                            contentDescription = "Conexões",
+                            modifier = Modifier.size(36.dp)
+                        )
+                    }
+
+                    IconButton(onClick = { navController.navigate("home") }) {
                         Image(
                             painter = painterResource(id = R.drawable.mood),
                             contentDescription = "Mood",
@@ -89,19 +129,16 @@ fun ChatsScreen(navController: NavController) {
                         )
                     }
 
-                    IconButton(onClick = {
-                        navController.navigate("chats")
-                    }) {
+                    IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Default.Message,
                             contentDescription = "Mensagens",
-                            tint = Color.Yellow,
+                            tint = Color(0xFFFFD600),
                             modifier = Modifier.size(30.dp)
                         )
                     }
 
-                    IconButton(onClick = {
-                        navController.navigate("profile") }) {
+                    IconButton(onClick = { navController.navigate("profile") }) {
                         Icon(
                             imageVector = Icons.Default.AccountBox,
                             contentDescription = "Perfil",
@@ -113,49 +150,67 @@ fun ChatsScreen(navController: NavController) {
             }
         }
     ) { padding ->
-
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF2D004B))
-                .padding(horizontal = 16.dp)
+                .padding(padding)
         ) {
-            // Top bar
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 24.dp)
             ) {
-                Spacer(modifier = Modifier.width(36.dp))
                 Text(
-                    text = "Os teus chats",
-                    color = Color(0xFFFFD600),
+                    text = "Chats",
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
+                    color = Color.White
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Conversa com as tuas conexões.",
+                    fontSize = 14.sp,
+                    color = Color.LightGray
                 )
 
-                Icon(
-                    painter = painterResource(id = R.drawable.logo),
-                    contentDescription = "Moodly Logo",
-                    tint = Color.Unspecified,
-                    modifier = Modifier.size(36.dp)
-                )
-            }
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(chats) { chat ->
-                    ChatListItem(chat = chat, onClick = {
-                        // Navegação para detalhes do chat (se tiveres rota)
-                        navController.navigate("EventMoreDetails")
-                    })
+                if (loading) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = Color(0xFFFFD600))
+                    }
+                } else if (error != null) {
+                    Text(
+                        text = error ?: "",
+                        color = Color.Red,
+                        fontSize = 14.sp
+                    )
+                } else if (chats.isEmpty()) {
+                    Text(
+                        text = "Ainda não tens chats ativos.\nVai às tuas conexões e começa uma conversa ✨",
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(chats) { chat ->
+                            ChatListItem(
+                                chat = chat,
+                                onClick = {
+                                    val encodedName = Uri.encode(chat.otherUserName ?: "")
+                                    navController.navigate(
+                                        "chatroom/${chat.connectionId}/${chat.otherUserId}/$encodedName"
+                                    )
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -163,49 +218,65 @@ fun ChatsScreen(navController: NavController) {
 }
 
 @Composable
-fun ChatListItem(chat: ChatPreview, onClick: () -> Unit) {
+fun ChatListItem(
+    chat: ChatApi.ConnectionChatDTO,
+    onClick: () -> Unit
+) {
+    val cardColor = Color(0xFF3C0063)
+    val photoUrl = buildImageUrl(chat.otherUserPhoto)
+
     Card(
+        colors = CardDefaults.cardColors(containerColor = cardColor),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF3C0063)),
-        shape = MaterialTheme.shapes.medium
+            .padding(vertical = 6.dp)
+            .clickable { onClick() }
     ) {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (chat.profilePicUrl != null) {
+            if (photoUrl != null) {
                 AsyncImage(
-                    model = chat.profilePicUrl,
-                    contentDescription = chat.name,
-                    contentScale = ContentScale.Crop,
+                    model = photoUrl,
+                    contentDescription = "Foto de perfil",
                     modifier = Modifier
                         .size(52.dp)
-                        .clip(CircleShape)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
             } else {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_user_placeholder),
-                    contentDescription = "Default Profile Picture",
-                    contentScale = ContentScale.Crop,
+                Box(
                     modifier = Modifier
                         .size(52.dp)
                         .clip(CircleShape)
-                )
+                        .background(Color(0xFF190A1C)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = chat.otherUserName?.take(1)?.uppercase() ?: "?",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.size(12.dp))
 
-            Column {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
-                    text = chat.name,
+                    text = chat.otherUserName ?: "Moodler",
                     color = Color.White,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = chat.lastMessage,
+                    text = chat.lastMessage ?: "Ainda sem mensagens. Diz olá 👋",
                     color = Color.LightGray,
                     fontSize = 13.sp,
                     maxLines = 1
@@ -223,4 +294,3 @@ fun ChatsPreview() {
         ChatsScreen(navController = navController)
     }
 }
-

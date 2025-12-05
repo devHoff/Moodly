@@ -154,7 +154,6 @@ fun Even(navController: NavController) {
                 .background(Color(0xFF2D004B)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // LOGO
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
@@ -163,7 +162,6 @@ fun Even(navController: NavController) {
                     .size(120.dp)
             )
 
-            // TÍTULO
             Text(
                 text = "Eventos",
                 fontSize = 26.sp,
@@ -172,7 +170,6 @@ fun Even(navController: NavController) {
                 modifier = Modifier.padding(top = 12.dp, bottom = 16.dp)
             )
 
-            // LISTA DE EVENTOS
             Column(
                 verticalArrangement = Arrangement.spacedBy(18.dp),
                 modifier = Modifier
@@ -197,7 +194,6 @@ fun Even(navController: NavController) {
                                 .padding(16.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // FOTO / ÍCONE DE PERFIL
                             Icon(
                                 imageVector = Icons.Filled.AccountCircle,
                                 contentDescription = "Foto de perfil",
@@ -207,7 +203,6 @@ fun Even(navController: NavController) {
 
                             Spacer(modifier = Modifier.width(12.dp))
 
-                            // TEXTOS
                             Column(
                                 modifier = Modifier.weight(1f)
                             ) {

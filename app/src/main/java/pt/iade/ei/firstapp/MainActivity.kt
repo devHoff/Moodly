@@ -8,7 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import pt.iade.ei.firstapp.activities.Conex
 import pt.iade.ei.firstapp.activities.Even
 import pt.iade.ei.firstapp.activities.Tela
 import pt.iade.ei.firstapp.data.SessionManager

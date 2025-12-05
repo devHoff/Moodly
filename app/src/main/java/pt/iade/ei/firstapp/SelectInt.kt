@@ -53,6 +53,7 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.repository.ProfileRepository
+import pt.iade.ei.firstapp.ui.components.InterestInputCard
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -61,21 +62,11 @@ fun Select(navController: NavController) {
     var movies by remember { mutableStateOf(SessionManager.movies) }
     var games by remember { mutableStateOf(SessionManager.games) }
 
-    var selectedImageUri by remember {
-        mutableStateOf(SessionManager.fotoPerfil?.let { Uri.parse(it) })
-    }
-
     var loading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
 
     val scope = rememberCoroutineScope()
     val profileRepo = remember { ProfileRepository() }
-
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        selectedImageUri = uri
-    }
 
     Scaffold(
         topBar = {
@@ -83,17 +74,10 @@ fun Select(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFF2D004B))
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                    .padding(vertical = 12.dp),
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Voltar",
-                        tint = Color.White
-                    )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Os teus interesses",
                     color = Color.White,
@@ -129,57 +113,31 @@ fun Select(navController: NavController) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF3C0063))
-                    .clickable { imagePickerLauncher.launch("image/*") },
-                contentAlignment = Alignment.Center
-            ) {
-                if (selectedImageUri != null) {
-                    AsyncImage(
-                        model = selectedImageUri,
-                        contentDescription = "Imagem de perfil",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    Icon(
-                        painter = painterResource(id = R.drawable.camera),
-                        contentDescription = "Pick image",
-                        tint = Color(0xFFFFD600),
-                        modifier = Modifier.size(48.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
 
             InterestInputCard(
                 iconRes = R.drawable.musica,
                 label = "Música",
                 value = music,
-                onValueChange = { music = it }
+                onValueChange = { music = it },
+                placeholder = "Ex: Arctic Monkeys, Drake, Billie Eilish"
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             InterestInputCard(
                 iconRes = R.drawable.filme,
                 label = "Séries e filmes",
                 value = movies,
-                onValueChange = { movies = it }
+                onValueChange = { movies = it },
+                placeholder = "Ex: Breaking Bad, Interstellar, One Piece"
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             InterestInputCard(
                 iconRes = R.drawable.jogo,
                 label = "Jogos",
                 value = games,
-                onValueChange = { games = it }
+                onValueChange = { games = it },
+                placeholder = "Ex: CS:GO, Minecraft, Hollow Knight"
             )
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -195,7 +153,9 @@ fun Select(navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Button(
-                    onClick = { navController.popBackStack() },
+                    onClick = {
+                        navController.navigate("Pic")
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(50.dp),
@@ -205,9 +165,8 @@ fun Select(navController: NavController) {
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("Voltar")
+                    Text("Pular")
                 }
-
                 Button(
                     onClick = {
                         scope.launch {
@@ -224,7 +183,6 @@ fun Select(navController: NavController) {
                                 SessionManager.music = music
                                 SessionManager.movies = movies
                                 SessionManager.games = games
-                                SessionManager.fotoPerfil = selectedImageUri?.toString()
 
                                 fun splitInterests(text: String): List<String> =
                                     text.split(",")
@@ -261,75 +219,9 @@ fun Select(navController: NavController) {
                     ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text(if (loading) "A guardar..." else "Próximo")
+                    Text(if (loading) "A guardar..." else "Guardar")
                 }
             }
         }
     }
 }
-
-@Composable
-fun InterestInputCard(
-    iconRes: Int,
-    label: String,
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF3C0063),
-            contentColor = Color.White
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp),
-            verticalAlignment = Alignment.Top
-        ) {
-            Icon(
-                painter = painterResource(id = iconRes),
-                contentDescription = label,
-                tint = Color(0xFFFFD600),
-                modifier = Modifier.size(32.dp)
-            )
-            Spacer(modifier = Modifier.width(12.dp))
-            Column {
-                Text(
-                    text = label,
-                    color = Color.White,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 14.sp
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = value,
-                    onValueChange = onValueChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = {
-                        Text(
-                            "Ex: rock, pop, jazz",
-                            color = Color.LightGray,
-                            fontSize = 12.sp
-                        )
-                    },
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        cursorColor = Color(0xFFFFD600),
-                        focusedIndicatorColor = Color(0xFFFFD600),
-                        unfocusedIndicatorColor = Color.Gray,
-                        focusedLabelColor = Color.White,
-                        unfocusedLabelColor = Color.LightGray,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
-                    )
-                )
-            }
-        }
-    }
-}
-
-

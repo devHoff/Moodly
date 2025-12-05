@@ -1,7 +1,15 @@
 package pt.iade.ei.firstapp.data.repository
 
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import pt.iade.ei.firstapp.data.remote.ProfileApi
 import pt.iade.ei.firstapp.data.remote.RetrofitClient
+import pt.iade.ei.firstapp.data.remote.UsuarioApi
+import java.io.File
+import android.content.Context
+import android.net.Uri
+
 
 class ProfileRepository {
 
@@ -39,5 +47,17 @@ class ProfileRepository {
             val msg = resp.errorBody()?.string()?.take(400) ?: "Erro ao atualizar perfil"
             throw Exception(msg)
         }
+    }
+
+    suspend fun uploadProfilePhoto(
+        userId: Long,
+        photoPart: MultipartBody.Part
+    ): ProfileApi.UserProfileResponse {
+        val resp = api.uploadProfilePhoto(userId, photoPart)
+        if (!resp.isSuccessful) {
+            val msg = resp.errorBody()?.string()?.take(400) ?: "Erro ao enviar foto de perfil"
+            throw Exception(msg)
+        }
+        return resp.body() ?: throw Exception("Resposta vazia ao enviar foto")
     }
 }

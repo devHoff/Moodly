@@ -155,7 +155,6 @@ fun ConnectScreen(navController: NavController) {
             .background(Color(0xFF2D004B))
             .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        // TOP: Logo no canto superior direito + título
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -224,8 +223,6 @@ fun ConnectScreen(navController: NavController) {
             }
             return@Column
         }
-
-        // Pager de perfis
         if (suggestions.isNotEmpty()) {
             VerticalPager(
                 state = pagerState,
@@ -245,7 +242,6 @@ fun ConnectScreen(navController: NavController) {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Botões Pular / Conectar
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -269,7 +265,7 @@ fun ConnectScreen(navController: NavController) {
                                             .sendConnectionRequest(currentUserId, user.id)
                                         res.onSuccess { resp ->
                                             infoMessage =
-                                                if (resp.mutual) {
+                                                if (resp.mutual == true) {
                                                     "Conexão aceite! Vocês já são amigos 🎉"
                                                 } else {
                                                     "Pedido enviado para ${user.name}"
