@@ -113,8 +113,8 @@ fun Conex(navController: NavController) {
                 error != null -> Text(error!!, color = Color.Red)
 
                 connections.isEmpty() -> Text(
-                    "Sem pedidos de conexão pendentes.\nVai à aba Mood!",
-                    color = Color.White
+                    "Sem pedidos de conexão pendentes.\nVai à aba conectar!",
+                    color = Color.LightGray
                 )
 
                 else -> LazyColumn {
@@ -122,10 +122,7 @@ fun Conex(navController: NavController) {
                         ConnectionCardItem(connection = c) {
 
                             if (c.mutual && c.connectionId != null) {
-                                // Save to hidden list so it never appears again
                                 SessionManager.hiddenChatConnections.add(c.connectionId)
-
-                                // Remove from UI list NOW
                                 connections = connections.filter { it.connectionId != c.connectionId }
 
                                 val name = Uri.encode(c.nome ?: "")
