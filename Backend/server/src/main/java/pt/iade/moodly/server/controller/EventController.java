@@ -17,37 +17,37 @@ public class EventController {
     private final UsuarioRepository usuarioRepository;
     private final InviteRepository inviteRepository;
     private final EstadoInviteRepository estadoInviteRepository;
+    private final ConnectionRepository connectionRepository;
+    private final PostRepository postRepository;
+    private final GroupPostRepository groupPostRepository;
 
     public EventController(EventoRepository eventoRepository,
                            UsuarioRepository usuarioRepository,
                            InviteRepository inviteRepository,
-                           EstadoInviteRepository estadoInviteRepository) {
+                           EstadoInviteRepository estadoInviteRepository,
+                           ConnectionRepository connectionRepository,
+                           PostRepository postRepository,
+                           GroupPostRepository groupPostRepository) {
         this.eventoRepository = eventoRepository;
         this.usuarioRepository = usuarioRepository;
         this.inviteRepository = inviteRepository;
         this.estadoInviteRepository = estadoInviteRepository;
+        this.connectionRepository = connectionRepository;
+        this.postRepository = postRepository;
+        this.groupPostRepository = groupPostRepository;
     }
 
-    private EstadoInvite getEstadoInviteOrThrow(String nome) {
-        return estadoInviteRepository.findByNome(nome)
-                .orElseThrow(() -> new RuntimeException("EstadoInvite '" + nome + "' não existe"));
-    }
-
-    public static class CreateEventDTO {
-        public Long criadorId;
-        public String titulo;
-        public String descricao;
-        public String local;
-        public LocalDateTime dataEvento;
-        public List<Long> convidadosIds;
+    private EstadoInvite estado(String nome) {
+        return estadoInviteRepository.findByNomeIgnoreCase(nome)
+                .orElseGet(() -> {
+                    EstadoInvite e = new EstadoInvite();
+                    e.setNome(nome);
+                    return estadoInviteRepository.save(e);
+                });
     }
 
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody CreateEventDTO dto) {
-        if (dto.criadorId == null || dto.titulo == null || dto.titulo.isBlank()) {
-            return ResponseEntity.badRequest().body("Dados inválidos");
-        }
-
         Usuario criador = usuarioRepository.findById(dto.criadorId)
                 .orElseThrow(() -> new RuntimeException("Criador não encontrado"));
 
@@ -56,80 +56,130 @@ public class EventController {
         evento.setTitulo(dto.titulo);
         evento.setDescricao(dto.descricao);
         evento.setLocal(dto.local);
-        evento.setDataEvento(dto.dataEvento);
+        evento.setDataEvento(LocalDateTime.parse(dto.dataEvento));
         eventoRepository.save(evento);
 
-        EstadoInvite pendente = getEstadoInviteOrThrow("pendente");
+        EstadoInvite pend = estado("pendente");
 
-        if (dto.convidadosIds != null) {
-            for (Long convidadoId : dto.convidadosIds) {
-                Usuario convidado = usuarioRepository.findById(convidadoId)
-                        .orElseThrow(() -> new RuntimeException("Convidado " + convidadoId + " não encontrado"));
-                Invite invite = new Invite(evento, convidado, pendente);
-                inviteRepository.save(invite);
+        for (Long convidadoId : dto.convidadosIds) {
+            Usuario convidado = usuarioRepository.findById(convidadoId)
+                    .orElseThrow();
+            Invite inv = new Invite(evento, convidado, pend);
+            inviteRepository.save(inv);
+
+            Optional<Connection> conn = connectionRepository
+                    .findByUser1IdAndUser2Id(criador.getId(), convidado.getId());
+            if (conn.isEmpty()) {
+                conn = connectionRepository
+                        .findByUser1IdAndUser2Id(convidado.getId(), criador.getId());
+            }
+
+            if (conn.isPresent()) {
+                String c = "[EVENT_INVITE]" + evento.getId() + "|" + evento.getTitulo() + "|clique para participar";
+                postRepository.save(new Post(conn.get(), criador, c));
             }
         }
 
         return ResponseEntity.ok(evento);
     }
 
-    public static class RespondInviteDTO {
-        public Long userId;
-        public String resposta; // "aceite" ou "recusado"
+    @PostMapping("/{eventId}/accept/{userId}")
+    public ResponseEntity<?> accept(@PathVariable Long eventId, @PathVariable Long userId) {
+        Evento e = eventoRepository.findById(eventId).orElseThrow();
+        Usuario u = usuarioRepository.findById(userId).orElseThrow();
+        Invite inv = inviteRepository.findByEventoAndConvidado(e, u).orElseThrow();
+        inv.setEstado(estado("aceite"));
+        inviteRepository.save(inv);
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{eventId}/respond")
-    public ResponseEntity<?> respondInvite(@PathVariable Long eventId,
-                                           @RequestBody RespondInviteDTO dto) {
-        if (dto.userId == null || dto.resposta == null) {
-            return ResponseEntity.badRequest().body("Dados inválidos");
+    @PostMapping("/{eventId}/leave/{userId}")
+    public ResponseEntity<?> leave(@PathVariable Long eventId, @PathVariable Long userId) {
+        Evento e = eventoRepository.findById(eventId).orElseThrow();
+        Usuario u = usuarioRepository.findById(userId).orElseThrow();
+        Invite inv = inviteRepository.findByEventoAndConvidado(e, u).orElseThrow();
+        inv.setEstado(estado("recusado"));
+        inviteRepository.save(inv);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{eventId}/cancel/{userId}")
+    public ResponseEntity<?> cancel(@PathVariable Long eventId, @PathVariable Long userId) {
+        Evento e = eventoRepository.findById(eventId).orElseThrow();
+        if (!Objects.equals(e.getCriador().getId(), userId))
+            return ResponseEntity.status(403).build();
+
+        EstadoInvite canc = estado("cancelado");
+        for (Invite inv : inviteRepository.findByEvento(e)) {
+            inv.setEstado(canc);
         }
+        inviteRepository.saveAll(inviteRepository.findByEvento(e));
 
-        Evento evento = eventoRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
+        groupPostRepository.deleteByEvento(e);
 
-        Usuario user = usuarioRepository.findById(dto.userId)
-                .orElseThrow(() -> new RuntimeException("User não encontrado"));
+        return ResponseEntity.ok().build();
+    }
 
-        Invite invite = inviteRepository.findByEventoAndConvidado(evento, user)
-                .orElseThrow(() -> new RuntimeException("Convite não encontrado"));
-
-        String respostaNorm = dto.resposta.toLowerCase(Locale.ROOT);
-        if (!respostaNorm.equals("aceite") && !respostaNorm.equals("recusado")) {
-            return ResponseEntity.badRequest().body("Resposta inválida (use 'aceite' ou 'recusado')");
-        }
-
-        EstadoInvite estado = getEstadoInviteOrThrow(respostaNorm);
-        invite.setEstado(estado);
-        inviteRepository.save(invite);
-
-        Map<String, Object> resp = new HashMap<>();
-        resp.put("inviteId", invite.getId());
-        resp.put("estado", estado.getNome());
-        return ResponseEntity.ok(resp);
+    @DeleteMapping("/{eventId}/hide/{userId}")
+    public ResponseEntity<?> hide(@PathVariable Long eventId, @PathVariable Long userId) {
+        Evento e = eventoRepository.findById(eventId).orElseThrow();
+        inviteRepository.findByEventoAndConvidado(e, usuarioRepository.findById(userId).orElseThrow())
+                .ifPresent(inviteRepository::delete);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getEventsForUser(@PathVariable Long userId) {
-        Usuario user = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User não encontrado"));
+    public ResponseEntity<?> eventsForUser(@PathVariable Long userId) {
+        Usuario u = usuarioRepository.findById(userId).orElseThrow();
+        List<Evento> criados = eventoRepository.findByCriador(u);
+        List<Invite> invited = inviteRepository.findByConvidado(u);
 
-        List<Evento> criados = eventoRepository.findByCriador(user);
-        List<Evento> convidado = eventoRepository.findByConvidado(user);
+        List<EventDTO> out = new ArrayList<>();
 
-        Map<String, Object> resp = new HashMap<>();
-        resp.put("criados", criados);
-        resp.put("convidado", convidado);
-        return ResponseEntity.ok(resp);
+        for (Evento e : criados) {
+            Invite inv = invited.stream().filter(x -> x.getEvento().getId().equals(e.getId())).findFirst().orElse(null);
+            String estado = inv != null && inv.getEstado() != null ? inv.getEstado().getNome() : "aceite";
+            out.add(new EventDTO(e, estado, true));
+        }
+
+        for (Invite inv : invited) {
+            Evento e = inv.getEvento();
+            if (out.stream().noneMatch(x -> x.id.equals(e.getId()))) {
+                out.add(new EventDTO(e, inv.getEstado() != null ? inv.getEstado().getNome() : "pendente", false));
+            }
+        }
+
+        return ResponseEntity.ok(out);
     }
 
-    @GetMapping("/invites/{userId}")
-    public ResponseEntity<?> getInvitesForUser(@PathVariable Long userId) {
-        Usuario user = usuarioRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User não encontrado"));
+    public static class CreateEventDTO {
+        public Long criadorId;
+        public String titulo;
+        public String descricao;
+        public String local;
+        public String dataEvento;
+        public List<Long> convidadosIds;
+    }
 
-        List<Invite> invites = inviteRepository.findByConvidado(user);
-        return ResponseEntity.ok(invites);
+    public static class EventDTO {
+    public Long id;
+    public String titulo;
+    public String descricao;
+    public String local;
+    public String dataEvento;
+    public String estado;
+    public boolean isOwner;
+    public String criadorNome;
+
+    public EventDTO(Evento e, String estado, boolean owner) {
+        this.id = e.getId();
+        this.titulo = e.getTitulo();
+        this.descricao = e.getDescricao();
+        this.local = e.getLocal();
+        this.dataEvento = e.getDataEvento() != null ? e.getDataEvento().toString() : null;
+        this.estado = estado;
+        this.isOwner = owner;
+        this.criadorNome = e.getCriador() != null ? e.getCriador().getNome() : null;
     }
 }
-
+}

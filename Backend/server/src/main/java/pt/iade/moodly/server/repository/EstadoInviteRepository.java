@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface EstadoInviteRepository extends JpaRepository<EstadoInvite, Long> {
 
     Optional<EstadoInvite> findByNome(String nome);
+
+    Optional<EstadoInvite> findByNomeIgnoreCase(String nome);
 }
