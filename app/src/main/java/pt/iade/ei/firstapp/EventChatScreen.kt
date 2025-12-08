@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -36,29 +37,35 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.remote.ChatApi
+import pt.iade.ei.firstapp.data.remote.ProfileApi
+import pt.iade.ei.firstapp.data.remote.buildImageUrl
 import pt.iade.ei.firstapp.data.repository.ChatRepository
 import pt.iade.ei.firstapp.data.repository.EventRepository
+import pt.iade.ei.firstapp.data.repository.ProfileRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatRoomScreen(
-    navController: NavController,
-    connectionId: Long,
-    otherUserId: Long,
-    otherUserName: String
+fun EventChatScreen(
+    nav: NavController,
+    eventId: Long,
+    title: String
 ) {
-    val chatRepository = remember { ChatRepository() }
-    val eventRepository = remember { EventRepository() }
+    val chatRepo = remember { ChatRepository() }
+    val eventRepo = remember { EventRepository() }
+    val profileRepo = remember { ProfileRepository() }
     val currentUserId = SessionManager.userId
     val scope = rememberCoroutineScope()
 
@@ -67,7 +74,9 @@ fun ChatRoomScreen(
     var error by remember { mutableStateOf<String?>(null) }
     var input by remember { mutableStateOf("") }
 
-    LaunchedEffect(connectionId) {
+    var profiles by remember { mutableStateOf<Map<Long, ProfileApi.UserProfileResponse>>(emptyMap()) }
+
+    LaunchedEffect(eventId) {
         if (currentUserId == null) {
             error = "Utilizador inválido. Faz login outra vez."
             return@LaunchedEffect
@@ -77,7 +86,7 @@ fun ChatRoomScreen(
         error = null
 
         val result = withContext(Dispatchers.IO) {
-            chatRepository.getConnectionMessages(connectionId)
+            chatRepo.getEventMessages(eventId)
         }
 
         result.onSuccess { list ->
@@ -87,6 +96,26 @@ fun ChatRoomScreen(
         }
 
         loading = false
+    }
+
+    LaunchedEffect(messages) {
+        val ids = messages.map { it.autorId }.distinct()
+        val missing = ids.filter { it !in profiles.keys }
+        if (missing.isNotEmpty()) {
+            val newProfiles = mutableMapOf<Long, ProfileApi.UserProfileResponse>()
+            for (id in missing) {
+                try {
+                    val p = withContext(Dispatchers.IO) {
+                        profileRepo.getProfile(id)
+                    }
+                    newProfiles[id] = p
+                } catch (_: Exception) {
+                }
+            }
+            if (newProfiles.isNotEmpty()) {
+                profiles = profiles + newProfiles
+            }
+        }
     }
 
     fun sendMessage() {
@@ -102,7 +131,7 @@ fun ChatRoomScreen(
         val tempMessage = ChatApi.ChatMessageDTO(
             id = null,
             autorId = currentUserId,
-            autorNome = null,
+            autorNome = "Tu",
             conteudo = text,
             dataEnvio = null
         )
@@ -110,7 +139,7 @@ fun ChatRoomScreen(
 
         scope.launch {
             val result = withContext(Dispatchers.IO) {
-                chatRepository.sendConnectionMessage(connectionId, currentUserId, text)
+                chatRepo.sendEventMessage(eventId, currentUserId, text)
             }
             result.onSuccess { saved ->
                 messages = messages.dropLast(1) + saved
@@ -120,13 +149,13 @@ fun ChatRoomScreen(
         }
     }
 
-    fun onInviteClick(eventId: Long, title: String) {
+    fun leaveEvent() {
         val uid = currentUserId ?: return
         scope.launch {
             withContext(Dispatchers.IO) {
-                eventRepository.accept(eventId, uid)
+                eventRepo.leave(eventId, uid)
             }
-            navController.navigate("eve")
+            nav.popBackStack()
         }
     }
 
@@ -138,21 +167,29 @@ fun ChatRoomScreen(
                     titleContentColor = Color.White
                 ),
                 title = {
-                    Text(
-                        text = otherUserName,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Column {
+                        Text(
+                            text = title,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = "Chat do evento",
+                            fontSize = 12.sp,
+                            color = Color(0xFFFFD600)
+                        )
+                    }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { nav.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Voltar",
                             tint = Color.White
                         )
                     }
-                }
+                },
+
             )
         }
     ) { padding ->
@@ -195,25 +232,13 @@ fun ChatRoomScreen(
                         verticalArrangement = Arrangement.Bottom
                     ) {
                         items(messages) { msg ->
-                            val content = msg.conteudo ?: ""
-                            val isInvite = content.startsWith("[EVENT_INVITE]")
-
-                            if (isInvite) {
-                                val body = content.removePrefix("[EVENT_INVITE]")
-                                val parts = body.split("|")
-                                val eventId = parts.getOrNull(0)?.toLongOrNull()
-                                val title = parts.getOrNull(1) ?: "Evento"
-
-                                if (eventId != null) {
-                                    EventInviteBubble(
-                                        titulo = title,
-                                        onClick = { onInviteClick(eventId, title) }
-                                    )
-                                }
-                            } else {
-                                val isMine = currentUserId != null && msg.autorId == currentUserId
-                                MessageBubble(message = msg, isMine = isMine)
-                            }
+                            val isMine = currentUserId != null && msg.autorId == currentUserId
+                            val profile = profiles[msg.autorId]
+                            EventChatMessageBubble(
+                                message = msg,
+                                profile = profile,
+                                isMine = isMine
+                            )
                         }
                     }
                 }
@@ -272,65 +297,103 @@ fun ChatRoomScreen(
 }
 
 @Composable
-fun MessageBubble(
+fun EventChatMessageBubble(
     message: ChatApi.ChatMessageDTO,
+    profile: ProfileApi.UserProfileResponse?,
     isMine: Boolean
 ) {
+    val name = when {
+        isMine -> "Tu"
+        !message.autorNome.isNullOrBlank() -> message.autorNome
+        else -> profile?.nome
+    } ?: "Utilizador"
+
+    val photoUrl = buildImageUrl(profile?.fotoPerfil)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp),
         horizontalArrangement = if (isMine) Arrangement.End else Arrangement.Start
     ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    color = if (isMine) Color(0xFFFFD600) else Color(0xFF3C0063),
-                    shape = RoundedCornerShape(16.dp)
+        if (!isMine) {
+            if (photoUrl != null) {
+                AsyncImage(
+                    model = photoUrl,
+                    contentDescription = "Foto de perfil",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
-                .padding(horizontal = 12.dp, vertical = 8.dp)
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF190A1C)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = name.take(1).uppercase(),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+        }
+
+        Column(
+            horizontalAlignment = if (isMine) Alignment.End else Alignment.Start
         ) {
             Text(
-                text = message.conteudo ?: "",
-                color = if (isMine) Color(0xFF190A1C) else Color.White,
-                style = MaterialTheme.typography.bodyMedium
+                text = name,
+                color = Color(0xFFFFD600),
+                fontSize = 12.sp
             )
-        }
-    }
-}
 
-@Composable
-fun EventInviteBubble(
-    titulo: String,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .background(Color(0xFFFFD600), RoundedCornerShape(16.dp))
-                .clickable { onClick() }
-                .padding(horizontal = 12.dp, vertical = 8.dp)
-        ) {
-            Column {
+            Box(
+                modifier = Modifier
+                    .background(
+                        color = if (isMine) Color(0xFFFFD600) else Color(0xFF3C0063),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .padding(horizontal = 12.dp, vertical = 8.dp)
+            ) {
                 Text(
-                    text = "Convite para evento",
-                    color = Color(0xFF190A1C),
-                    fontWeight = FontWeight.Bold
+                    text = message.conteudo,
+                    color = if (isMine) Color(0xFF190A1C) else Color.White,
+                    style = MaterialTheme.typography.bodyMedium
                 )
-                Text(
-                    text = titulo,
-                    color = Color(0xFF190A1C)
+            }
+        }
+
+        if (isMine) {
+            Spacer(modifier = Modifier.size(8.dp))
+            if (photoUrl != null) {
+                AsyncImage(
+                    model = photoUrl,
+                    contentDescription = "Foto de perfil",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
-                Text(
-                    text = "Clique para participar",
-                    color = Color(0xFF190A1C),
-                    fontSize = 12.sp
-                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF190A1C)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = name.take(1).uppercase(),
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }

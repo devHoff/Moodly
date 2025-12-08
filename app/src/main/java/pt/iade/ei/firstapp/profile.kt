@@ -3,15 +3,40 @@ package pt.iade.ei.firstapp
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Message
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,7 +52,9 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.remote.buildImageUrl
+import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(
     navController: NavController
@@ -38,6 +65,8 @@ fun ProfileScreen(
     val movies = SessionManager.movies
     val games = SessionManager.games
     val photoUrl = buildImageUrl(SessionManager.fotoPerfil)
+
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         bottomBar = {
@@ -59,7 +88,7 @@ fun ProfileScreen(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.oi),
-                            contentDescription = "Events",
+                            contentDescription = "Eventos",
                             modifier = Modifier.size(36.dp)
                         )
                     }
@@ -67,7 +96,7 @@ fun ProfileScreen(
                     IconButton(onClick = { navController.navigate("cone") }) {
                         Image(
                             painter = painterResource(id = R.drawable.event),
-                            contentDescription = "Connections",
+                            contentDescription = "Conexões",
                             modifier = Modifier.size(36.dp)
                         )
                     }
@@ -83,7 +112,7 @@ fun ProfileScreen(
                     IconButton(onClick = { navController.navigate("chats") }) {
                         Icon(
                             imageVector = Icons.Default.Message,
-                            contentDescription = "Messages",
+                            contentDescription = "Mensagens",
                             tint = Color.White,
                             modifier = Modifier.size(30.dp)
                         )
@@ -92,7 +121,7 @@ fun ProfileScreen(
                     IconButton(onClick = { navController.navigate("profile") }) {
                         Icon(
                             imageVector = Icons.Default.AccountBox,
-                            contentDescription = "Profile",
+                            contentDescription = "Perfil",
                             tint = Color.White,
                             modifier = Modifier.size(30.dp)
                         )
@@ -107,8 +136,25 @@ fun ProfileScreen(
                 .background(Color(0xFF2D004B))
                 .padding(padding)
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { showLogoutDialog = true }) {
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = "Definições",
+                        tint = Color.White,
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(32.dp))
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -157,6 +203,7 @@ fun ProfileScreen(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -214,6 +261,48 @@ fun ProfileScreen(
                 }
             }
         }
+
+        if (showLogoutDialog) {
+            AlertDialog(
+                onDismissRequest = { showLogoutDialog = false },
+                title = {
+                    Text(
+                        text = "Terminar sessão",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                },
+                text = {
+                    Text(
+                        text = "Tens a certeza que queres terminar sessão?",
+                        color = Color.White
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showLogoutDialog = false
+                            SessionManager.clear()
+                            navController.navigate("login") {
+                                popUpTo("login") { inclusive = true }
+                            }
+                        }
+                    ) {
+                        Text(
+                            text = "Terminar sessão",
+                            color = Color(0xFFFFD600),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showLogoutDialog = false }) {
+                        Text(text = "Cancelar", color = Color.White)
+                    }
+                },
+                containerColor = Color(0xFF3C0063)
+            )
+        }
     }
 }
 
@@ -253,10 +342,12 @@ fun InterestItem(icon: Int, label: String, value: String) {
     }
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview(showBackground = true, backgroundColor = 0xFF2D004B)
 @Composable
 fun ProfileScreenPreview() {
     val navController = rememberNavController()
-    ProfileScreen(navController = navController)
+    FirstAppTheme {
+        ProfileScreen(navController = navController)
+    }
 }
+
