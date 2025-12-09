@@ -1,5 +1,6 @@
 package pt.iade.ei.firstapp
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,9 +42,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -398,3 +401,49 @@ fun EventChatMessageBubble(
         }
     }
 }
+@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
+@Composable
+fun EventChatScreenPreview() {
+    val nav = rememberNavController()
+
+    val mockMessages = listOf(
+        ChatApi.ChatMessageDTO(
+            id = 1,
+            autorId = 1,
+            autorNome = "Tu",
+            conteudo = "Olá pessoal!",
+            dataEnvio = "2025-01-01T10:00"
+        ),
+        ChatApi.ChatMessageDTO(
+            id = 2,
+            autorId = 2,
+            autorNome = "Maria",
+            conteudo = "Olá! Tudo bem?",
+            dataEnvio = "2025-01-01T10:01"
+        )
+    )
+
+    EventChatPreviewContent(nav, mockMessages)
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+private fun EventChatPreviewContent(
+    nav: NavController,
+    messages: List<ChatApi.ChatMessageDTO>
+) {
+    Scaffold(
+        containerColor = Color(0xFF2D004B)
+    ) {
+        LazyColumn(Modifier.padding(16.dp)) {
+            items(messages) { msg ->
+                EventChatMessageBubble(
+                    message = msg,
+                    profile = null,
+                    isMine = msg.autorId.toInt() == 1
+                )
+            }
+        }
+    }
+}
+

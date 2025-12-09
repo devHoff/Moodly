@@ -31,7 +31,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,15 +43,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.remote.buildImageUrl
-import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -60,12 +56,11 @@ fun ProfileScreen(
     navController: NavController
 ) {
     val userName = SessionManager.nome ?: "Moodler"
-    val connections = remember { SessionManager.connectionsCount }
+    val connections = SessionManager.connectionsCount
     val music = SessionManager.music
     val movies = SessionManager.movies
     val games = SessionManager.games
     val photoUrl = buildImageUrl(SessionManager.fotoPerfil)
-
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -95,7 +90,7 @@ fun ProfileScreen(
 
                     IconButton(onClick = { navController.navigate("cone") }) {
                         Image(
-                            painter = painterResource(id = R.drawable.event),
+                            painter = painterResource(id = R.drawable.conexao),
                             contentDescription = "Conexões",
                             modifier = Modifier.size(36.dp)
                         )
@@ -122,7 +117,7 @@ fun ProfileScreen(
                         Icon(
                             imageVector = Icons.Default.AccountBox,
                             contentDescription = "Perfil",
-                            tint = Color.White,
+                            tint = Color.Yellow,
                             modifier = Modifier.size(30.dp)
                         )
                     }
@@ -136,24 +131,44 @@ fun ProfileScreen(
                 .background(Color(0xFF2D004B))
                 .padding(padding)
         ) {
-            Row(
+
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp, end = 16.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
             ) {
-                IconButton(onClick = { showLogoutDialog = true }) {
+
+                IconButton(
+                    onClick = { showLogoutDialog = true },
+                    modifier = Modifier.align(Alignment.CenterStart)
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Settings,
                         contentDescription = "Definições",
                         tint = Color.White,
-                        modifier = Modifier.size(26.dp)
+                        modifier = Modifier.size(30.dp)
                     )
                 }
+
+                Text(
+                    text = "O Teu Perfil",
+                    color = Color(0xFFFFD600),
+                    fontSize = 26.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logo",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .align(Alignment.CenterEnd)
+                )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
+
 
             Column(
                 modifier = Modifier
@@ -161,9 +176,10 @@ fun ProfileScreen(
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 Box(
                     modifier = Modifier
-                        .size(120.dp)
+                        .size(200.dp)
                         .clip(CircleShape)
                         .background(Color(0xFF3C0063)),
                     contentAlignment = Alignment.Center
@@ -189,11 +205,9 @@ fun ProfileScreen(
                 Text(
                     text = userName,
                     color = Color.White,
-                    fontSize = 22.sp,
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.Bold
                 )
-
-                Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
                     text = "$connections conexões",
@@ -204,6 +218,7 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -212,6 +227,7 @@ fun ProfileScreen(
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
+
                     Text(
                         text = "Interesses",
                         color = Color.White,
@@ -261,7 +277,6 @@ fun ProfileScreen(
                 }
             }
         }
-
         if (showLogoutDialog) {
             AlertDialog(
                 onDismissRequest = { showLogoutDialog = false },
@@ -279,25 +294,31 @@ fun ProfileScreen(
                     )
                 },
                 confirmButton = {
-                    TextButton(
+                    Button(
                         onClick = {
                             showLogoutDialog = false
                             SessionManager.clear()
                             navController.navigate("login") {
                                 popUpTo("login") { inclusive = true }
                             }
-                        }
-                    ) {
-                        Text(
-                            text = "Terminar sessão",
-                            color = Color(0xFFFFD600),
-                            fontWeight = FontWeight.Bold
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFFFD600),
+                            contentColor = Color.Black
                         )
+                    ) {
+                        Text("Terminar sessão", fontWeight = FontWeight.Bold)
                     }
                 },
                 dismissButton = {
-                    TextButton(onClick = { showLogoutDialog = false }) {
-                        Text(text = "Cancelar", color = Color.White)
+                    Button(
+                        onClick = { showLogoutDialog = false },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.White,
+                            contentColor = Color.Black
+                        )
+                    ) {
+                        Text("Cancelar")
                     }
                 },
                 containerColor = Color(0xFF3C0063)
@@ -310,6 +331,7 @@ fun ProfileScreen(
 fun InterestItem(icon: Int, label: String, value: String) {
     Column(modifier = Modifier.padding(vertical = 6.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
+
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = label,
@@ -317,6 +339,7 @@ fun InterestItem(icon: Int, label: String, value: String) {
                 modifier = Modifier.size(24.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
+
             Text(
                 text = label,
                 color = Color(0xFFFFD600),
@@ -324,30 +347,12 @@ fun InterestItem(icon: Int, label: String, value: String) {
                 fontSize = 14.sp
             )
         }
-        if (value.isNotBlank()) {
-            Text(
-                text = value,
-                color = Color.White,
-                fontSize = 14.sp,
-                modifier = Modifier.padding(start = 32.dp, top = 2.dp)
-            )
-        } else {
-            Text(
-                text = "Sem preferências definidas",
-                color = Color.Gray,
-                fontSize = 13.sp,
-                modifier = Modifier.padding(start = 32.dp, top = 2.dp)
-            )
-        }
+
+        Text(
+            text = if (value.isNotBlank()) value else "Sem preferências definidas",
+            color = if (value.isNotBlank()) Color.White else Color.Gray,
+            fontSize = 13.sp,
+            modifier = Modifier.padding(start = 32.dp, top = 2.dp)
+        )
     }
 }
-
-@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
-@Composable
-fun ProfileScreenPreview() {
-    val navController = rememberNavController()
-    FirstAppTheme {
-        ProfileScreen(navController = navController)
-    }
-}
-

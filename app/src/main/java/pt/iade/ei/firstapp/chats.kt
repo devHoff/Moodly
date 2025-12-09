@@ -27,7 +27,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -115,7 +115,7 @@ fun ChatsScreen(navController: NavController) {
 
                     IconButton(onClick = { navController.navigate("cone") }) {
                         Image(
-                            painter = painterResource(id = R.drawable.event),
+                            painter = painterResource(id = R.drawable.conexao),
                             contentDescription = "Conexões",
                             modifier = Modifier.size(36.dp)
                         )
@@ -161,24 +161,50 @@ fun ChatsScreen(navController: NavController) {
                     .fillMaxSize()
                     .padding(horizontal = 16.dp, vertical = 24.dp)
             ) {
-                Text(
-                    text = "Chats",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Conversa com as tuas conexões.",
-                    fontSize = 14.sp,
-                    color = Color.LightGray
-                )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "Logo Moodly",
+                        modifier = Modifier
+                            .size(40.dp)
+                            .align(Alignment.TopEnd)
+                    )
+
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(top = 12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Chats",
+                            fontSize = 25.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFFFD600),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Conversa com as tuas conexões.",
+                            fontSize = 14.sp,
+                            color = Color.LightGray,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 if (loading) {
                     Box(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(color = Color(0xFFFFD600))
@@ -191,8 +217,8 @@ fun ChatsScreen(navController: NavController) {
                     )
                 } else if (chats.isEmpty()) {
                     Text(
-                        text = "Ainda não tens chats ativos.\nVai às tuas conexões e começa uma conversa ✨",
-                        color = Color.White,
+                        text = "Ainda não tens chats ativos.\nVai às tuas conexões e começa uma conversa",
+                        color = Color.LightGray,
                         fontSize = 14.sp
                     )
                 } else {
@@ -203,7 +229,8 @@ fun ChatsScreen(navController: NavController) {
                             ChatListItem(
                                 chat = chat,
                                 onClick = {
-                                    val encodedName = Uri.encode(chat.otherUserName ?: "")
+                                    val encodedName =
+                                        Uri.encode(chat.otherUserName ?: "")
                                     navController.navigate(
                                         "chatroom/${chat.connectionId}/${chat.otherUserId}/$encodedName"
                                     )
@@ -294,3 +321,4 @@ fun ChatsPreview() {
         ChatsScreen(navController = navController)
     }
 }
+

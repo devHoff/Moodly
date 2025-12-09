@@ -1,5 +1,6 @@
 package pt.iade.ei.firstapp
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -50,9 +51,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -171,7 +174,7 @@ fun Even(navController: NavController) {
 
                     IconButton(onClick = { navController.navigate("cone") }) {
                         Image(
-                            painter = painterResource(id = R.drawable.event),
+                            painter = painterResource(id = R.drawable.conexao),
                             contentDescription = "Conexões",
                             modifier = Modifier.size(36.dp)
                         )
@@ -240,7 +243,7 @@ fun Even(navController: NavController) {
                 ) {
                     Text(
                         text = "Ainda não tens eventos.\nCria um ou aceita um convite no chat.",
-                        color = Color.White,
+                        color = Color.LightGray,
                         fontSize = 14.sp
                     )
                 }
@@ -512,3 +515,55 @@ fun EventActionDialog(
         }
     )
 }
+@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
+@Composable
+fun EventsScreenPreview() {
+    val nav = rememberNavController()
+
+    val mockEvents = listOf(
+        EventRepository.UiEvent(
+            id = 1,
+            titulo = "Cinema Night",
+            desc = "Vamos ver um filme!",
+            local = "Lisboa",
+            dataRaw = "2025-02-01T21:00:00",
+            estado = "aceite",
+            isOwner = false,
+            criadorNome = "Maria"
+        ),
+        EventRepository.UiEvent(
+            id = 2,
+            titulo = "Jantar",
+            desc = "Jantar com amigos",
+            local = "Porto",
+            dataRaw = "2025-03-05T19:30:00",
+            estado = "cancelado",
+            isOwner = true,
+            criadorNome = "Tu"
+        )
+    )
+
+    EventsPreviewContent(nav, mockEvents)
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+private fun EventsPreviewContent(
+    nav: NavController,
+    events: List<EventRepository.UiEvent>
+) {
+    Scaffold(containerColor = Color(0xFF2D004B)) {
+        LazyColumn(Modifier.padding(16.dp)) {
+            items(events) { e ->
+                EventCardItem(
+                    event = e,
+                    onDetailsClick = {},
+                    onChatClick = {},
+                    onLongPress = {},
+                    onHideClick = {}
+                )
+            }
+        }
+    }
+}
+

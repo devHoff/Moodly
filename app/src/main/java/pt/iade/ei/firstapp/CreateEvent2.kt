@@ -35,8 +35,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -231,3 +233,13 @@ fun CreateEventStep2(
         }
     }
 }
+@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
+@Composable
+fun CreateEventStep2Preview() {
+    val nav = rememberNavController()
+    CreateEventStep2(
+        nav = nav,
+        dataStr = "Festa|Música e diversão|Lisboa|2025-01-01T20:00:00"
+    )
+}
+

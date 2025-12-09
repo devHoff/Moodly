@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -75,8 +76,36 @@ fun ConnectScreen(navController: NavController) {
     var infoMessage by remember { mutableStateOf<String?>(null) }
 
     val currentUserId = SessionManager.userId
+    val isPreview = LocalInspectionMode.current
 
     LaunchedEffect(Unit) {
+        if (isPreview) {
+            suggestions = listOf(
+                SuggestedUser(
+                    id = 2L,
+                    name = "Joana",
+                    photoUrl = null,
+                    music = listOf("Drake", "Arctic Monkeys"),
+                    movies = listOf("Inception", "Breaking Bad"),
+                    games = listOf("Valorant", "FIFA"),
+                    connectionsCount = 5
+                ),
+                SuggestedUser(
+                    id = 3L,
+                    name = "Ricardo",
+                    photoUrl = null,
+                    music = listOf("Jazz", "Lo-fi"),
+                    movies = listOf("Interstellar"),
+                    games = listOf("League of Legends"),
+                    connectionsCount = 3
+                )
+            )
+            loading = false
+            error = null
+            infoMessage = null
+            return@LaunchedEffect
+        }
+
         if (currentUserId == null) {
             error = "Utilizador inválido. Faz login outra vez."
             return@LaunchedEffect
@@ -172,9 +201,9 @@ fun ConnectScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Encontra um amigo",
+            text = "Encontra O Teu Novo Amigo!",
             color = Color(0xFFFFD600),
-            fontSize = 22.sp,
+            fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth(),
@@ -223,6 +252,7 @@ fun ConnectScreen(navController: NavController) {
             }
             return@Column
         }
+
         if (suggestions.isNotEmpty()) {
             VerticalPager(
                 state = pagerState,
@@ -259,7 +289,7 @@ fun ConnectScreen(navController: NavController) {
                                     }
                                 },
                                 onConnect = {
-                                    if (currentUserId == null) return@RowButtonsConnect
+                                    if (currentUserId == null || isPreview) return@RowButtonsConnect
                                     scope.launch {
                                         val res = connectionRepo
                                             .sendConnectionRequest(currentUserId, user.id)
@@ -270,7 +300,6 @@ fun ConnectScreen(navController: NavController) {
                                                 } else {
                                                     "Pedido enviado para ${user.name}"
                                                 }
-                                            // avança para o próximo
                                             if (page < suggestions.lastIndex) {
                                                 pagerState.animateScrollToPage(page + 1)
                                             }
@@ -293,21 +322,22 @@ private fun ProfileSuggestionCard(user: SuggestedUser) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(480.dp),
+            .height(590.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF3C0063)),
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        shape = RoundedCornerShape(28.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp),
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+
             Box(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(200.dp)
                     .clip(CircleShape)
                     .background(Color(0xFF190A1C)),
                 contentAlignment = Alignment.Center
@@ -320,7 +350,6 @@ private fun ProfileSuggestionCard(user: SuggestedUser) {
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
-                    // placeholder igual ao profile se quiseres
                     Icon(
                         painter = painterResource(id = R.drawable.default_profile),
                         contentDescription = "Sem foto",
@@ -330,30 +359,29 @@ private fun ProfileSuggestionCard(user: SuggestedUser) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = user.name,
                 color = Color.White,
-                fontSize = 22.sp,
+                fontSize = 28.sp, // maior
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = "${user.connectionsCount} conexões",
                 color = Color(0xFFFFD600),
-                fontSize = 16.sp
+                fontSize = 18.sp
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
+            Spacer(modifier = Modifier.height(24.dp))
 
             InterestSection(label = "Música", icon = R.drawable.musica, values = user.music)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             InterestSection(label = "Filmes e séries", icon = R.drawable.filme, values = user.movies)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             InterestSection(label = "Jogos", icon = R.drawable.jogo, values = user.games)
         }
     }
@@ -435,11 +463,14 @@ private fun RowButtonsConnect(
     }
 }
 
-@Preview(showBackground = true)
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
 @Composable
 fun ConnectScreenPreview() {
+    val navController = rememberNavController()
+    SessionManager.userId = 1L
     FirstAppTheme {
-        val navController = rememberNavController()
         ConnectScreen(navController = navController)
     }
 }
+

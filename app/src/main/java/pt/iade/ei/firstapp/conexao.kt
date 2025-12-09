@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -75,19 +76,38 @@ fun Conex(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = { navController.navigate("eve") }) {
-                        Image(painterResource(R.drawable.oi), null, Modifier.size(36.dp))
+                        Image(painterResource(R.drawable.oi),
+                            null,
+                            Modifier.size(36.dp))
                     }
                     IconButton(onClick = {}) {
-                        Image(painterResource(R.drawable.event), null, Modifier.size(36.dp))
+                        Image(
+                            painter = painterResource(R.drawable.conexao),
+                            contentDescription = null,
+                            modifier = Modifier.size(36.dp),
+                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color(0xFFFFD600))
+                        )
                     }
                     IconButton(onClick = { navController.navigate("home") }) {
-                        Image(painterResource(R.drawable.mood), null, Modifier.size(36.dp))
+                        Image(painterResource(R.drawable.mood),
+                            null,
+                            Modifier.size(36.dp))
                     }
                     IconButton(onClick = { navController.navigate("chats") }) {
-                        Icon(Icons.Default.Message, null, tint = Color.White, modifier = Modifier.size(30.dp))
+                        Icon(
+                            Icons.Default.Message,
+                            null,
+                            tint = Color.White,
+                            modifier = Modifier.size(30.dp)
+                        )
                     }
                     IconButton(onClick = { navController.navigate("profile") }) {
-                        Icon(Icons.Default.AccountBox, null, tint = Color.White, modifier = Modifier.size(30.dp))
+                        Icon(
+                            Icons.Default.AccountBox,
+                            null,
+                            tint = Color.White,
+                            modifier = Modifier.size(30.dp)
+                        )
                     }
                 }
             }
@@ -101,11 +121,49 @@ fun Conex(navController: NavController) {
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            Text("As tuas conexões", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.White)
-            Spacer(Modifier.height(8.dp))
-            Text("Utilizadores com quem clicaste em conectar.", color = Color.LightGray)
 
-            Spacer(Modifier.height(16.dp))
+            // ---------------------------
+            //   HEADER: logo em cima dir. + título centrado
+            // ---------------------------
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 16.dp)
+            ) {
+                // Logo Moodly no canto superior direito
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "Logo Moodly",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .align(Alignment.TopEnd)
+                )
+
+                // Título e subtítulo centrados, ligeiramente abaixo da logo
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(top = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "As tuas conexões",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFFD600),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Utilizadores com quem clicaste em conectar.",
+                        color = Color.LightGray,
+                        textAlign = TextAlign.Center,
+                        fontSize = 14.sp
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
 
             when {
                 loading -> CircularProgressIndicator(color = Color(0xFFFFD600))
@@ -123,7 +181,8 @@ fun Conex(navController: NavController) {
 
                             if (c.mutual && c.connectionId != null) {
                                 SessionManager.hiddenChatConnections.add(c.connectionId)
-                                connections = connections.filter { it.connectionId != c.connectionId }
+                                connections =
+                                    connections.filter { it.connectionId != c.connectionId }
 
                                 val name = Uri.encode(c.nome ?: "")
                                 navController.navigate("chatroom/${c.connectionId}/${c.userId}/$name")
@@ -165,28 +224,46 @@ private fun ConnectionCardItem(
                 AsyncImage(
                     model = photoUrl,
                     contentDescription = null,
-                    modifier = Modifier.size(56.dp).clip(CircleShape),
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
             } else {
                 Box(
-                    Modifier.size(56.dp).clip(CircleShape).background(Color(0xFF190A1C)),
+                    Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF190A1C)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(connection.nome?.firstOrNull()?.uppercase() ?: "?", color = Color.White)
+                    Text(
+                        connection.nome?.firstOrNull()?.uppercase() ?: "?",
+                        color = Color.White
+                    )
                 }
             }
 
             Spacer(Modifier.width(12.dp))
 
             Column(Modifier.weight(1f)) {
-                Text(connection.nome ?: "Moodler", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(
+                    connection.nome ?: "Moodler",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
 
                 if (connection.mutual) {
                     Text("Vocês já se conectaram! 🎉", color = highlight, fontSize = 14.sp)
                     Spacer(Modifier.height(6.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Message, null, tint = highlight, modifier = Modifier.size(20.dp))
+                        Icon(
+                            Icons.Default.Message,
+                            null,
+                            tint = highlight,
+                            modifier = Modifier.size(20.dp)
+                        )
                         Spacer(Modifier.width(6.dp))
                         Text("Clique para iniciar um chat", color = highlight)
                     }

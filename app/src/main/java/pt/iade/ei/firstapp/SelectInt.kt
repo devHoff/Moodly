@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -70,22 +73,25 @@ fun Select(navController: NavController) {
 
     Scaffold(
         topBar = {
-            Row(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color(0xFF2D004B))
-                    .padding(vertical = 12.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(
+                        WindowInsets.statusBars.asPaddingValues()
+                    )
+                    .padding(vertical = 16.dp)
             ) {
                 Text(
                     text = "Os teus interesses",
-                    color = Color.White,
+                    color = Color(0xFFFFD600),
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
         }
+
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -99,7 +105,7 @@ fun Select(navController: NavController) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Ajuda-nos a encontrar pessoas como tu",
+                text = "Ajuda outras pessoas a te conhecerem melhor",
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -108,11 +114,10 @@ fun Select(navController: NavController) {
             Text(
                 text = "Escreve alguns interesses, separados por vírgulas",
                 color = Color.LightGray,
-                fontSize = 14.sp
+                fontSize = 18.sp
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-
 
             InterestInputCard(
                 iconRes = R.drawable.musica,
@@ -137,7 +142,6 @@ fun Select(navController: NavController) {
                 onValueChange = { games = it },
                 placeholder = "Ex: CS:GO, Minecraft, Hollow Knight"
             )
-
 
             Spacer(modifier = Modifier.height(24.dp))
 

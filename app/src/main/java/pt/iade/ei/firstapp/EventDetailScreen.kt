@@ -26,9 +26,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,4 +118,20 @@ fun EventDetailScreen(
         }
     }
 }
+
+@Preview(showBackground = true, backgroundColor = 0xFF2D004B)
+@Composable
+fun EventDetailPreview() {
+    val nav = rememberNavController()
+    EventDetailScreen(
+        nav = nav,
+        eventId = 1,
+        title = "Festa do João",
+        organizer = "João Silva",
+        date = "10/12/2025 20:00",
+        local = "Lisboa Centro",
+        desc = "Venham todos celebrar!"
+    )
+}
+
 
