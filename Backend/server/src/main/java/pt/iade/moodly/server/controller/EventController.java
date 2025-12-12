@@ -1,6 +1,7 @@
 package pt.iade.moodly.server.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pt.iade.moodly.server.model.*;
 import pt.iade.moodly.server.repository.*;
@@ -62,8 +63,10 @@ public class EventController {
         EstadoInvite pend = estado("pendente");
 
         for (Long convidadoId : dto.convidadosIds) {
-            Usuario convidado = usuarioRepository.findById(convidadoId)
-                    .orElseThrow();
+            if (convidadoId == null) continue;
+            if (Objects.equals(convidadoId, criador.getId())) continue;
+
+            Usuario convidado = usuarioRepository.findById(convidadoId).orElseThrow();
             Invite inv = new Invite(evento, convidado, pend);
             inviteRepository.save(inv);
 
@@ -103,17 +106,20 @@ public class EventController {
         return ResponseEntity.ok().build();
     }
 
+    @Transactional
     @PostMapping("/{eventId}/cancel/{userId}")
     public ResponseEntity<?> cancel(@PathVariable Long eventId, @PathVariable Long userId) {
         Evento e = eventoRepository.findById(eventId).orElseThrow();
-        if (!Objects.equals(e.getCriador().getId(), userId))
+        if (e.getCriador() == null || !Objects.equals(e.getCriador().getId(), userId))
             return ResponseEntity.status(403).build();
 
         EstadoInvite canc = estado("cancelado");
-        for (Invite inv : inviteRepository.findByEvento(e)) {
+
+        List<Invite> invites = inviteRepository.findByEvento(e);
+        for (Invite inv : invites) {
             inv.setEstado(canc);
         }
-        inviteRepository.saveAll(inviteRepository.findByEvento(e));
+        inviteRepository.saveAll(invites);
 
         groupPostRepository.deleteByEvento(e);
 
@@ -137,15 +143,29 @@ public class EventController {
         List<EventDTO> out = new ArrayList<>();
 
         for (Evento e : criados) {
-            Invite inv = invited.stream().filter(x -> x.getEvento().getId().equals(e.getId())).findFirst().orElse(null);
-            String estado = inv != null && inv.getEstado() != null ? inv.getEstado().getNome() : "aceite";
-            out.add(new EventDTO(e, estado, true));
+            Optional<Invite> invCriadorOpt = inviteRepository.findByEventoAndConvidado(e, u);
+
+            String estadoFinal;
+            if (invCriadorOpt.isPresent() && invCriadorOpt.get().getEstado() != null) {
+                estadoFinal = invCriadorOpt.get().getEstado().getNome();
+            } else {
+                boolean cancelado = inviteRepository.findByEvento(e).stream()
+                        .anyMatch(i -> i.getEstado() != null && i.getEstado().getNome() != null
+                                && i.getEstado().getNome().equalsIgnoreCase("cancelado"));
+                estadoFinal = cancelado ? "cancelado" : "aceite";
+            }
+
+            out.add(new EventDTO(e, estadoFinal, true));
         }
 
         for (Invite inv : invited) {
             Evento e = inv.getEvento();
             if (out.stream().noneMatch(x -> x.id.equals(e.getId()))) {
-                out.add(new EventDTO(e, inv.getEstado() != null ? inv.getEstado().getNome() : "pendente", false));
+                out.add(new EventDTO(
+                        e,
+                        inv.getEstado() != null ? inv.getEstado().getNome() : "pendente",
+                        false
+                ));
             }
         }
 
@@ -162,24 +182,24 @@ public class EventController {
     }
 
     public static class EventDTO {
-    public Long id;
-    public String titulo;
-    public String descricao;
-    public String local;
-    public String dataEvento;
-    public String estado;
-    public boolean isOwner;
-    public String criadorNome;
+        public Long id;
+        public String titulo;
+        public String descricao;
+        public String local;
+        public String dataEvento;
+        public String estado;
+        public boolean isOwner;
+        public String criadorNome;
 
-    public EventDTO(Evento e, String estado, boolean owner) {
-        this.id = e.getId();
-        this.titulo = e.getTitulo();
-        this.descricao = e.getDescricao();
-        this.local = e.getLocal();
-        this.dataEvento = e.getDataEvento() != null ? e.getDataEvento().toString() : null;
-        this.estado = estado;
-        this.isOwner = owner;
-        this.criadorNome = e.getCriador() != null ? e.getCriador().getNome() : null;
+        public EventDTO(Evento e, String estado, boolean owner) {
+            this.id = e.getId();
+            this.titulo = e.getTitulo();
+            this.descricao = e.getDescricao();
+            this.local = e.getLocal();
+            this.dataEvento = e.getDataEvento() != null ? e.getDataEvento().toString() : null;
+            this.estado = estado;
+            this.isOwner = owner;
+            this.criadorNome = e.getCriador() != null ? e.getCriador().getNome() : null;
+        }
     }
-}
 }
