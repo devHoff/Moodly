@@ -47,6 +47,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.repository.ConnectionRepository
 import pt.iade.ei.firstapp.data.repository.UsuarioRepository
@@ -65,7 +67,6 @@ data class SuggestedUser(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ConnectScreen(navController: NavController) {
-
     val scope = rememberCoroutineScope()
     val connectionRepo = remember { ConnectionRepository() }
     val usuarioRepo = remember { UsuarioRepository() }
@@ -99,7 +100,7 @@ fun ConnectScreen(navController: NavController) {
                     games = listOf("League of Legends"),
                     connectionsCount = 3
                 )
-            )
+            ).shuffled()
             loading = false
             error = null
             infoMessage = null
@@ -116,18 +117,23 @@ fun ConnectScreen(navController: NavController) {
         infoMessage = null
 
         try {
-            val result = connectionRepo.discoverUsers(currentUserId, limit = 20)
+            val result = withContext(Dispatchers.IO) {
+                connectionRepo.discoverUsers(currentUserId, limit = 20)
+            }
+
             result.onFailure { e ->
                 error = e.message ?: "Erro ao carregar sugestões"
             }.onSuccess { list ->
                 val enriched = mutableListOf<SuggestedUser>()
 
                 for (user in list) {
-                    val detalheRes = usuarioRepo.getUsuarioDetalhe(user.id)
+                    val detalheRes = withContext(Dispatchers.IO) {
+                        usuarioRepo.getUsuarioDetalhe(user.id)
+                    }
 
-                    var musicList = mutableListOf<String>()
-                    var moviesList = mutableListOf<String>()
-                    var gamesList = mutableListOf<String>()
+                    val musicList = mutableListOf<String>()
+                    val moviesList = mutableListOf<String>()
+                    val gamesList = mutableListOf<String>()
 
                     detalheRes.onSuccess { detalhe ->
                         detalhe.interesses.orEmpty().forEach { i ->
@@ -146,10 +152,11 @@ fun ConnectScreen(navController: NavController) {
                         }
                     }
 
-                    val connectionsCount = connectionRepo
-                        .mutualConnections(user.id)
-                        .getOrElse { emptyList() }
-                        .size
+                    val connectionsCount = withContext(Dispatchers.IO) {
+                        connectionRepo.mutualConnections(user.id)
+                            .getOrElse { emptyList() }
+                            .size
+                    }
 
                     enriched.add(
                         SuggestedUser(
@@ -164,8 +171,9 @@ fun ConnectScreen(navController: NavController) {
                     )
                 }
 
-                suggestions = enriched
-                if (enriched.isEmpty()) {
+                val shuffled = enriched.shuffled()
+                suggestions = shuffled
+                if (shuffled.isEmpty()) {
                     infoMessage = "Ainda não há sugestões para ti. Tenta mais tarde ✨"
                 }
             }
@@ -201,9 +209,9 @@ fun ConnectScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Encontra O Teu Novo Amigo!",
+            text = "Encontra um amigo",
             color = Color(0xFFFFD600),
-            fontSize = 25.sp,
+            fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .fillMaxWidth(),
@@ -291,8 +299,9 @@ fun ConnectScreen(navController: NavController) {
                                 onConnect = {
                                     if (currentUserId == null || isPreview) return@RowButtonsConnect
                                     scope.launch {
-                                        val res = connectionRepo
-                                            .sendConnectionRequest(currentUserId, user.id)
+                                        val res = withContext(Dispatchers.IO) {
+                                            connectionRepo.sendConnectionRequest(currentUserId, user.id)
+                                        }
                                         res.onSuccess { resp ->
                                             infoMessage =
                                                 if (resp.mutual == true) {
@@ -322,22 +331,21 @@ private fun ProfileSuggestionCard(user: SuggestedUser) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(590.dp),
+            .height(480.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF3C0063)),
-        shape = RoundedCornerShape(28.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-
             Box(
                 modifier = Modifier
-                    .size(200.dp)
+                    .size(120.dp)
                     .clip(CircleShape)
                     .background(Color(0xFF190A1C)),
                 contentAlignment = Alignment.Center
@@ -359,29 +367,29 @@ private fun ProfileSuggestionCard(user: SuggestedUser) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = user.name,
                 color = Color.White,
-                fontSize = 28.sp, // maior
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "${user.connectionsCount} conexões",
                 color = Color(0xFFFFD600),
-                fontSize = 18.sp
+                fontSize = 16.sp
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             InterestSection(label = "Música", icon = R.drawable.musica, values = user.music)
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             InterestSection(label = "Filmes e séries", icon = R.drawable.filme, values = user.movies)
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             InterestSection(label = "Jogos", icon = R.drawable.jogo, values = user.games)
         }
     }

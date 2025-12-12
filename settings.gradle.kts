@@ -20,5 +20,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "FirstApp"
-include(":app")
+include(":Moodly")
  
