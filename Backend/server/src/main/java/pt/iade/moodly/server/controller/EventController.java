@@ -60,26 +60,34 @@ public class EventController {
         evento.setDataEvento(LocalDateTime.parse(dto.dataEvento));
         eventoRepository.save(evento);
 
+        EstadoInvite aceite = estado("aceite");
         EstadoInvite pend = estado("pendente");
 
-        for (Long convidadoId : dto.convidadosIds) {
-            if (convidadoId == null) continue;
-            if (Objects.equals(convidadoId, criador.getId())) continue;
+        inviteRepository.save(new Invite(evento, criador, aceite));
 
-            Usuario convidado = usuarioRepository.findById(convidadoId).orElseThrow();
-            Invite inv = new Invite(evento, convidado, pend);
-            inviteRepository.save(inv);
+        if (dto.convidadosIds != null) {
+            for (Long convidadoId : dto.convidadosIds) {
+                if (convidadoId == null) continue;
+                if (Objects.equals(convidadoId, criador.getId())) continue;
 
-            Optional<Connection> conn = connectionRepository
-                    .findByUser1IdAndUser2Id(criador.getId(), convidado.getId());
-            if (conn.isEmpty()) {
-                conn = connectionRepository
-                        .findByUser1IdAndUser2Id(convidado.getId(), criador.getId());
-            }
+                Usuario convidado = usuarioRepository.findById(convidadoId)
+                        .orElseThrow(() -> new RuntimeException("Convidado não encontrado: " + convidadoId));
 
-            if (conn.isPresent()) {
-                String c = "[EVENT_INVITE]" + evento.getId() + "|" + evento.getTitulo() + "|clique para participar";
-                postRepository.save(new Post(conn.get(), criador, c));
+                if (inviteRepository.findByEventoAndConvidado(evento, convidado).isPresent()) continue;
+
+                inviteRepository.save(new Invite(evento, convidado, pend));
+
+                Optional<Connection> conn = connectionRepository
+                        .findByUser1IdAndUser2Id(criador.getId(), convidado.getId());
+                if (conn.isEmpty()) {
+                    conn = connectionRepository
+                            .findByUser1IdAndUser2Id(convidado.getId(), criador.getId());
+                }
+
+                if (conn.isPresent()) {
+                    String c = "[EVENT_INVITE]" + evento.getId() + "|" + evento.getTitulo() + "|clique para participar";
+                    postRepository.save(new Post(conn.get(), criador, c));
+                }
             }
         }
 
@@ -110,16 +118,22 @@ public class EventController {
     @PostMapping("/{eventId}/cancel/{userId}")
     public ResponseEntity<?> cancel(@PathVariable Long eventId, @PathVariable Long userId) {
         Evento e = eventoRepository.findById(eventId).orElseThrow();
-        if (e.getCriador() == null || !Objects.equals(e.getCriador().getId(), userId))
+        if (e.getCriador() == null || !Objects.equals(e.getCriador().getId(), userId)) {
             return ResponseEntity.status(403).build();
+        }
 
         EstadoInvite canc = estado("cancelado");
 
         List<Invite> invites = inviteRepository.findByEvento(e);
-        for (Invite inv : invites) {
-            inv.setEstado(canc);
+        if (invites == null || invites.isEmpty()) {
+            Usuario criador = usuarioRepository.findById(userId).orElseThrow();
+            inviteRepository.save(new Invite(e, criador, canc));
+        } else {
+            for (Invite inv : invites) {
+                inv.setEstado(canc);
+            }
+            inviteRepository.saveAll(invites);
         }
-        inviteRepository.saveAll(invites);
 
         groupPostRepository.deleteByEvento(e);
 

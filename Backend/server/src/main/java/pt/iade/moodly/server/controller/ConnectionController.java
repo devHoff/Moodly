@@ -78,15 +78,30 @@ public class ConnectionController {
             return ResponseEntity.badRequest().body("Não pode conectar consigo mesmo");
         }
 
-        Usuario current = usuarioRepository.findById(dto.currentUserId)
+        usuarioRepository.findById(dto.currentUserId)
                 .orElseThrow(() -> new RuntimeException("User atual não encontrado"));
-        Usuario target = usuarioRepository.findById(dto.targetUserId)
+        usuarioRepository.findById(dto.targetUserId)
                 .orElseThrow(() -> new RuntimeException("User alvo não encontrado"));
 
         EstadoConexao pendente = getEstadoOrThrow("pendente");
         EstadoConexao aceite = getEstadoOrThrow("aceite");
 
         ConnectionResponseDTO resp = new ConnectionResponseDTO();
+
+        Optional<Connection> sameDir = connectionRepository
+                .findByUser1IdAndUser2Id(dto.currentUserId, dto.targetUserId);
+        if (sameDir.isPresent()) {
+            Connection existing = sameDir.get();
+            Optional<ConnectionEstado> lastEstadoOpt =
+                    connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(existing);
+            if (lastEstadoOpt.isPresent()) {
+                String st = lastEstadoOpt.get().getEstado().getDescricao();
+                resp.connectionId = existing.getId();
+                resp.status = st;
+                resp.mutual = "aceite".equalsIgnoreCase(st);
+                return ResponseEntity.ok(resp);
+            }
+        }
 
         Optional<Connection> opp = connectionRepository
                 .findByUser1IdAndUser2Id(dto.targetUserId, dto.currentUserId);
@@ -96,39 +111,31 @@ public class ConnectionController {
             Optional<ConnectionEstado> lastEstadoOpt =
                     connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(existing);
 
-            if (lastEstadoOpt.isPresent() &&
-                    "pendente".equalsIgnoreCase(lastEstadoOpt.get().getEstado().getDescricao())) {
-                ConnectionEstado accepted = new ConnectionEstado(existing, aceite);
-                connectionEstadoRepository.save(accepted);
-
-                resp.connectionId = existing.getId();
-                resp.status = "aceite";
-                resp.mutual = true;
-                return ResponseEntity.ok(resp);
-            } else if (lastEstadoOpt.isPresent() &&
-                    "aceite".equalsIgnoreCase(lastEstadoOpt.get().getEstado().getDescricao())) {
-                resp.connectionId = existing.getId();
-                resp.status = "aceite";
-                resp.mutual = true;
-                return ResponseEntity.ok(resp);
-            }
-        }
-
-        Optional<Connection> sameDir = connectionRepository
-                .findByUser1IdAndUser2Id(dto.currentUserId, dto.targetUserId);
-        if (sameDir.isPresent()) {
-            Connection existing = sameDir.get();
-            Optional<ConnectionEstado> lastEstadoOpt =
-                    connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(existing);
             if (lastEstadoOpt.isPresent()) {
+                String st = lastEstadoOpt.get().getEstado().getDescricao();
+                if ("pendente".equalsIgnoreCase(st)) {
+                    ConnectionEstado accepted = new ConnectionEstado(existing, aceite);
+                    connectionEstadoRepository.save(accepted);
+
+                    resp.connectionId = existing.getId();
+                    resp.status = "aceite";
+                    resp.mutual = true;
+                    return ResponseEntity.ok(resp);
+                }
+                if ("aceite".equalsIgnoreCase(st)) {
+                    resp.connectionId = existing.getId();
+                    resp.status = "aceite";
+                    resp.mutual = true;
+                    return ResponseEntity.ok(resp);
+                }
                 resp.connectionId = existing.getId();
-                resp.status = lastEstadoOpt.get().getEstado().getDescricao();
-                resp.mutual = "aceite".equalsIgnoreCase(resp.status);
+                resp.status = st;
+                resp.mutual = false;
                 return ResponseEntity.ok(resp);
             }
         }
 
-        Connection connection = new Connection(current.getId(), target.getId());
+        Connection connection = new Connection(dto.currentUserId, dto.targetUserId);
         connectionRepository.save(connection);
 
         ConnectionEstado ce = new ConnectionEstado(connection, pendente);
@@ -145,74 +152,45 @@ public class ConnectionController {
     public ResponseEntity<?> respondConnection(@PathVariable Long connectionId,
                                                @RequestBody RespondConnectionDTO dto) {
         if (dto.userId == null || dto.resposta == null) {
-            return ResponseEntity.badRequest().body("Dados incompletos");
+            return ResponseEntity.badRequest().body("Dados inválidos");
         }
 
-        Optional<Connection> connectionOpt = connectionRepository.findById(connectionId);
-        if (connectionOpt.isEmpty()) {
-            return ResponseEntity.status(404).body("Connection não encontrada");
-        }
-        Connection connection = connectionOpt.get();
+        Connection connection = connectionRepository.findById(connectionId)
+                .orElseThrow(() -> new RuntimeException("Conexão não encontrada"));
 
-        if (!connection.getUser2Id().equals(dto.userId)) {
-            return ResponseEntity.status(403).body("Apenas o utilizador convidado pode responder ao pedido");
+        if (!Objects.equals(connection.getUser2Id(), dto.userId)) {
+            return ResponseEntity.status(403).body("Sem permissão");
         }
 
-        EstadoConexao novoEstado = getEstadoOrThrow(dto.resposta.toLowerCase());
+        EstadoConexao aceite = getEstadoOrThrow("aceite");
+        EstadoConexao recusado = getEstadoOrThrow("recusado");
+
+        String r = dto.resposta.trim().toLowerCase();
+        EstadoConexao novoEstado = r.equals("aceite") ? aceite : recusado;
+
         ConnectionEstado ce = new ConnectionEstado(connection, novoEstado);
         connectionEstadoRepository.save(ce);
 
-        return ResponseEntity.ok("Estado atualizado para " + dto.resposta);
-    }
-
-    @GetMapping("/mutual/{userId}")
-    public ResponseEntity<List<Usuario>> mutualConnections(@PathVariable Long userId) {
-        EstadoConexao aceite = getEstadoOrThrow("aceite");
-        List<Connection> allConns = connectionRepository.findAll();
-        Set<Long> added = new HashSet<>();
-        List<Usuario> result = new ArrayList<>();
-
-        for (Connection c : allConns) {
-            Optional<ConnectionEstado> lastEstadoOpt =
-                    connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
-            if (lastEstadoOpt.isEmpty()) continue;
-            if (!Objects.equals(lastEstadoOpt.get().getEstado().getId(), aceite.getId())) continue;
-
-            Long otherId = null;
-            if (c.getUser1Id().equals(userId)) {
-                otherId = c.getUser2Id();
-            } else if (c.getUser2Id().equals(userId)) {
-                otherId = c.getUser1Id();
-            }
-            if (otherId == null) continue;
-            if (added.contains(otherId)) continue;
-
-            Usuario other = usuarioRepository.findById(otherId).orElse(null);
-            if (other != null) {
-                added.add(otherId);
-                result.add(other);
-            }
-        }
-
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/pending/{userId}")
-    public ResponseEntity<List<PendingConnectionDTO>> pendingConnections(@PathVariable Long userId) {
-        EstadoConexao pendente = getEstadoOrThrow("pendente");
-        List<Connection> allConns = connectionRepository.findAll();
-        List<PendingConnectionDTO> result = new ArrayList<>();
+    public ResponseEntity<?> pendingConnections(@PathVariable Long userId) {
+        usuarioRepository.findById(userId).orElseThrow(() -> new RuntimeException("User não encontrado"));
 
-        for (Connection c : allConns) {
-            if (!c.getUser2Id().equals(userId)) continue;
+        List<Connection> all = connectionRepository.findAllForUser(userId);
 
-            Optional<ConnectionEstado> lastEstadoOpt =
-                    connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
-            if (lastEstadoOpt.isEmpty()) continue;
-            if (!Objects.equals(lastEstadoOpt.get().getEstado().getId(), pendente.getId())) continue;
+        List<PendingConnectionDTO> out = new ArrayList<>();
+        for (Connection c : all) {
+            Optional<ConnectionEstado> last = connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
+            if (last.isEmpty()) continue;
 
-            Long otherId = c.getUser1Id();
-            Usuario other = usuarioRepository.findById(otherId).orElse(null);
+            String status = last.get().getEstado().getDescricao();
+            if (!"pendente".equalsIgnoreCase(status)) continue;
+
+            if (!Objects.equals(c.getUser2Id(), userId)) continue;
+
+            Usuario other = usuarioRepository.findById(c.getUser1Id()).orElse(null);
             if (other == null) continue;
 
             PendingConnectionDTO dto = new PendingConnectionDTO();
@@ -220,35 +198,30 @@ public class ConnectionController {
             dto.userId = other.getId();
             dto.nome = other.getNome();
             dto.fotoPerfil = other.getFotoPerfil();
-
-            result.add(dto);
+            out.add(dto);
         }
 
-        return ResponseEntity.ok(result);
+        out.sort(Comparator.comparing(a -> a.nome == null ? "" : a.nome.toLowerCase()));
+        return ResponseEntity.ok(out);
     }
 
     @GetMapping("/outgoing/{userId}")
-    public ResponseEntity<List<OutgoingConnectionDTO>> outgoingConnections(@PathVariable Long userId) {
-        EstadoConexao pendente = getEstadoOrThrow("pendente");
-        EstadoConexao aceite = getEstadoOrThrow("aceite");
+    public ResponseEntity<?> outgoingConnections(@PathVariable Long userId) {
+        usuarioRepository.findById(userId).orElseThrow(() -> new RuntimeException("User não encontrado"));
 
-        List<Connection> connections = connectionRepository.findByUser1Id(userId);
-        List<OutgoingConnectionDTO> result = new ArrayList<>();
+        List<Connection> all = connectionRepository.findAllForUser(userId);
 
-        for (Connection c : connections) {
-            Optional<ConnectionEstado> lastEstadoOpt =
-                    connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
-            if (lastEstadoOpt.isEmpty()) continue;
+        List<OutgoingConnectionDTO> out = new ArrayList<>();
+        for (Connection c : all) {
+            Optional<ConnectionEstado> last = connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
+            if (last.isEmpty()) continue;
 
-            ConnectionEstado last = lastEstadoOpt.get();
-            Long estadoId = last.getEstado().getId();
+            String status = last.get().getEstado().getDescricao();
+            if (!"pendente".equalsIgnoreCase(status) && !"aceite".equalsIgnoreCase(status)) continue;
 
-            boolean isPending = Objects.equals(estadoId, pendente.getId());
-            boolean isMutual = Objects.equals(estadoId, aceite.getId());
+            if (!Objects.equals(c.getUser1Id(), userId) && !"aceite".equalsIgnoreCase(status)) continue;
 
-            if (!isPending && !isMutual) continue;
-
-            Long otherId = c.getUser2Id();
+            Long otherId = Objects.equals(c.getUser1Id(), userId) ? c.getUser2Id() : c.getUser1Id();
             Usuario other = usuarioRepository.findById(otherId).orElse(null);
             if (other == null) continue;
 
@@ -257,22 +230,52 @@ public class ConnectionController {
             dto.userId = other.getId();
             dto.nome = other.getNome();
             dto.fotoPerfil = other.getFotoPerfil();
-            dto.mutual = isMutual;
+            dto.mutual = "aceite".equalsIgnoreCase(status);
 
-            result.add(dto);
+            if ("pendente".equalsIgnoreCase(status) && !Objects.equals(c.getUser1Id(), userId)) continue;
+
+            out.add(dto);
         }
 
-        return ResponseEntity.ok(result);
+        out.sort((a, b) -> {
+            if (a.mutual != b.mutual) return a.mutual ? -1 : 1;
+            String an = a.nome == null ? "" : a.nome.toLowerCase();
+            String bn = b.nome == null ? "" : b.nome.toLowerCase();
+            return an.compareTo(bn);
+        });
+
+        return ResponseEntity.ok(out);
+    }
+
+    @GetMapping("/mutual/{userId}")
+    public ResponseEntity<?> mutualConnections(@PathVariable Long userId) {
+        usuarioRepository.findById(userId).orElseThrow(() -> new RuntimeException("User não encontrado"));
+
+        List<Connection> all = connectionRepository.findAllForUser(userId);
+
+        List<Usuario> out = new ArrayList<>();
+        for (Connection c : all) {
+            Optional<ConnectionEstado> last = connectionEstadoRepository.findTopByConnectionOrderByDataRegistoDesc(c);
+            if (last.isEmpty()) continue;
+
+            String status = last.get().getEstado().getDescricao();
+            if (!"aceite".equalsIgnoreCase(status)) continue;
+
+            Long otherId = Objects.equals(c.getUser1Id(), userId) ? c.getUser2Id() : c.getUser1Id();
+            Usuario other = usuarioRepository.findById(otherId).orElse(null);
+            if (other != null) out.add(other);
+        }
+
+        out.sort(Comparator.comparing(u -> u.getNome() == null ? "" : u.getNome().toLowerCase()));
+        return ResponseEntity.ok(out);
     }
 
     @GetMapping("/discover/{userId}")
-    public ResponseEntity<List<Usuario>> discoverUsers(
-            @PathVariable Long userId,
-            @RequestParam(name = "limit", defaultValue = "20") int limit
-    ) {
-        EstadoConexao pendente = getEstadoOrThrow("pendente");
+    public ResponseEntity<?> discoverUsers(@PathVariable Long userId,
+                                          @RequestParam(defaultValue = "20") int limit) {
+        usuarioRepository.findById(userId).orElseThrow(() -> new RuntimeException("User não encontrado"));
 
-        List<Connection> allConns = connectionRepository.findAll();
+        List<Connection> allConns = connectionRepository.findAllForUser(userId);
 
         Map<Long, String> currentStatus = new HashMap<>();
         for (Connection c : allConns) {
@@ -280,47 +283,49 @@ public class ConnectionController {
                     .ifPresent(ce -> currentStatus.put(c.getId(), ce.getEstado().getDescricao()));
         }
 
-        Set<Long> alreadyConnectedOrPending = new HashSet<>();
+        Set<Long> blocked = new HashSet<>();
         Set<Long> pendingToCurrent = new HashSet<>();
 
         for (Connection c : allConns) {
             String status = currentStatus.get(c.getId());
             if (status == null) continue;
 
-            Long other1 = c.getUser1Id();
-            Long other2 = c.getUser2Id();
+            Long otherId = Objects.equals(c.getUser1Id(), userId) ? c.getUser2Id() : c.getUser1Id();
 
-            if (other1.equals(userId) || other2.equals(userId)) {
-                Long other = other1.equals(userId) ? other2 : other1;
-
-                if ("aceite".equalsIgnoreCase(status) || "recusado".equalsIgnoreCase(status)) {
-                    alreadyConnectedOrPending.add(other);
-                } else if ("pendente".equalsIgnoreCase(status)) {
-                    alreadyConnectedOrPending.add(other);
-                    if (c.getUser2Id().equals(userId)) {
-                        pendingToCurrent.add(c.getUser1Id());
-                    }
+            if ("aceite".equalsIgnoreCase(status) || "recusado".equalsIgnoreCase(status)) {
+                blocked.add(otherId);
+            } else if ("pendente".equalsIgnoreCase(status)) {
+                blocked.add(otherId);
+                if (Objects.equals(c.getUser2Id(), userId)) {
+                    pendingToCurrent.add(c.getUser1Id());
                 }
             }
         }
 
         List<Usuario> allUsers = usuarioRepository.findAll();
-        List<Usuario> result = new ArrayList<>();
+
+        List<Usuario> priority = new ArrayList<>();
+        List<Usuario> candidates = new ArrayList<>();
 
         for (Usuario u : allUsers) {
-            if (u.getId().equals(userId)) continue;
+            if (u.getId() == null) continue;
+            if (Objects.equals(u.getId(), userId)) continue;
+
             if (pendingToCurrent.contains(u.getId())) {
-                result.add(u);
+                priority.add(u);
+                continue;
+            }
+
+            if (!blocked.contains(u.getId())) {
+                candidates.add(u);
             }
         }
 
-        for (Usuario u : allUsers) {
-            if (u.getId().equals(userId)) continue;
-            if (result.contains(u)) continue;
-            if (!alreadyConnectedOrPending.contains(u.getId())) {
-                result.add(u);
-            }
-        }
+        Collections.shuffle(candidates);
+
+        List<Usuario> result = new ArrayList<>();
+        result.addAll(priority);
+        result.addAll(candidates);
 
         if (result.size() > limit) {
             result = result.subList(0, limit);
@@ -329,3 +334,4 @@ public class ConnectionController {
         return ResponseEntity.ok(result);
     }
 }
+

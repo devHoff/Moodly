@@ -121,7 +121,7 @@ POST {{url}}/api/connections/request
 Content-Type: application/json
 
 {
-  "currentUserId": 3,
+  "currentUserId": 31,
   "targetUserId": 1
 }
 
@@ -232,7 +232,7 @@ Content-Type: application/json
 }
 
 ### LIST EVENTS FOR JOÃO
-GET {{url}}/api/events/user/2
+GET {{url}}/api/events/user/1
 
 ### LIST INVITES FOR MARIA
 GET {{url}}/api/events/invites/2
