@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">FirstApp</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_sign_up">SignUp</string>
+    <string name="title_activity_sign_up2">SignUp_2</string>
+    <string name="title_activity_sign_up3">SignUP_3</string>
+    <string name="title_activity_sign_up4">SignUp_4</string>
+    <string name="title_activity_pass_word_login">PassWordLogin</string>
+    <string name="title_activity_tela_inicial">TelaInicial</string>
+    <string name="title_activity_conection">Conection</string>
+    <string name="title_activity_conexao">conexao</string>
+    <string name="title_activity_chats">Chats</string>
+    <string name="title_activity_eventos">Eventos</string>
+    <string name="title_activity_eventos_detalhe">EventosDetalhe</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="title_activity_tela_inicial2">TelaInicial2</string>
+    <string name="title_activity_select_int">SelectInt</string>
+</resources>

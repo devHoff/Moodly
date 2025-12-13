@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/logo"
+        android:label="Moodly"
+        android:roundIcon="@drawable/logo"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.FirstApp"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config">
+        <activity
+            android:name=".SelectInt"
+            android:exported="false"
+            android:label="@string/title_activity_select_int"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".TelaInicial2"
+            android:exported="false"
+            android:label="@string/title_activity_tela_inicial2"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".conexao"
+            android:exported="false"
+            android:label="@string/title_activity_conexao"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".SplashScreen"
+            android:exported="false"
+            android:label="@string/title_activity_splash_screen"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".activities.EventosDetalhe"
+            android:exported="false"
+            android:label="@string/title_activity_eventos_detalhe"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".activities.Eventos"
+            android:exported="false"
+            android:label="@string/title_activity_eventos"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.Chats"
+            android:exported="false"
+            android:label="@string/title_activity_chats"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".activities.conexao"
+            android:exported="false"
+            android:label="@string/title_activity_conexao"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.Conection"
+            android:exported="false"
+            android:label="@string/title_activity_conection"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".activities.TelaInicial"
+            android:exported="false"
+            android:label="@string/title_activity_tela_inicial"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.PassWordLogin"
+            android:exported="false"
+            android:label="@string/title_activity_pass_word_login"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.SignUp_4"
+            android:exported="false"
+            android:label="@string/title_activity_sign_up4"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.SignUP_3"
+            android:exported="false"
+            android:label="@string/title_activity_sign_up3"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".ui.theme.SignUp_2"
+            android:exported="false"
+            android:label="@string/title_activity_sign_up2"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".SignUp"
+            android:exported="false"
+            android:label="@string/title_activity_sign_up"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/Theme.FirstApp" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="Moodly"
+            android:theme="@style/Theme.FirstApp">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
