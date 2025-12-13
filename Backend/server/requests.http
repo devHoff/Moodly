@@ -1,0 +1,304 @@
+###############################################
+# 0 — BASE URL
+###############################################
+@url = http://localhost:8080
+
+
+
+##############################################################
+# 1 — AUTH (signup, login)
+##############################################################
+
+### CREATE USER A (João)
+POST {{url}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "nome": "João Silva",
+  "email": "joao@example.com",
+  "password": "123456"
+}
+
+### CREATE USER B (Maria)
+POST {{url}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "nome": "Maria Costa",
+  "email": "maria@example.com",
+  "password": "123456"
+}
+
+### CREATE USER C (Carlos)
+POST {{url}}/api/auth/signup
+Content-Type: application/json
+
+{
+  "nome": "Carlos Lima",
+  "email": "carlos@example.com",
+  "password": "123456"
+}
+
+### LOGIN — João
+POST {{url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "joao@example.com",
+  "password": "123456"
+}
+
+### LOGIN — Maria
+POST {{url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "maria@example.com",
+  "password": "123456"
+}
+
+
+
+##############################################################
+# 2 — USER PROFILE
+##############################################################
+
+### GET USER PROFILE (adjust ID after signup)
+GET {{url}}/api/usuarios/1
+
+### UPDATE PROFILE (complete interests)
+PUT {{url}}/api/profile/1
+Content-Type: application/json
+
+{
+  "fotoPerfil": "user-1.png",
+  "interesses": [
+    { "tipo": "musica", "nome": "Rock" },
+    { "tipo": "musica", "nome": "Jazz" },
+    { "tipo": "filme",  "nome": "Sci-Fi" },
+    { "tipo": "jogo",   "nome": "Valorant" }
+  ]
+}
+
+### UPDATE PROFILE — Maria
+PUT {{url}}/api/profile/2
+Content-Type: application/json
+
+{
+  "fotoPerfil": "user-2.png",
+  "interesses": [
+    { "tipo": "musica", "nome": "Pop" },
+    { "tipo": "filme",  "nome": "Drama" }
+  ]
+}
+
+
+
+##############################################################
+# 3 — CONNECTIONS (Match System)
+##############################################################
+
+### JOÃO → MARIA (João envia pedido)
+POST {{url}}/api/connections/request
+Content-Type: application/json
+
+{
+  "currentUserId": 1,
+  "targetUserId": 2
+}
+
+### MARIA → JOÃO (match automático, mutual)
+POST {{url}}/api/connections/request
+Content-Type: application/json
+
+{
+  "currentUserId": 2,
+  "targetUserId": 1
+}
+
+### CARLOS → JOÃO (pendente)
+POST {{url}}/api/connections/request
+Content-Type: application/json
+
+{
+  "currentUserId": 27,
+  "targetUserId": 25
+}
+
+### LIST PENDING REQUESTS — João
+GET {{url}}/api/connections/pending/27
+
+### LIST OUTGOING REQUESTS — João
+GET {{url}}/api/connections/outgoing/1
+
+### LIST MUTUAL CONNECTIONS — João
+GET {{url}}/api/connections/mutual/27
+
+### DISCOVER USERS FOR JOÃO
+GET {{url}}/api/connections/discover/1?limit=10
+
+### ACCEPT/REJECT PENDING
+POST {{url}}/api/connections/3/respond
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "resposta": "recusado"
+}
+
+### ERROR TEST — connecting with yourself
+POST {{url}}/api/connections/request
+Content-Type: application/json
+
+{
+  "currentUserId": 1,
+  "targetUserId": 1
+}
+
+
+
+##############################################################
+# 4 — DIRECT CHAT (1–1)
+##############################################################
+
+### GET ALL CHATS FOR USER 1 (chat list)
+GET {{url}}/api/chats/user/1/connections
+
+### SEND MESSAGE (1 → 2)
+POST {{url}}/api/chats/connection/1/send
+Content-Type: application/json
+
+{
+  "autorId": 1,
+  "conteudo": "Olá Maria! 😄"
+}
+
+### SEND MESSAGE (2 → 1)
+POST {{url}}/api/chats/connection/4/send
+Content-Type: application/json
+
+{
+  "autorId": 1,
+  "conteudo": "Olá João! Tudo bem contigo?"
+}
+
+### LIST ALL MESSAGES
+GET {{url}}/api/chats/connection/1/messages
+
+### ERROR — send msg before connection accepted
+POST {{url}}/api/chats/connection/3/send
+Content-Type: application/json
+
+{
+  "autorId": 3,
+  "conteudo": "Olá?"
+}
+
+
+
+##############################################################
+# 5 — EVENTS
+##############################################################
+
+### CREATE EVENT BY JOÃO
+POST {{url}}/api/events
+Content-Type: application/json
+
+{
+  "criadorId": 1,
+  "titulo": "Festa de Sábado",
+  "descricao": "Evento épico 🎉",
+  "local": "Casa do João",
+  "dataEvento": "2025-12-20T21:00:00",
+  "convidadosIds": [2,3]
+}
+
+### MARIA ACCEPTS EVENT
+POST {{url}}/api/events/1/respond
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "resposta": "aceite"
+}
+
+### CARLOS REJECTS EVENT
+POST {{url}}/api/events/1/respond
+Content-Type: application/json
+
+{
+  "userId": 3,
+  "resposta": "recusado"
+}
+
+### LIST EVENTS FOR JOÃO
+GET {{url}}/api/events/user/1
+
+### LIST INVITES FOR MARIA
+GET {{url}}/api/events/invites/2
+
+
+
+##############################################################
+# 6 — GROUP CHAT (EVENT CHAT)
+##############################################################
+
+### SEND MESSAGE TO EVENT CHAT
+POST {{url}}/api/chats/event/1/send
+Content-Type: application/json
+
+{
+  "autorId": 2,
+  "conteudo": "A que horas começamos? 😄"
+}
+
+### JOÃO REPLIES
+POST {{url}}/api/chats/event/1/send
+Content-Type: application/json
+
+{
+  "autorId": 1,
+  "conteudo": "Às 21h! 🎉"
+}
+
+### GET ALL GROUP CHAT MESSAGES
+GET {{url}}/api/chats/event/1/messages
+
+### LIST ALL EVENT CHATS FOR USER 2 (used in chat list)
+GET {{url}}/api/chats/events-for-user/2
+
+
+
+##############################################################
+# 7 — STRESS / EDGE CASE TESTING
+##############################################################
+
+### SEND EMPTY MESSAGE (should fail)
+POST {{url}}/api/chats/connection/1/send
+Content-Type: application/json
+
+{
+  "autorId": 1,
+  "conteudo": ""
+}
+
+### EVENT MESSAGE FROM NON-PARTICIPANT (should fail)
+POST {{url}}/api/chats/event/1/send
+Content-Type: application/json
+
+{
+  "autorId": 3,
+  "conteudo": "Estou dentro!"
+}
+
+### TRY ACCESS CHAT OF SOMEONE ELSE (403 expected)
+GET {{url}}/api/chats/connection/999/messages
+
+### INVALID USER LOGIN
+POST {{url}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "nãoexiste@example.com",
+  "password": "errado"
+}

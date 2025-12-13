@@ -159,6 +159,7 @@ https://sharing.clickup.com/90151621011/g/h/2kyq94ck-195/f3fab03e7f271ec
 ## Poster
 <img width="186" height="400" alt="Frame 1 (1)" src="https://github.com/user-attachments/assets/bf8fb3de-2057-4767-ae78-b80f8e2b38e4" />
 
+
 ## Powerpoint (em png)
 
 <img width="4000" height="2250" alt="Apresentação-1" src="https://github.com/user-attachments/assets/884ae999-702e-4817-a8aa-f5f2fea43871" />
@@ -169,6 +170,3 @@ https://sharing.clickup.com/90151621011/g/h/2kyq94ck-195/f3fab03e7f271ec
 <img width="4000" height="2250" alt="Apresentação-6" src="https://github.com/user-attachments/assets/160584a9-3746-48cd-a997-156d9a5de3ea" />
 <img width="4000" height="2250" alt="Apresentação-7" src="https://github.com/user-attachments/assets/61e21061-239f-4c2d-9b49-484a5e72a470" />
 <img width="4000" height="2250" alt="Apresentação-8" src="https://github.com/user-attachments/assets/3a18ab45-ed02-4c71-bc5e-8c3eef2fef2f" />
-
-
-
