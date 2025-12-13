@@ -46,10 +46,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pt.iade.ei.firstapp.data.SessionManager
+import pt.iade.ei.firstapp.data.remote.buildImageUrl
 import pt.iade.ei.firstapp.data.repository.ConnectionRepository
 import pt.iade.ei.firstapp.data.repository.UsuarioRepository
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
@@ -100,7 +101,7 @@ fun ConnectScreen(navController: NavController) {
                     games = listOf("League of Legends"),
                     connectionsCount = 3
                 )
-            ).shuffled()
+            )
             loading = false
             error = null
             infoMessage = null
@@ -141,21 +142,15 @@ fun ConnectScreen(navController: NavController) {
                             val nome = i.nome ?: ""
                             if (nome.isBlank()) return@forEach
                             when {
-                                "musica" in tipo || "music" in tipo ->
-                                    musicList.add(nome)
-                                "filme" in tipo || "film" in tipo ||
-                                        "serie" in tipo || "series" in tipo ->
-                                    moviesList.add(nome)
-                                "jogo" in tipo || "game" in tipo ->
-                                    gamesList.add(nome)
+                                "musica" in tipo || "music" in tipo -> musicList.add(nome)
+                                "filme" in tipo || "film" in tipo || "serie" in tipo || "series" in tipo -> moviesList.add(nome)
+                                "jogo" in tipo || "game" in tipo -> gamesList.add(nome)
                             }
                         }
                     }
 
                     val connectionsCount = withContext(Dispatchers.IO) {
-                        connectionRepo.mutualConnections(user.id)
-                            .getOrElse { emptyList() }
-                            .size
+                        connectionRepo.mutualConnections(user.id).getOrElse { emptyList() }.size
                     }
 
                     enriched.add(
@@ -171,9 +166,8 @@ fun ConnectScreen(navController: NavController) {
                     )
                 }
 
-                val shuffled = enriched.shuffled()
-                suggestions = shuffled
-                if (shuffled.isEmpty()) {
+                suggestions = enriched
+                if (enriched.isEmpty()) {
                     infoMessage = "Ainda não há sugestões para ti. Tenta mais tarde ✨"
                 }
             }
@@ -291,8 +285,7 @@ fun ConnectScreen(navController: NavController) {
                             RowButtonsConnect(
                                 onSkip = {
                                     scope.launch {
-                                        val nextPage =
-                                            if (page < suggestions.lastIndex) page + 1 else page
+                                        val nextPage = if (page < suggestions.lastIndex) page + 1 else page
                                         pagerState.animateScrollToPage(nextPage)
                                     }
                                 },
@@ -304,11 +297,8 @@ fun ConnectScreen(navController: NavController) {
                                         }
                                         res.onSuccess { resp ->
                                             infoMessage =
-                                                if (resp.mutual == true) {
-                                                    "Conexão aceite! Vocês já são amigos 🎉"
-                                                } else {
-                                                    "Pedido enviado para ${user.name}"
-                                                }
+                                                if (resp.mutual == true) "Conexão aceite! Vocês já são amigos 🎉"
+                                                else "Pedido enviado para ${user.name}"
                                             if (page < suggestions.lastIndex) {
                                                 pagerState.animateScrollToPage(page + 1)
                                             }
@@ -328,6 +318,8 @@ fun ConnectScreen(navController: NavController) {
 
 @Composable
 private fun ProfileSuggestionCard(user: SuggestedUser) {
+    val img = buildImageUrl(user.photoUrl)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -345,14 +337,14 @@ private fun ProfileSuggestionCard(user: SuggestedUser) {
 
             Box(
                 modifier = Modifier
-                    .size(120.dp)
+                    .size(180.dp)
                     .clip(CircleShape)
                     .background(Color(0xFF190A1C)),
                 contentAlignment = Alignment.Center
             ) {
-                if (!user.photoUrl.isNullOrBlank()) {
+                if (img != null) {
                     AsyncImage(
-                        model = user.photoUrl,
+                        model = img,
                         contentDescription = "Foto de ${user.name}",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
@@ -413,11 +405,7 @@ private fun InterestSection(label: String, icon: Int, values: List<String>) {
                 fontSize = 14.sp
             )
         }
-        val text = if (values.isNotEmpty()) {
-            values.joinToString(", ")
-        } else {
-            "Sem preferências definidas"
-        }
+        val text = if (values.isNotEmpty()) values.joinToString(", ") else "Sem preferências definidas"
         Text(
             text = text,
             color = if (values.isNotEmpty()) Color.White else Color.LightGray,
@@ -481,4 +469,3 @@ fun ConnectScreenPreview() {
         ConnectScreen(navController = navController)
     }
 }
-

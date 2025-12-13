@@ -80,7 +80,7 @@ fun Tela(navController: NavController) {
                     }
 
 
-                    IconButton(onClick = { /* ação */ }
+                    IconButton(onClick = {}
 
                     ) {
                         Image(

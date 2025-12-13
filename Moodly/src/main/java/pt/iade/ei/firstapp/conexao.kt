@@ -122,15 +122,12 @@ fun Conex(navController: NavController) {
                 .padding(16.dp)
         ) {
 
-            // ---------------------------
-            //   HEADER: logo em cima dir. + título centrado
-            // ---------------------------
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp, bottom = 16.dp)
             ) {
-                // Logo Moodly no canto superior direito
+
                 Image(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = "Logo Moodly",
@@ -139,7 +136,6 @@ fun Conex(navController: NavController) {
                         .align(Alignment.TopEnd)
                 )
 
-                // Título e subtítulo centrados, ligeiramente abaixo da logo
                 Column(
                     modifier = Modifier
                         .align(Alignment.Center)

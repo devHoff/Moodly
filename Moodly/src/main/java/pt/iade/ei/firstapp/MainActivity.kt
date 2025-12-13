@@ -74,7 +74,6 @@ fun AppNavigation(navController: NavHostController) {
             ChatRoomScreen(
                 navController = navController,
                 connectionId = connectionId,
-                otherUserId = otherUserId,
                 otherUserName = otherUserName
             )
         }

@@ -46,17 +46,6 @@ class ConnectionRepository {
         }
     }
 
-    suspend fun pendingConnections(
-        userId: Long
-    ): Result<List<ConnectionApi.PendingConnectionDTO>> {
-        return try {
-            val list = api.pendingConnections(userId)
-            Result.success(list)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
     suspend fun outgoingConnections(
         userId: Long
     ): Result<List<ConnectionApi.OutgoingConnectionDTO>> {

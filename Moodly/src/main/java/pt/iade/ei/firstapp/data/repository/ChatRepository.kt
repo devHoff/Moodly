@@ -67,11 +67,4 @@ class ChatRepository {
         }
     }
 
-    suspend fun getEventChatsForUser(userId: Long): Result<List<ChatApi.EventChatDTO>> {
-        return try {
-            Result.success(api.eventsForUser(userId))
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 }

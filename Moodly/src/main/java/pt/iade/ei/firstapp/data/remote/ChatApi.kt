@@ -58,11 +58,6 @@ interface ChatApi {
         @Body body: SendMessageBody
     ): Response<ChatMessageDTO>
 
-    @GET("/api/chats/events-for-user/{userId}")
-    suspend fun eventsForUser(
-        @Path("userId") userId: Long
-    ): List<EventChatDTO>
-
     @GET("/api/chats/user/{userId}/connections")
     suspend fun connectionChats(
         @Path("userId") userId: Long

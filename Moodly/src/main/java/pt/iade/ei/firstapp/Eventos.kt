@@ -295,10 +295,8 @@ fun Even(navController: NavController) {
     val type = dialogType
     if (selected != null && type != null && currentUserId != null) {
         EventActionDialog(
-            event = selected,
             type = type,
             error = dialogError,
-            onErrorChange = { dialogError = it },
             onDismiss = {
                 dialogEvent = null
                 dialogType = null
@@ -467,10 +465,8 @@ fun EventCardItem(
 
 @Composable
 fun EventActionDialog(
-    event: EventRepository.UiEvent,
     type: String,
     error: String?,
-    onErrorChange: (String?) -> Unit,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {

@@ -7,15 +7,15 @@ object SessionManager {
     var nome: String? = null
     var email: String? = null
     var fotoPerfil: String? = null
-
     var music: String = ""
     var movies: String = ""
     var games: String = ""
 
     var connectionsCount: Int = 0
 
-    // NEW: stores which chat connections were already opened so they won't appear again
-    var hiddenChatConnections: MutableSet<Long> = mutableSetOf()
+    var connectionsRefreshKey: Long = 0L
+
+    val hiddenChatConnections: MutableSet<Long> = mutableSetOf()
 
     fun applyUser(user: AuthApi.UsuarioDTO) {
         userId = user.id
@@ -43,8 +43,7 @@ object SessionManager {
         movies = ""
         games = ""
         connectionsCount = 0
-
-        // Clears chat history tracking so Conex resets when logging out
+        connectionsRefreshKey = 0L
         hiddenChatConnections.clear()
     }
 }

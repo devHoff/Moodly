@@ -25,7 +25,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
@@ -33,6 +32,7 @@ import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.repository.ProfileRepository
 import pt.iade.ei.firstapp.data.uriToMultipart
 import pt.iade.ei.firstapp.ui.components.InterestInputCard
+import pt.iade.ei.firstapp.data.remote.buildImageUrl
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,7 +124,7 @@ fun EditProfileScreen(
                                     var fotoUrl: String? = SessionManager.fotoPerfil
                                     if (selectedImageUri != null) {
                                         val part = uriToMultipart(context, selectedImageUri!!)
-                                        fotoUrl = repo.uploadProfilePhoto(userId, part).toString()
+                                        fotoUrl = repo.uploadProfilePhoto(userId, part).fotoPerfil
                                     }
 
                                     SessionManager.fotoPerfil = fotoUrl
@@ -192,7 +192,7 @@ fun EditProfileScreen(
             ) {
                 if (selectedImageUri != null) {
                     AsyncImage(
-                        model = selectedImageUri,
+                        model = buildImageUrl(selectedImageUri.toString()),
                         contentDescription = "Foto de perfil",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()

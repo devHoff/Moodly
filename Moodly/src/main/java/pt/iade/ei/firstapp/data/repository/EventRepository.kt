@@ -24,7 +24,6 @@ class EventRepository {
             get() {
                 val raw = dataRaw ?: return "-"
                 return try {
-                    // esperado: yyyy-MM-ddTHH:mm[:ss]
                     val year = raw.substring(0, 4)
                     val month = raw.substring(5, 7)
                     val day = raw.substring(8, 10)
