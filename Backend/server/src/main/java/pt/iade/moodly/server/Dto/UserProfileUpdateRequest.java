@@ -8,7 +8,6 @@ public class UserProfileUpdateRequest {
 
     public String getFotoPerfil() { return fotoPerfil; }
     public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
-
     public List<InterestDTO> getInteresses() { return interesses; }
     public void setInteresses(List<InterestDTO> interesses) { this.interesses = interesses; }
 }

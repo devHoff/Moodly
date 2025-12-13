@@ -1,8 +1,13 @@
 package pt.iade.moodly.server.model;
 
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "connections")
@@ -30,14 +35,14 @@ public class Connection {
         this.dataCriacao = LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
+    public Long getId() {return id;}
 
-    public Long getUser1Id() { return user1Id; }
+    public Long getUser1Id() {return user1Id;}
     public void setUser1Id(Long user1Id) { this.user1Id = user1Id; }
 
-    public Long getUser2Id() { return user2Id; }
-    public void setUser2Id(Long user2Id) { this.user2Id = user2Id; }
+    public Long getUser2Id() {return user2Id;}
+    public void setUser2Id(Long user2Id) {this.user2Id = user2Id;}
 
-    public LocalDateTime getDataCriacao() { return dataCriacao; }
-    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
+    public LocalDateTime getDataCriacao() {return dataCriacao;}
+    public void setDataCriacao(LocalDateTime dataCriacao) {this.dataCriacao = dataCriacao;}
 }
