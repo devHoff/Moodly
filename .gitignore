@@ -13,3 +13,16 @@
 .externalNativeBuild
 .cxx
 local.properties
+.idea/
+*.iml
+.gradle/
+build/
+**/build/
+local.properties
+build-tools/
+emulator/
+licenses/
+platform-tools/
+platforms/
+sources/
+
