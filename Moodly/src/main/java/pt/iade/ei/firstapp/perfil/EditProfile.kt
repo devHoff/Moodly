@@ -1,4 +1,4 @@
-package pt.iade.ei.firstapp
+package pt.iade.ei.firstapp.perfil
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
+import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.repository.ProfileRepository
 import pt.iade.ei.firstapp.data.uriToMultipart
@@ -43,8 +44,9 @@ fun EditProfileScreen(
     onSaved: () -> Unit
 ) {
     val context = LocalContext.current
-    var selectedImageUri by remember {
-        mutableStateOf(SessionManager.fotoPerfil?.let { Uri.parse(it) })
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val currentPhotoUrl = remember(SessionManager.fotoPerfil) {
+        buildImageUrl(SessionManager.fotoPerfil)
     }
     var music by remember { mutableStateOf(SessionManager.music) }
     var movies by remember { mutableStateOf(SessionManager.movies) }
@@ -192,7 +194,14 @@ fun EditProfileScreen(
             ) {
                 if (selectedImageUri != null) {
                     AsyncImage(
-                        model = buildImageUrl(selectedImageUri.toString()),
+                        model = selectedImageUri,
+                        contentDescription = "Foto de perfil",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else if (currentPhotoUrl != null) {
+                    AsyncImage(
+                        model = currentPhotoUrl,
                         contentDescription = "Foto de perfil",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
@@ -205,6 +214,7 @@ fun EditProfileScreen(
                         modifier = Modifier.size(64.dp)
                     )
                 }
+
             }
 
             Spacer(modifier = Modifier.height(24.dp))

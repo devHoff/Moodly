@@ -11,8 +11,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import pt.iade.ei.firstapp.activities.Conex
 import pt.iade.ei.firstapp.activities.Tela
+import pt.iade.ei.firstapp.auth.LoginScreen
+import pt.iade.ei.firstapp.auth.SignupScreen
+import pt.iade.ei.firstapp.chat.ChatRoomScreen
+import pt.iade.ei.firstapp.chat.ChatsScreen
+import pt.iade.ei.firstapp.chat.EventChatScreen
+import pt.iade.ei.firstapp.conexões.ConnectScreen
 import pt.iade.ei.firstapp.data.SessionManager
+import pt.iade.ei.firstapp.eventos.CreateEventStep1
+import pt.iade.ei.firstapp.eventos.CreateEventStep2
+import pt.iade.ei.firstapp.eventos.Even
+import pt.iade.ei.firstapp.eventos.EventDetailScreen
+import pt.iade.ei.firstapp.perfil.EditProfileScreen
+import pt.iade.ei.firstapp.perfil.ProfilePicSelectionScreen
+import pt.iade.ei.firstapp.perfil.ProfileScreen
+import pt.iade.ei.firstapp.perfil.Select
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme
+import java.net.URLDecoder
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -124,11 +139,11 @@ fun AppNavigation(navController: NavHostController) {
             EventDetailScreen(
                 nav = navController,
                 eventId = eventId,
-                title = java.net.URLDecoder.decode(title, "UTF-8"),
-                organizer = java.net.URLDecoder.decode(organizer, "UTF-8"),
-                date = java.net.URLDecoder.decode(date, "UTF-8"),
-                local = java.net.URLDecoder.decode(local, "UTF-8"),
-                desc = java.net.URLDecoder.decode(desc, "UTF-8")
+                title = URLDecoder.decode(title, "UTF-8"),
+                organizer = URLDecoder.decode(organizer, "UTF-8"),
+                date = URLDecoder.decode(date, "UTF-8"),
+                local = URLDecoder.decode(local, "UTF-8"),
+                desc = URLDecoder.decode(desc, "UTF-8")
             )
         }
     }

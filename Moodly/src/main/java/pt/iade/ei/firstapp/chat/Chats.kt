@@ -1,4 +1,4 @@
-package pt.iade.ei.firstapp
+package pt.iade.ei.firstapp.chat
 
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -51,6 +51,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.remote.ChatApi
 import pt.iade.ei.firstapp.data.remote.buildImageUrl

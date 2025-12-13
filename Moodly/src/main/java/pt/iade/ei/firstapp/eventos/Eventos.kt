@@ -1,4 +1,4 @@
-package pt.iade.ei.firstapp
+package pt.iade.ei.firstapp.eventos
 
 import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -56,6 +56,7 @@ import androidx.navigation.NavController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.repository.EventRepository
 

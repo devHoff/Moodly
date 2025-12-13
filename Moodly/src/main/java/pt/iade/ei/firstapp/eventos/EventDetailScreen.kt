@@ -1,6 +1,5 @@
-package pt.iade.ei.firstapp
+package pt.iade.ei.firstapp.eventos
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

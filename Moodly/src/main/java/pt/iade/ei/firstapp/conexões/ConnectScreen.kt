@@ -1,4 +1,4 @@
-package pt.iade.ei.firstapp
+package pt.iade.ei.firstapp.conexões
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -49,6 +49,7 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.remote.buildImageUrl
 import pt.iade.ei.firstapp.data.repository.ConnectionRepository

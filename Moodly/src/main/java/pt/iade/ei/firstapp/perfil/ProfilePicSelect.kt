@@ -1,9 +1,8 @@
-package pt.iade.ei.firstapp
+package pt.iade.ei.firstapp.perfil
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,6 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
+import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.repository.ProfileRepository
 import pt.iade.ei.firstapp.data.uriToMultipart

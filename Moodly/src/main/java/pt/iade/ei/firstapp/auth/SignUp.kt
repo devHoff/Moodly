@@ -1,4 +1,4 @@
-package pt.iade.ei.firstapp
+package pt.iade.ei.firstapp.auth
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import pt.iade.ei.firstapp.R
 import pt.iade.ei.firstapp.data.SessionManager
 import pt.iade.ei.firstapp.data.repository.AuthRepository
 import pt.iade.ei.firstapp.ui.theme.FirstAppTheme

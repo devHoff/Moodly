@@ -1,4 +1,4 @@
-package pt.iade.ei.firstapp
+package pt.iade.ei.firstapp.eventos
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
