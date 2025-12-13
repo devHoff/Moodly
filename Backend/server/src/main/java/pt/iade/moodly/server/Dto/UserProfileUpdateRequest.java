@@ -4,7 +4,7 @@ import java.util.List;
 
 public class UserProfileUpdateRequest {
     private String fotoPerfil;
-    private List<InterestDTO> interesses; // <--- use the top-level DTO
+    private List<InterestDTO> interesses; 
 
     public String getFotoPerfil() { return fotoPerfil; }
     public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }

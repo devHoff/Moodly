@@ -12,7 +12,7 @@ public class Interesse {
     private Long id;
 
     @Column(name = "inter_nome", nullable = false, length = 60)
-    private String nome; // tipo: "musica", "filme", "jogo"
+    private String nome;
 
     public Interesse() {}
 

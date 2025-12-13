@@ -12,7 +12,7 @@ public class EstadoConexao {
     private Long id;
 
     @Column(name = "estadoc_descricao", nullable = false, length = 60)
-    private String descricao; // pendente, aceite, recusado, etc.
+    private String descricao; 
 
     public EstadoConexao() {}
 

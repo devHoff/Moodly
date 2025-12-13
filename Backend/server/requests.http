@@ -121,18 +121,18 @@ POST {{url}}/api/connections/request
 Content-Type: application/json
 
 {
-  "currentUserId": 31,
-  "targetUserId": 1
+  "currentUserId": 27,
+  "targetUserId": 25
 }
 
 ### LIST PENDING REQUESTS — João
-GET {{url}}/api/connections/pending/1
+GET {{url}}/api/connections/pending/27
 
 ### LIST OUTGOING REQUESTS — João
 GET {{url}}/api/connections/outgoing/1
 
 ### LIST MUTUAL CONNECTIONS — João
-GET {{url}}/api/connections/mutual/1
+GET {{url}}/api/connections/mutual/27
 
 ### DISCOVER USERS FOR JOÃO
 GET {{url}}/api/connections/discover/1?limit=10

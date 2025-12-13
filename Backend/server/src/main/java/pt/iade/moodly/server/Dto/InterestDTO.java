@@ -1,7 +1,7 @@
 package pt.iade.moodly.server.Dto;
 
 public class InterestDTO {
-    private String tipo;  // "musica" | "filme" | "jogo"
+    private String tipo;  
     private String nome;
 
     public String getTipo() { return tipo; }

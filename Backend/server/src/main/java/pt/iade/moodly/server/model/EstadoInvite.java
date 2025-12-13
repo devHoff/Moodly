@@ -12,7 +12,7 @@ public class EstadoInvite {
     private Long id;
 
     @Column(name = "est_inv_nome", nullable = false, length = 60)
-    private String nome; // pendente, aceite, recusado
+    private String nome;
 
     public EstadoInvite() {}
 

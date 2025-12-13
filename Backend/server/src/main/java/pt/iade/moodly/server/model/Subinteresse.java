@@ -16,7 +16,7 @@ public class Subinteresse {
     private Interesse interesse;
 
     @Column(name = "subinter_nome", nullable = false, length = 100)
-    private String nome; // exemplo: "Rock", "Valorant"
+    private String nome; 
 
     public Subinteresse() {}
 
