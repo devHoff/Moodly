@@ -1,7 +1,4 @@
-# Moodly
-
-Este documento contém **toda a documentação REST** do backend do sistema **Moodly**,
-transcrita integralmente do relatório original, **sem remover nenhuma secção ou endpoint**.
+# Moodly Rest
 
 ---
 
