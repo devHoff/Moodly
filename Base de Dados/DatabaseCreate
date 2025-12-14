@@ -1,0 +1,190 @@
+DROP DATABASE IF EXISTS moodly;
+CREATE DATABASE moodly;
+USE moodly;
+
+CREATE TABLE usuario (
+  usuar_id INT NOT NULL AUTO_INCREMENT ,
+  usuar_nome VARCHAR(100) NOT NULL,
+  usuar_email VARCHAR(150) NOT NULL UNIQUE,
+  usuar_senha_hash VARCHAR(255) NOT NULL,
+  usuar_foto_perfil VARCHAR(255),
+  PRIMARY KEY (usuar_id)
+);
+
+CREATE TABLE interesse (
+  inter_id INT NOT NULL AUTO_INCREMENT ,
+  inter_nome VARCHAR(60) NOT NULL,
+  PRIMARY KEY (inter_id)
+);
+
+CREATE TABLE subinteresse (
+subinter_id INT NOT NULL AUTO_INCREMENT,
+subinter_inter_id INT NOT NULL,
+subinter_nome VARCHAR(100) NOT NULL,
+PRIMARY KEY (subinter_id)
+);
+
+CREATE TABLE usuario_interesse (
+  usint_id INT NOT NULL AUTO_INCREMENT ,
+  usint_usuar_id INT NOT NULL,
+  usint_subinter_id INT NOT NULL,
+  PRIMARY KEY (usint_id)
+);
+
+CREATE TABLE connections (
+  connect_id INT NOT NULL AUTO_INCREMENT,
+  connect_usuar1_id INT NOT NULL,
+  connect_usuar2_id INT NOT NULL,
+  connect_data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (connect_id)
+);
+
+CREATE TABLE estadoc (
+  estadoc_id INT NOT NULL AUTO_INCREMENT,
+  estadoc_descricao varchar(60) NOT NULL,
+  PRIMARY KEY (estadoc_id)
+);
+
+CREATE TABLE connection_estado (
+  cnt_est_id INT NOT NULL AUTO_INCREMENT,
+  cnt_est_connect_id INT NOT NULL,
+  cnt_est_estadoc_id INT NOT NULL,
+  cnt_est_data_registo DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (cnt_est_id)
+);
+
+CREATE TABLE post (
+    post_id INT NOT NULL AUTO_INCREMENT,
+    post_connect_id INT NOT NULL,
+    post_usuar_id INT NOT NULL,
+    post_conteudo TEXT NOT NULL,
+    post_data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (post_id)
+);
+
+CREATE TABLE evento (
+    evento_id INT NOT NULL AUTO_INCREMENT,
+    evento_usuar_id INT NOT NULL,
+    evento_titulo VARCHAR(150) NOT NULL,
+    evento_descricao TEXT,
+    evento_local VARCHAR(200),
+    evento_data DATETIME,
+    PRIMARY KEY (evento_id)
+);
+
+CREATE TABLE estado_invite (
+	est_inv_id INT NOT NULL AUTO_INCREMENT,
+    est_inv_nome VARCHAR(60) NOT NULL,
+    PRIMARY KEY (est_inv_id)
+);
+
+CREATE TABLE invite (
+    invite_id INT NOT NULL AUTO_INCREMENT,
+    invite_evento_id INT NOT NULL,
+    invite_usuar_id INT NOT NULL,
+    invite_est_inv_id INT,
+    invite_data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (invite_id)
+);
+
+CREATE TABLE group_post (
+  gp_id INT NOT NULL AUTO_INCREMENT,
+  gp_evento_id INT NOT NULL,
+  gp_usuar_id INT NOT NULL,
+  gp_conteudo TEXT NOT NULL,
+  gp_data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (gp_id)
+);
+
+-- FOREIGN KEYS
+
+-- subinteresse
+
+ALTER TABLE subinteresse
+ADD CONSTRAINT subinteresse_fk_interesse
+FOREIGN KEY (subinter_inter_id) REFERENCES interesse(inter_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- usuario_interesse
+
+ALTER TABLE usuario_interesse
+ADD CONSTRAINT usuario_interesse_fk_usuario
+FOREIGN KEY (usint_usuar_id) REFERENCES usuario(usuar_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE usuario_interesse
+ADD CONSTRAINT usuario_interesse_fk_subinteresse
+FOREIGN KEY (usint_subinter_id) REFERENCES subinteresse(subinter_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- connections
+
+ALTER TABLE connections
+ADD CONSTRAINT connections_fk_usuario1
+FOREIGN KEY (connect_usuar1_id) REFERENCES usuario(usuar_id);
+
+ALTER TABLE connections
+ADD CONSTRAINT connections_fk_usuario2
+FOREIGN KEY (connect_usuar2_id) REFERENCES usuario(usuar_id);
+
+-- connection_estado
+
+ALTER TABLE connection_estado
+ADD CONSTRAINT connection_estado_fk_connections
+FOREIGN KEY (cnt_est_connect_id) REFERENCES connections(connect_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE connection_estado
+ADD CONSTRAINT connection_estado_fk_estadoc
+FOREIGN KEY (cnt_est_estadoc_id) REFERENCES estadoc(estadoc_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- post
+
+ALTER TABLE post
+ADD CONSTRAINT post_fk_connections
+FOREIGN KEY (post_connect_id) REFERENCES connections(connect_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE post
+ADD CONSTRAINT post_fk_usuario
+FOREIGN KEY (post_usuar_id) REFERENCES usuario(usuar_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- evento
+
+ALTER TABLE evento
+ADD CONSTRAINT evento_fk_usuario
+FOREIGN KEY (evento_usuar_id) REFERENCES usuario(usuar_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- invite
+
+ALTER TABLE invite
+ADD CONSTRAINT invite_fk_evento
+FOREIGN KEY (invite_evento_id) REFERENCES evento(evento_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE invite
+ADD CONSTRAINT invite_fk_usuario
+FOREIGN KEY (invite_usuar_id) REFERENCES usuario(usuar_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE invite
+ADD CONSTRAINT invite_fk_estado_invite
+FOREIGN KEY (invite_est_inv_id) REFERENCES estado_invite(est_inv_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- group_post
+
+ALTER TABLE group_post
+ADD CONSTRAINT group_post_fk_evento
+FOREIGN KEY (gp_evento_id) REFERENCES evento(evento_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE group_post
+ADD CONSTRAINT group_post_fk_usuario
+FOREIGN KEY (gp_usuar_id) REFERENCES usuario(usuar_id)
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
