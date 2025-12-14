@@ -1,0 +1,48 @@
+USE moodly;
+
+-- Lista de Jogadores
+SELECT * FROM usuario;
+SELECT usuar_nome, subinter_nome FROM usuario_interesse
+INNER JOIN subinteresse ON usint_subinter_id = subinter_id
+INNER JOIN usuario ON usint_usuar_id = usuar_id
+ORDER BY usuar_nome;
+
+-- Pedidos de conexões aceites
+SELECT connect_id, u1.usuar_nome usuario1, u2.usuar_nome usuario2 FROM connections
+INNER JOIN connection_estado ON cnt_est_connect_id = connect_id
+INNER JOIN usuario u1 ON u1.usuar_id = connect_usuar1_id
+INNER JOIN usuario u2 ON u2.usuar_id = connect_usuar2_id
+WHERE cnt_est_estadoc_id = 2;
+
+-- Estado atual de cada pedido de conexão
+SELECT c.connect_id, u1.usuar_nome usuario1, u2.usuar_nome usuario2, estadoc_descricao 'estado atual' FROM connections c
+INNER JOIN connection_estado ON cnt_est_connect_id = connect_id
+INNER JOIN usuario u1 ON u1.usuar_id = connect_usuar1_id
+INNER JOIN usuario u2 ON u2.usuar_id = connect_usuar2_id
+INNER JOIN estadoc ON cnt_est_estadoc_id = estadoc_id
+WHERE cnt_est_data_registo = ( SELECT max(cnt_est_data_registo) from connection_estado
+								WHERE cnt_est_connect_id = c.connect_id)
+ORDER BY c.connect_id;
+                                
+-- Mensagens privadas entre dois utilizadores
+SELECT post_conteudo, post_data_envio, usuar_nome autor FROM post
+INNER JOIN usuario ON post_usuar_id = usuar_id
+WHERE post_connect_id = 9
+ORDER BY post_data_envio;
+
+-- Todos os eventos e seus criadores
+SELECT usuar_nome autor, evento_titulo evento FROM evento
+INNER JOIN usuario ON evento_usuar_id = usuar_id;
+
+-- Convites enviados para um evento
+SELECT evento_titulo Evento, usuar_nome Convidado FROM usuario
+INNER JOIN invite ON  invite_usuar_id = usuar_id
+INNER JOIN evento ON invite_evento_id = evento_id
+WHERE evento_id = 2;
+
+-- Mensagens de grupo num evento
+SELECT gp_conteudo mensagem, gp_data_envio 'data de envio', usuar_nome autor FROM group_post
+INNER JOIN usuario ON gp_usuar_id = usuar_id
+WHERE gp_evento_id = 1;
+
+ 
