@@ -1,0 +1,225 @@
+
+USE moodly;
+
+INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfil) VALUES ('Danilo Fernandes','danilo88@gmail.com','$2a$10$/S7w/77aMALxJpz2Uy11Zut1P7yM4OvEqRgZroUQaslt4hp9Lpgr2','https://picsum.photos/seed/danilo/400/400');
+INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfil) VALUES ('Bernardo Alves','bernardo@sapo.pt','$2a$10$TjlQoWhyVfqm7zwG52pIp.8pKf.L2DwHigBtMWzl7wT4VxMX6Cw5C','https://picsum.photos/seed/bernardo/400/400');
+INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfil) VALUES ('Edson Lima','edsonlima7@hotmail.com','$2a$10$SwcGzRU5jNzLjvUvMfcEOuKl63qttxRdsWCEHawmluwdizy9beGeu','https://picsum.photos/seed/edson/400/400');
+INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfil) VALUES ('Isimar Quixito','isiquixito360@gmail.com','$2a$10$VOfnhtkEpCjqlK8BcBkd0eKbWAsI/SeHrSJUIi2VNztYSsx2WNc12','https://picsum.photos/seed/isimar/400/400');
+INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfil) VALUES ('Miguel Almeida','miguel@sapo.pt','$2a$10$wNsAQRc1ZXwJmbrM6ZIfZu7rHQHK01fR0XnopspvYw0Tvz74dj5/W','https://picsum.photos/seed/miguel/400/400');
+INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfil) VALUES ('Manuela Alexandre','manuelalex244@hotmail.com','$2a$10$ecsDPzjGKq2R5ST.zCreSuUA4GOtdSdAyu9Qg3moGFFBEq.3TTPyq','https://picsum.photos/seed/manuela/400/400');
+INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfil) VALUES ('Carla Lwinny','carlwinny@sapo.pt','$2a$10$4yTE6kMxeDHXok5ILTzoF.EAHmwa6Bw15PGFJ/5pxgeM0lbiA3PgC','https://picsum.photos/seed/carla/400/400');
+
+INSERT INTO interesse (inter_nome) VALUES ('música');
+INSERT INTO interesse (inter_nome) VALUES ('filme/série');
+INSERT INTO interesse (inter_nome) VALUES ('jogo');
+
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Tory Lanez'); #1 Musica
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Drake'); #2
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Bryson Tiller'); #3
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Cef Tanzy'); #4
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Prodígio'); #5
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Nelson Freitas'); #6
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Michael Jackson'); #7
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Queen'); #8
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Landrick'); #9
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'MC Kevinho'); #10
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'AC/DC'); #11
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Tina Bell'); #12
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'FatRat'); #13
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Beyoncé'); #14
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Olivia Rodrigo'); #15
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Doechii'); #16
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (1, 'Blackpink'); #17
+
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'It - A Coisa'); #18 Filme/Série
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Game of Thrones'); #19
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Black Clover'); #20
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Bleach'); #21
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'The Incredibles'); #22
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Scream'); #23
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'One Piece'); #24
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Tower of God'); #25
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Scary Movie'); #26
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Stranger Things'); #27
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Harry Potter'); #28
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Senhor dos Anéis'); #29
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Missão Impossível'); #30
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Attack on Titan'); #31
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Godzilla'); #32
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Big Hero 6'); #33
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (2, 'Crepúsculo'); #34
+
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'The Legend of Zelda'); #35 Jogo
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Fortnite'); #36
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Super Mario'); #37
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Hollow Knight'); #38
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Call of Duty'); #39
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'NBA'); #40
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Minecraft'); #41
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Gran Turismo'); #42
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'FIFA'); #43
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Marvel Ultimate Alliance'); #44
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Silent Hill'); #45
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Resident Evil'); #46
+INSERT INTO subinteresse (subinter_inter_id, subinter_nome) VALUES (3, 'Cuphead'); #47
+
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (1,1); # Danilo 
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (1,2);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (1,3);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (1,18);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (1,19);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (1,20);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (1,35);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (1,36);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (1,37);
+
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (2,4); #Bernardo
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (2,5);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (2,6);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (2,21);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (2,22);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (2,23);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (2,38);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (2,39);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (2,35);
+
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (3,7); #Edson
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (3,2);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (3,8);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (3,24);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (3,25);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (3,26);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (3,40);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (3,41);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (3,42);
+
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (4,3); #Isimar
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (4,9);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (4,10);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (4,27);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (4,28);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (4,29);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (4,43);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (4,40);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (4,39);
+
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (5,8); #Miguel
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (5,11);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (5,12);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (5,27);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (5,30);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (5,24);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (5,38);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (5,44);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (5,43);
+
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (6,13); #Manuela
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (6,14);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (6,15);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (6,24);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (6,31);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (6,32);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (6,43);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (6,45);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (6,46);
+
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (7,14); #Carla
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (7,16);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (7,17);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (7,31);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (7,33);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (7,34);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (7,47);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (7,43);
+INSERT INTO usuario_interesse (usint_usuar_id, usint_subinter_id) VALUES (7,35);
+
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (1,2, '2025-09-09 14:32:45'); #aceite 1
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (1,4, '2025-09-09 14:34:20'); #pendente 2
+
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (2,5, '2025-09-10 12:17:03'); #bloqueado 3
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (2,7, '2025-09-10 12:18:52'); #bloqueado 4
+
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (3,1, '2025-10-06 08:37:49'); #aceite 5
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (3,4, '2025-10-10 15:29:01'); #aceite 6
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (3,6, '2025-10-24 19:17:36'); #pendente 7
+
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (4,5, '2025-10-30 12:31:27'); #aceite 8
+
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (5,3, '2025-09-11 17:23:10'); #aceite 9
+
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (6,4, '2025-09-17 12:39:40'); #aceite 10
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (6,5, '2025-09-20 16:56:31'); #aceite 11
+
+INSERT INTO connections (connect_usuar1_id, connect_usuar2_id, connect_data_criacao) VALUES (7,6, '2025-09-15 10:05:28'); #aceite 12
+
+INSERT INTO estadoc (estadoc_descricao) VALUES ('pendente'); #1
+INSERT INTO estadoc (estadoc_descricao) VALUES ('aceite'); #2
+INSERT INTO estadoc (estadoc_descricao) VALUES ('recusado'); #3
+
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (1,1, '2025-09-09 14:32:45');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (1,2, '2025-09-09 18:25:19');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (2,1, '2025-09-09 14:34:20');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (3,1, '2025-09-10 12:17:03');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (3,3, '2025-09-13 20:16:38');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (4,1, '2025-09-10 12:18:52');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (4,3, '2025-09-11 07:29:30');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (5,1, '2025-10-06 08:37:49');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (5,2, '2025-10-06 10:05:28');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (6,1, '2025-10-10 15:29:01');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (6,2, '2025-10-12 18:37:49');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (7,1, '2025-10-24 19:17:36');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (8,1, '2025-10-30 12:31:27');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (8,2, '2025-10-30 22:14:48');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (9,1, '2025-09-11 17:23:10');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (9,2, '2025-09-12 13:18:30');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (10,1, '2025-09-17 12:39:40');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (10,2, '2025-09-17 23:29:36');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (11,1, '2025-09-20 16:56:31');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (11,2, '2025-09-23 04:19:26');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (12,1, '2025-09-15 10:05:28');
+INSERT INTO connection_estado (cnt_est_connect_id, cnt_est_estadoc_id, cnt_est_data_registo) VALUES (12,2, '2025-09-16 21:31:50');
+
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (1,1,'Tudo bem mano? Sou o Danilo e vi que gostas de The Legend of Zelda. Qual o teu Zelda favorito?', '2025-09-09 22:12:54');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (1,2,'Estou ótimo e contigo? Eu amo jogar Breath of The Wild e qual é o teu?', '2025-09-09 22:14:38');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (1,1,'Também estou bem. O meu favorito é o Twilight Princess.', '2025-09-09 22:15:55');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (1,2,'Sabias que vai ter um Nintendo Direct exclusivo para o novo Zelda? ', '2025-09-09 22:19:12');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (9,5,'Como vai à vida?', '2025-09-12 15:18:32');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (9,3,'Está andando bem, só que muitos trabalhos', '2025-09-12 15:20:49');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (9,3,'É verdade estás em que episódio de One Piece?', '2025-09-12 15:21:08');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (9,5,'Entendo. Olha eu estou no episódio 1089, no início de EggHead.', '2025-09-12 15:30:23');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (12,6,'Oii. Td bom?', '2025-09-17 10:29:46');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (12,7,'Tudo bem e aí?', '2025-09-17 10:31:14');
+INSERT INTO post (post_connect_id, post_usuar_id, post_conteudo, post_data_envio) VALUES (12,6,'Estou bem. Vi que gostas de ouvir Beyoncé.', '2025-09-17 10:32:25');
+
+INSERT INTO evento (evento_usuar_id, evento_titulo, evento_descricao, evento_local, evento_data) VALUES (3,'Maratona de Stranger Things','Estreia da nova e última temporada de Stranger Things','Odivelas', '2025-11-27 19:30:00');
+INSERT INTO evento (evento_usuar_id, evento_titulo, evento_descricao, evento_local, evento_data) VALUES (6,'Torneio de FIFA','Torneio Regional de FIFA de Lisboa com prêmio','Lisboa - Gargula Gaming', '2025-12-06 16:00:00');
+
+INSERT INTO estado_invite (est_inv_nome) VALUES ('pendente'); #1
+INSERT INTO estado_invite (est_inv_nome) VALUES ('aceite'); #2
+INSERT INTO estado_invite (est_inv_nome) VALUES ('recusado'); #3
+
+INSERT INTO invite (invite_evento_id, invite_usuar_id, invite_est_inv_id, invite_data_envio) VALUES (1,1,3, '2025-11-22 17:25:10'); # convite para a Maratona de Stranger Things
+INSERT INTO invite (invite_evento_id, invite_usuar_id, invite_est_inv_id, invite_data_envio) VALUES (1,4,2, '2025-11-22 17:25:43');
+INSERT INTO invite (invite_evento_id, invite_usuar_id, invite_est_inv_id, invite_data_envio) VALUES (1,5,2, '2025-11-22 19:26:05');
+
+INSERT INTO invite (invite_evento_id, invite_usuar_id, invite_est_inv_id, invite_data_envio) VALUES (2,7,2, '2025-11-01 20:02:27'); # convite para o Torneio de FIFA
+INSERT INTO invite (invite_evento_id, invite_usuar_id, invite_est_inv_id, invite_data_envio) VALUES (2,4,1, '2025-11-01 20:02:58');
+INSERT INTO invite (invite_evento_id, invite_usuar_id, invite_est_inv_id, invite_data_envio) VALUES (2,5,2, '2025-11-02 12:25:14');
+
+INSERT INTO group_post (gp_evento_id, gp_usuar_id, gp_conteudo, gp_data_envio) VALUES (1,3,'Malta, depois de 3 anos à espera, finalmente a nova temporada. Venham em minha casa, vai ter snacks para esta maratona ', '2025-11-23 10:53:17'); # mensagem em grupo para Maratona de Stranger Things
+INSERT INTO group_post (gp_evento_id, gp_usuar_id, gp_conteudo, gp_data_envio) VALUES (1,4,'Pois não, já até esqueci o que aconteceu na temporada passada.😅', '2025-11-23 11:04:28');
+INSERT INTO group_post (gp_evento_id, gp_usuar_id, gp_conteudo, gp_data_envio) VALUES (1,5,'Bora!!! Vou levar bebidas Edson, não te sobrecarregues', '2025-11-23 11:21:43');
+INSERT INTO group_post (gp_evento_id, gp_usuar_id, gp_conteudo, gp_data_envio) VALUES (1,3,'Obrigado Miguel. E Isimar, vou enviar pra ti um resumo da última temporada, ok?', '2025-11-23 11:23:15');
+
+INSERT INTO group_post (gp_evento_id, gp_usuar_id, gp_conteudo, gp_data_envio) VALUES (2,6,'Gente, tem um torneio de videogame que vai acontecer no próximo mês e eu sei que vcs jogam muito FIFA.', '2025-11-02 12:49:26'); # mensagem em grupo para Torneio de FIFA
+INSERT INTO group_post (gp_evento_id, gp_usuar_id, gp_conteudo, gp_data_envio) VALUES (2,5,'Valeu, é individual ou por equipa?', '2025-11-02 12:50:02');
+INSERT INTO group_post (gp_evento_id, gp_usuar_id, gp_conteudo, gp_data_envio) VALUES (2,7,'Acredito que seja individual, é díficil ser por equipa', '2025-11-02 13:03:11');
+INSERT INTO group_post (gp_evento_id, gp_usuar_id, gp_conteudo, gp_data_envio) VALUES (2,5,'Tinha que ser por equipa.😬', '2025-11-02 13:07:23');
+INSERT INTO group_post (gp_evento_id, gp_usuar_id, gp_conteudo, gp_data_envio) VALUES (2,6,'Acabaram de confirmar agora, vai ser por equipa', '2025-11-02 13:20:38');
+
+
+
+
+
+
+
