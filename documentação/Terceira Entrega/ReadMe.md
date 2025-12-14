@@ -4,7 +4,7 @@
 **Engenharia Informática — IADE**
 
 ## Autores
-- Arthur Hoffman (20241481)
+- Arthur Hoffman (20241481)*
 - Deuwer Rabelais (20241521)
 - Isimar Quixito (20242038)
 - Miguel Almeida (20240206)
@@ -482,13 +482,19 @@ __
 
 ## Documentação Rest
 
+https://github.com/devHoff/Moodly/blob/787074a400a68b38c5e2cb956e76c93bd1ae88ba/documenta%C3%A7%C3%A3o/Terceira%20Entrega/Rest.md
+
 ## Manual do Utilizador
 
+https://github.com/devHoff/Moodly/blob/787074a400a68b38c5e2cb956e76c93bd1ae88ba/documenta%C3%A7%C3%A3o/Terceira%20Entrega/Manual.md
 
 
 ---
 
 ## Considerações Finais
-O desenvolvimento do Moodly apresentou desafios significativos, especialmente devido à ausência de um membro do grupo.
-Apesar das limitações, foi entregue uma aplicação funcional, consolidando os conhecimentos adquiridos ao longo do curso.
+
+
+O desenvolvimento do moodly não foi tranquilo. Tivemos várias dificuldades especialmente na segunda entrega, mas tentamos corrigimos o nosso erro na terceira. A ausência de um dos membros do grupo afetou seriamente o processo de desenvolvimento do app, tornando algumas promessas iniciais impossíveis de ser entregues a tempo (integração com APIs, e sugestões de perfil com base nos interesses). No fim, apesar da app estar funcional, ele não concretizou muitos dos nossos desejos iniciais.
+
+A estruturação do código, notavelmente no android studio pode não ter sido a melhor. Não separamos os componentes totalmente (como aprendemos ao longo da disciplina de Programação Mobile) e muitas das nossas telas não têm previews funcionais, visto que depois da ligação do backend, isto se tornou um difícil.
 
