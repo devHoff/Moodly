@@ -1,8 +1,11 @@
 DROP DATABASE IF EXISTS moodly;
-CHARACTER SET utf8mb4
+
+CREATE DATABASE moodly
+  CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
-CREATE DATABASE moodly;
+
 USE moodly;
+
 
 CREATE TABLE usuario (
   usuar_id INT NOT NULL AUTO_INCREMENT ,
