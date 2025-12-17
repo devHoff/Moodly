@@ -9,7 +9,7 @@ INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfi
 INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfil) VALUES ('Manuela Alexandre','manuelalex244@hotmail.com','$2a$10$ecsDPzjGKq2R5ST.zCreSuUA4GOtdSdAyu9Qg3moGFFBEq.3TTPyq','https://picsum.photos/seed/manuela/400/400');
 INSERT INTO usuario (usuar_nome, usuar_email, usuar_senha_hash, usuar_foto_perfil) VALUES ('Carla Lwinny','carlwinny@sapo.pt','$2a$10$4yTE6kMxeDHXok5ILTzoF.EAHmwa6Bw15PGFJ/5pxgeM0lbiA3PgC','https://picsum.photos/seed/carla/400/400');
 
-INSERT INTO interesse (inter_nome) VALUES ('música');
+INSERT INTO interesse (inter_nome) VALUES ('musica');
 INSERT INTO interesse (inter_nome) VALUES ('filme/série');
 INSERT INTO interesse (inter_nome) VALUES ('jogo');
 
